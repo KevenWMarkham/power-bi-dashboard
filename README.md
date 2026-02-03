@@ -1,73 +1,121 @@
-# Power BI Dashboard Project
+# Enterprise AI Adoption Dashboard
 
-## Project Overview
-- **Client:** [CLIENT_NAME]
-- **Duration:** 8 weeks
-- **Scope:** 1 dashboard screen with 3 views
-- **Budget:** $79,150
-- **Start Date:** [DATE]
+A Power BI dashboard prototype for tracking AI tool adoption across an organization. Built as an interactive HTML/JS prototype to validate requirements before Power BI development.
 
-## Team Allocation
-| Role | FTE | Hours | Active Weeks |
-|------|-----|-------|--------------|
-| Project Manager | 0.25 | 80 | 1-8 |
-| Data Engineer | 0.5 | 80 | 1-4 |
-| Power BI Lead | 0.75 | 180 | 1-6 |
-| UX Designer | 0.25 | 30 | 2-4 |
-| QA Analyst | 0.25 | 20 | 6-7 |
+## Live Demo
 
-## Folder Structure
+Open `prototype/index.html` in a browser or serve locally (see [Running Locally](#running-locally)).
+
+## Features
+
+- **3 Dashboard Views:**
+  - Executive Summary - Overall adoption KPIs and trends
+  - Business Unit Deep-Dive - Unit-level metrics and user tables
+  - Use Case Analysis - Task type patterns and heatmaps
+
+- **10 Adoption Metrics:**
+  - Total Active Users
+  - Adoption Rate vs Target
+  - Total Sessions
+  - Avg Sessions per User
+  - Engagement Tier Distribution
+  - Month-over-Month Growth
+  - Top Task Types
+  - Business Outcome Distribution
+  - Fastest Growing Use Case
+  - Highest Engagement Task
+
+- **Interactive Features:**
+  - Drill-through navigation between views
+  - Global date range and business unit filters
+  - Sortable data tables with CSV export
+  - Tooltips on all visualizations
+
+## Project Structure
+
 ```
-/docs           - Requirements, data dictionary, user guide
-/data-model     - Schema files, DAX measures
-/dashboard      - PBIX backups, version history
-/testing        - Test cases, UAT feedback
-/deployment     - Runbooks, access matrix
-```
+/docs               - Project documentation
+  /plans            - Design and sprint plans
+  D11-sprint-plan.md - Current sprint plan (Mar 10, 2026 delivery)
+  sprint-backlog.md - User stories and tasks
+  project-backlog.md - Full project backlog
 
-## Key Milestones
-1. **Week 2:** Requirements sign-off, data model complete
-2. **Week 4:** Initial dashboard build, UX review complete
-3. **Week 6:** Dashboard development complete, QA begins
-4. **Week 7:** UAT complete
-5. **Week 8:** Production deployment, knowledge transfer
+/prototype          - Interactive HTML/JS prototype
+  /css              - Power BI theme styling
+  /js               - Application logic and charts
+  /data             - Mock JSON data files
+  index.html        - Main dashboard
+
+/pages              - Project management views
+  /project          - Sprint and backlog treeviews
+
+/data-model         - Schema files, DAX measures
+/dashboard          - PBIX backups, version history
+/testing            - Test cases, UAT feedback
+/deployment         - Runbooks, access matrix
+```
 
 ## Running Locally
 
-This project is a static HTML site. To run it locally, you need to serve it with an HTTP server.
+This project is a static HTML site. Serve it with an HTTP server:
 
 ### Option 1: Python (Recommended)
 ```bash
-# Navigate to the project folder
 cd power-bi-dashboard
-
-# Start the server
 python -m http.server 8080
 ```
-Then open http://localhost:8080 in your browser.
+Open http://localhost:8080/prototype/ in your browser.
 
 ### Option 2: Node.js
 ```bash
-# Install http-server globally (one-time)
 npm install -g http-server
-
-# Navigate to the project folder and start
 cd power-bi-dashboard
 http-server -p 8080
 ```
-Then open http://localhost:8080 in your browser.
+Open http://localhost:8080/prototype/ in your browser.
 
 ### Option 3: VS Code Live Server
-1. Install the "Live Server" extension in VS Code
-2. Open the project folder in VS Code
-3. Right-click `index.html` and select "Open with Live Server"
+1. Install the "Live Server" extension
+2. Open project folder in VS Code
+3. Right-click `prototype/index.html` → "Open with Live Server"
 
-### Pages
-- **Main Site:** http://localhost:8080 - Project documentation hub
-- **Prototype Dashboard:** http://localhost:8080/prototype/ - Interactive Power BI prototype
+### Option 4: Direct File Access
+Open `prototype/index.html` directly in your browser (some features may be limited due to CORS).
 
-## Quick Links
-- [Sprint Backlog](./docs/sprint-backlog.md)
-- [RACI Matrix](./docs/raci-matrix.md)
-- [Status Report Template](./docs/status-report-template.md)
-- [DAX Documentation](./data-model/dax-measures.md)
+## Pages
+
+| URL | Description |
+|-----|-------------|
+| `/prototype/` | Interactive dashboard prototype |
+| `/pages/project/sprint-treeview.html` | Sprint timeline view |
+| `/pages/project/backlog-treeview.html` | Project backlog view |
+
+## Tech Stack
+
+- **Frontend:** Vanilla HTML/CSS/JavaScript (no frameworks)
+- **Charts:** Custom SVG rendering
+- **Styling:** Power BI theme (Segoe UI, Power BI color palette)
+- **Data:** Mock JSON with seeded random generation
+
+## Project Timeline
+
+| Phase | Duration | Focus |
+|-------|----------|-------|
+| Sprint 1 | Feb 3-14 | Discovery, Data Model |
+| Sprint 2 | Feb 17-28 | ETL, Views 1 & 2 |
+| Sprint 3 | Mar 3-10 | View 3, Testing, Deployment |
+
+**Delivery Date:** March 10, 2026
+
+## Documentation
+
+- [D11 Sprint Plan](./docs/D11-sprint-plan.md) - Current sprint schedule
+- [Sprint Backlog](./docs/sprint-backlog.md) - User stories and tasks
+- [Project Backlog](./docs/project-backlog.md) - Full epic breakdown
+- [Prototype Design](./docs/plans/2026-01-22-prototype-design.md) - Design specification
+- [RACI Matrix](./docs/raci-matrix.md) - Role assignments
+- [Data Dictionary](./docs/data-dictionary.md) - Field definitions
+
+## License
+
+This project is for demonstration purposes.
