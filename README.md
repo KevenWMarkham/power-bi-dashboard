@@ -6,56 +6,33 @@ A Power BI dashboard prototype for tracking AI tool adoption across an organizat
 
 **[View Live Dashboard](https://kevenwmarkham.github.io/power-bi-dashboard/prototype/)**
 
-Or run locally (see [Running Locally](#running-locally)).
-
 ## Features
 
-- **3 Dashboard Views:**
-  - Executive Summary - Overall adoption KPIs and trends
-  - Business Unit Deep-Dive - Unit-level metrics and user tables
-  - Use Case Analysis - Task type patterns and heatmaps
+### 3 Dashboard Views
+- **Executive Summary** - Overall adoption KPIs and trends
+- **Business Unit Deep-Dive** - Unit-level metrics, user tables, and task type heatmap
+- **Use Case Analysis** - Task type patterns, heatmaps, and outcome breakdowns
 
-- **10 Adoption Metrics:**
-  - Total Active Users
-  - Adoption Rate vs Target
-  - Total Sessions
-  - Avg Sessions per User
-  - Engagement Tier Distribution
-  - Month-over-Month Growth
-  - Top Task Types
-  - Business Outcome Distribution
-  - Fastest Growing Use Case
-  - Highest Engagement Task
+### Interactive Cross-Filtering
+Click on any chart element to filter all other charts dynamically:
 
-- **Interactive Features:**
-  - Drill-through navigation between views
-  - Global date range and business unit filters
-  - Sortable data tables with CSV export
-  - Tooltips on all visualizations
+**Business Unit View:**
+- Click funnel stages (Tried, Regular, Power User) to filter by engagement tier
+- Click trend chart data points to filter by month
+- Click heatmap cells/headers to filter by task type
+- All KPIs, charts, and tables update instantly
 
-## Project Structure
+**Use Case Analysis View:**
+- Click heatmap cells to filter by task type
+- Click heatmap row labels to filter by business unit
+- Click outcome donut slices to filter by outcome
+- Click task trend areas to filter by task type
 
-```
-/docs               - Project documentation
-  /plans            - Design and sprint plans
-  D11-sprint-plan.md - Current sprint plan (Mar 10, 2026 delivery)
-  sprint-backlog.md - User stories and tasks
-  project-backlog.md - Full project backlog
-
-/prototype          - Interactive HTML/JS prototype
-  /css              - Power BI theme styling
-  /js               - Application logic and charts
-  /data             - Mock JSON data files
-  index.html        - Main dashboard
-
-/pages              - Project management views
-  /project          - Sprint and backlog treeviews
-
-/data-model         - Schema files, DAX measures
-/dashboard          - PBIX backups, version history
-/testing            - Test cases, UAT feedback
-/deployment         - Runbooks, access matrix
-```
+### Visual Feedback
+- Selected items highlighted with blue outline
+- Non-selected items dimmed for focus
+- Filter chips show active filters with remove buttons
+- "Clear All" button to reset filters
 
 ## Running Locally
 
@@ -76,30 +53,26 @@ http-server -p 8080
 ```
 Open http://localhost:8080/prototype/ in your browser.
 
-### Option 3: GitHub Pages (No Install Required)
-1. Fork this repository to your GitHub account
-2. Go to your forked repo → **Settings** → **Pages**
-3. Under "Source", select **Deploy from a branch**
-4. Select **main** branch and **/ (root)** folder
-5. Click **Save**
-6. Wait 1-2 minutes for deployment
-7. Access at: `https://[your-username].github.io/power-bi-dashboard/prototype/`
-
-### Option 4: VS Code Live Server
+### Option 3: VS Code Live Server
 1. Install the "Live Server" extension
 2. Open project folder in VS Code
 3. Right-click `prototype/index.html` → "Open with Live Server"
 
-### Option 5: Direct File Access
-Open `prototype/index.html` directly in your browser (some features may be limited due to CORS).
+## Project Structure
 
-## Pages
+```
+/prototype          - Interactive HTML/JS prototype
+  /css              - Power BI theme styling
+  /js               - Application logic and charts
+  /data             - Mock JSON data files
+  index.html        - Main dashboard
 
-| URL | Description |
-|-----|-------------|
-| `/prototype/` | Interactive dashboard prototype |
-| `/pages/project/sprint-treeview.html` | Sprint timeline view |
-| `/pages/project/backlog-treeview.html` | Project backlog view |
+/docs               - Project documentation
+/data-model         - Schema files, DAX measures
+/dashboard          - PBIX backups, version history
+/testing            - Test cases, UAT feedback
+/deployment         - Runbooks, access matrix
+```
 
 ## Tech Stack
 
@@ -108,25 +81,9 @@ Open `prototype/index.html` directly in your browser (some features may be limit
 - **Styling:** Power BI theme (Segoe UI, Power BI color palette)
 - **Data:** Mock JSON with seeded random generation
 
-## Project Timeline
-
-| Phase | Duration | Focus |
-|-------|----------|-------|
-| Sprint 1 | Feb 3-14 | Discovery, Data Model |
-| Sprint 2 | Feb 17-28 | ETL, Views 1 & 2 |
-| Sprint 3 | Mar 3-10 | View 3, Testing, Deployment |
-
-**Delivery Date:** March 10, 2026
-
 ## Documentation
 
-- [D11 Sprint Plan](./docs/D11-sprint-plan.md) - Current sprint schedule
-- [Sprint Backlog](./docs/sprint-backlog.md) - User stories and tasks
-- [Project Backlog](./docs/project-backlog.md) - Full epic breakdown
-- [Prototype Design](./docs/plans/2026-01-22-prototype-design.md) - Design specification
-- [RACI Matrix](./docs/raci-matrix.md) - Role assignments
-- [Data Dictionary](./docs/data-dictionary.md) - Field definitions
-
-## License
-
-This project is for demonstration purposes.
+- [Sprint Backlog](./docs/sprint-backlog.md)
+- [RACI Matrix](./docs/raci-matrix.md)
+- [Status Report Template](./docs/status-report-template.md)
+- [DAX Documentation](./data-model/dax-measures.md)

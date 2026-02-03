@@ -18,7 +18,7 @@ const Charts = {
   },
 
   // Render adoption trend line chart
-  renderAdoptionTrend(containerId, trends) {
+  renderAdoptionTrend(containerId, trends, buFilters = {}, onFilterClick = null) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
@@ -39,8 +39,8 @@ const Charts = {
     const chartHeight = height - padding.top - padding.bottom;
 
     // Calculate scales
-    const maxUsers = Math.max(...trends.map(t => t.activeUsers)) * 1.1;
-    const xStep = chartWidth / (trends.length - 1);
+    const maxUsers = Math.max(...trends.map(t => t.activeUsers), 1) * 1.1;
+    const xStep = trends.length > 1 ? chartWidth / (trends.length - 1) : chartWidth;
 
     // Draw grid lines
     for (let i = 0; i <= 5; i++) {
@@ -97,35 +97,67 @@ const Charts = {
     line.setAttribute('stroke-width', '2');
     svg.appendChild(line);
 
-    // Data points
+    // Data points (clickable for month filtering)
     points.forEach(point => {
+      const isSelected = buFilters.month === point.data.month;
+
       const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
       circle.setAttribute('cx', point.x);
       circle.setAttribute('cy', point.y);
-      circle.setAttribute('r', '4');
-      circle.setAttribute('fill', this.colors.primary);
+      circle.setAttribute('r', isSelected ? '8' : '4');
+      circle.setAttribute('fill', isSelected ? '#118DFF' : this.colors.primary);
+      circle.setAttribute('stroke', isSelected ? '#fff' : 'none');
+      circle.setAttribute('stroke-width', isSelected ? '2' : '0');
       circle.style.cursor = 'pointer';
+      circle.style.transition = 'r 0.15s ease';
+
+      // Dim non-selected points if a month is selected
+      if (buFilters.month && !isSelected) {
+        circle.setAttribute('fill-opacity', '0.4');
+      }
 
       // Tooltip on hover
       circle.addEventListener('mouseenter', (e) => {
-        this.showTooltip(e, `${point.data.month}<br>Active Users: ${point.data.activeUsers.toLocaleString()}<br>Sessions: ${point.data.sessions.toLocaleString()}`);
+        if (!isSelected) circle.setAttribute('r', '6');
+        this.showTooltip(e, `${this.formatMonth(point.data.month)}<br>Active Users: ${point.data.activeUsers.toLocaleString()}<br>Sessions: ${point.data.sessions.toLocaleString()}<br><em>Click to filter</em>`);
       });
-      circle.addEventListener('mouseleave', () => this.hideTooltip());
+      circle.addEventListener('mouseleave', () => {
+        if (!isSelected) circle.setAttribute('r', '4');
+        this.hideTooltip();
+      });
+
+      // Click to filter by month
+      if (onFilterClick) {
+        circle.addEventListener('click', () => {
+          onFilterClick(point.data.month);
+        });
+      }
 
       svg.appendChild(circle);
     });
 
-    // X-axis labels (every 2 months)
+    // X-axis labels (every 2 months, clickable)
     trends.forEach((trend, i) => {
       if (i % 2 === 0) {
         const x = padding.left + i * xStep;
+        const isSelected = buFilters.month === trend.month;
+
         const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         label.setAttribute('x', x);
         label.setAttribute('y', height - 10);
         label.setAttribute('text-anchor', 'middle');
         label.setAttribute('font-size', '11');
-        label.setAttribute('fill', this.colors.gray);
+        label.setAttribute('fill', isSelected ? '#118DFF' : this.colors.gray);
+        label.setAttribute('font-weight', isSelected ? '600' : '400');
+        label.style.cursor = 'pointer';
         label.textContent = this.formatMonth(trend.month);
+
+        if (onFilterClick) {
+          label.addEventListener('click', () => {
+            onFilterClick(trend.month);
+          });
+        }
+
         svg.appendChild(label);
       }
     });
@@ -383,18 +415,19 @@ const Charts = {
   },
 
   // Render adoption funnel
-  renderFunnel(containerId, funnelData) {
+  renderFunnel(containerId, funnelData, buFilters = {}, onFilterClick = null) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
     container.innerHTML = '';
 
+    // Map funnel stages to engagement tiers
     const stages = [
-      { key: 'licensed', label: 'Licensed', value: funnelData.licensed || funnelData['inactive'] + funnelData['tried'] + funnelData['regular'] + funnelData['power-user'] || 0 },
-      { key: 'onboarded', label: 'Onboarded', value: funnelData.onboarded || funnelData['tried'] + funnelData['regular'] + funnelData['power-user'] || 0 },
-      { key: 'tried', label: 'Tried (1+ session)', value: funnelData.tried || funnelData['tried'] + funnelData['regular'] + funnelData['power-user'] || 0 },
-      { key: 'regular', label: 'Regular (5+/mo)', value: funnelData.regular || funnelData['regular'] + funnelData['power-user'] || 0 },
-      { key: 'powerUser', label: 'Power User (20+/mo)', value: funnelData.powerUser || funnelData['power-user'] || 0 }
+      { key: 'licensed', tier: null, label: 'Licensed', value: funnelData.licensed || funnelData['inactive'] + funnelData['tried'] + funnelData['regular'] + funnelData['power-user'] || 0 },
+      { key: 'onboarded', tier: null, label: 'Onboarded', value: funnelData.onboarded || funnelData['tried'] + funnelData['regular'] + funnelData['power-user'] || 0 },
+      { key: 'tried', tier: 'tried', label: 'Tried (1+ session)', value: funnelData.tried || funnelData['tried'] + funnelData['regular'] + funnelData['power-user'] || 0 },
+      { key: 'regular', tier: 'regular', label: 'Regular (5+/mo)', value: funnelData.regular || funnelData['regular'] + funnelData['power-user'] || 0 },
+      { key: 'powerUser', tier: 'power-user', label: 'Power User (20+/mo)', value: funnelData.powerUser || funnelData['power-user'] || 0 }
     ];
 
     const maxValue = stages[0].value || 1;
@@ -404,19 +437,48 @@ const Charts = {
 
     stages.forEach((stage, i) => {
       const percentage = maxValue > 0 ? (stage.value / maxValue) * 100 : 0;
+      const isSelected = stage.tier && buFilters.engagementTier === stage.tier;
+      const isClickable = stage.tier !== null;
 
       const stepDiv = document.createElement('div');
       stepDiv.className = 'funnel-step';
+      if (isClickable) {
+        stepDiv.style.cursor = 'pointer';
+      }
 
       const labelDiv = document.createElement('div');
       labelDiv.className = 'funnel-label';
       labelDiv.textContent = stage.label;
+      if (isSelected) {
+        labelDiv.style.fontWeight = '600';
+        labelDiv.style.color = '#118DFF';
+      }
 
       const barDiv = document.createElement('div');
       barDiv.className = 'funnel-bar';
       barDiv.style.width = `${Math.max(percentage, 10)}%`;
       barDiv.style.background = this.colors.series[i % this.colors.series.length];
+      barDiv.style.opacity = buFilters.engagementTier && !isSelected ? '0.4' : '1';
       barDiv.textContent = stage.value.toLocaleString();
+
+      if (isSelected) {
+        barDiv.style.outline = '3px solid #118DFF';
+        barDiv.style.outlineOffset = '2px';
+      }
+
+      if (isClickable && onFilterClick) {
+        stepDiv.addEventListener('click', () => {
+          onFilterClick(stage.tier);
+        });
+
+        stepDiv.addEventListener('mouseenter', () => {
+          barDiv.style.transform = 'scaleX(1.02)';
+          barDiv.style.transition = 'transform 0.15s ease';
+        });
+        stepDiv.addEventListener('mouseleave', () => {
+          barDiv.style.transform = 'scaleX(1)';
+        });
+      }
 
       stepDiv.appendChild(labelDiv);
       stepDiv.appendChild(barDiv);
@@ -427,7 +489,7 @@ const Charts = {
   },
 
   // Render heatmap
-  renderHeatmap(containerId, byTaskType, byBusinessUnit, sessions) {
+  renderHeatmap(containerId, byTaskType, byBusinessUnit, sessions, ucFilters = {}, onFilterClick = null) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
@@ -454,7 +516,18 @@ const Charts = {
     const headerRow = document.createElement('tr');
     headerRow.innerHTML = '<th>Business Unit</th>';
     taskTypes.forEach(t => {
-      headerRow.innerHTML += `<th>${t.label.split('/')[0]}</th>`;
+      const isSelected = ucFilters.taskType === t.id;
+      const headerCell = document.createElement('th');
+      headerCell.textContent = t.label.split('/')[0];
+      headerCell.style.cursor = 'pointer';
+      if (isSelected) {
+        headerCell.style.background = '#118DFF';
+        headerCell.style.color = '#fff';
+      }
+      headerCell.addEventListener('click', () => {
+        if (onFilterClick) onFilterClick('taskType', t.id);
+      });
+      headerRow.appendChild(headerCell);
     });
     thead.appendChild(headerRow);
     table.appendChild(thead);
@@ -464,17 +537,178 @@ const Charts = {
     unitIds.forEach(unitId => {
       const unit = byBusinessUnit[unitId];
       const row = document.createElement('tr');
+      const isUnitSelected = ucFilters.businessUnit === unitId;
+      const hasUnitFilter = !!ucFilters.businessUnit;
 
-      let html = `<td style="text-align: left; font-weight: 500;">${unit.name}</td>`;
+      // Dim row if another unit is selected
+      if (hasUnitFilter && !isUnitSelected) {
+        row.style.opacity = '0.4';
+      }
+
+      // Unit name cell
+      const unitCell = document.createElement('td');
+      unitCell.style.textAlign = 'left';
+      unitCell.style.fontWeight = '500';
+      unitCell.style.cursor = 'pointer';
+      unitCell.textContent = unit.name;
+      if (isUnitSelected) {
+        unitCell.style.background = '#118DFF';
+        unitCell.style.color = '#fff';
+      }
+      unitCell.addEventListener('click', () => {
+        if (onFilterClick) onFilterClick('businessUnit', unitId);
+      });
+      row.appendChild(unitCell);
+
+      // Data cells
       taskTypes.forEach(task => {
         const count = matrix[`${unitId}|${task.id}`] || 0;
         const intensity = count / maxCount;
         const bgColor = this.getHeatmapColor(intensity);
         const textColor = intensity > 0.5 ? '#fff' : this.colors.gray;
-        html += `<td class="heatmap-cell" style="background: ${bgColor}; color: ${textColor};">${count > 0 ? count : '-'}</td>`;
+
+        const cell = document.createElement('td');
+        cell.className = 'heatmap-cell';
+        cell.style.background = bgColor;
+        cell.style.color = textColor;
+        cell.style.cursor = 'pointer';
+        cell.textContent = count > 0 ? count : '-';
+
+        // Highlight/dim based on current filters
+        const isTaskSelected = ucFilters.taskType === task.id;
+        const hasTaskFilter = !!ucFilters.taskType;
+
+        if (isTaskSelected || isUnitSelected) {
+          cell.style.outline = '2px solid #118DFF';
+          cell.style.outlineOffset = '-2px';
+        }
+
+        // Dim cells not matching task filter
+        if (hasTaskFilter && !isTaskSelected) {
+          cell.style.opacity = '0.4';
+        }
+
+        cell.addEventListener('click', () => {
+          if (onFilterClick) {
+            // Click on cell can set both filters
+            onFilterClick('taskType', task.id);
+          }
+        });
+
+        cell.addEventListener('mouseenter', (e) => {
+          this.showTooltip(e, `<strong>${unit.name}</strong><br>${task.label}<br>Sessions: ${count}<br><em>Click to filter</em>`);
+        });
+        cell.addEventListener('mouseleave', () => this.hideTooltip());
+
+        row.appendChild(cell);
       });
 
-      row.innerHTML = html;
+      tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+
+    container.appendChild(table);
+  },
+
+  // Render Business Unit heatmap (for Business Unit view)
+  renderBUHeatmap(containerId, taskTypes, businessUnits, sessions, buFilters = {}, onFilterClick = null) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    // Build matrix data
+    const matrix = {};
+    sessions.forEach(s => {
+      const key = `${s.businessUnitId}|${s.taskType}`;
+      matrix[key] = (matrix[key] || 0) + 1;
+    });
+
+    const maxCount = Math.max(...Object.values(matrix), 1);
+
+    // Create table
+    const table = document.createElement('table');
+    table.className = 'heatmap-table';
+
+    // Header row
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+
+    // Corner cell
+    const cornerCell = document.createElement('th');
+    cornerCell.textContent = 'Business Unit';
+    headerRow.appendChild(cornerCell);
+
+    // Task type headers (clickable)
+    taskTypes.forEach(t => {
+      const isSelected = buFilters.taskType === t.id;
+      const headerCell = document.createElement('th');
+      headerCell.textContent = t.label.split('/')[0];
+      headerCell.style.cursor = 'pointer';
+      headerCell.title = `Click to filter by ${t.label}`;
+      if (isSelected) {
+        headerCell.style.background = '#118DFF';
+        headerCell.style.color = '#fff';
+      }
+      headerCell.addEventListener('click', () => {
+        if (onFilterClick) onFilterClick('taskType', t.id);
+      });
+      headerRow.appendChild(headerCell);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Body rows
+    const tbody = document.createElement('tbody');
+    businessUnits.forEach(unit => {
+      const row = document.createElement('tr');
+
+      // Unit name cell (not clickable - use main filter for that)
+      const unitCell = document.createElement('td');
+      unitCell.style.textAlign = 'left';
+      unitCell.style.fontWeight = '500';
+      unitCell.textContent = unit.name.length > 20 ? unit.name.substring(0, 18) + '...' : unit.name;
+      unitCell.title = unit.name;
+      row.appendChild(unitCell);
+
+      // Data cells
+      taskTypes.forEach(task => {
+        const count = matrix[`${unit.id}|${task.id}`] || 0;
+        const intensity = count / maxCount;
+        const bgColor = this.getHeatmapColor(intensity);
+        const textColor = intensity > 0.5 ? '#fff' : this.colors.gray;
+
+        const cell = document.createElement('td');
+        cell.className = 'heatmap-cell';
+        cell.style.background = bgColor;
+        cell.style.color = textColor;
+        cell.style.cursor = 'pointer';
+        cell.textContent = count > 0 ? count : '-';
+
+        // Highlight selected task type column
+        const isTaskSelected = buFilters.taskType === task.id;
+        if (isTaskSelected) {
+          cell.style.outline = '2px solid #118DFF';
+          cell.style.outlineOffset = '-2px';
+        }
+
+        // Dim non-selected if filter is active
+        if (buFilters.taskType && !isTaskSelected) {
+          cell.style.opacity = '0.4';
+        }
+
+        cell.addEventListener('click', () => {
+          if (onFilterClick) onFilterClick('taskType', task.id);
+        });
+
+        cell.addEventListener('mouseenter', (e) => {
+          this.showTooltip(e, `<strong>${unit.name}</strong><br>${task.label}<br>Sessions: ${count}<br><em>Click to filter</em>`);
+        });
+        cell.addEventListener('mouseleave', () => this.hideTooltip());
+
+        row.appendChild(cell);
+      });
+
       tbody.appendChild(row);
     });
     table.appendChild(tbody);
@@ -483,7 +717,7 @@ const Charts = {
   },
 
   // Render task type trend stacked area
-  renderTaskTypeTrend(containerId, sessions, taskTypes) {
+  renderTaskTypeTrend(containerId, sessions, taskTypes, ucFilters = {}, onFilterClick = null) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
@@ -517,13 +751,14 @@ const Charts = {
     // Calculate max total
     const maxTotal = Math.max(...months.map(m =>
       Object.values(monthlyData[m]).reduce((a, b) => a + b, 0)
-    )) * 1.1;
+    ), 1) * 1.1;
 
-    const xStep = chartWidth / (months.length - 1);
+    const xStep = months.length > 1 ? chartWidth / (months.length - 1) : chartWidth;
 
     // Draw stacked areas (from bottom to top)
     taskTypes.slice().reverse().forEach((task, reverseIdx) => {
       const idx = taskTypes.length - 1 - reverseIdx;
+      const isSelected = ucFilters.taskType === task.id;
       let pathD = '';
       let bottomPathD = '';
 
@@ -561,7 +796,25 @@ const Charts = {
       const area = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       area.setAttribute('d', pathD + bottomPoints.replace(/^L/, ' L') + ' Z');
       area.setAttribute('fill', this.colors.series[idx % this.colors.series.length]);
-      area.setAttribute('fill-opacity', '0.8');
+      area.setAttribute('fill-opacity', isSelected ? '1' : (ucFilters.taskType ? '0.15' : '0.8'));
+      area.style.cursor = 'pointer';
+
+      // Add stroke for selected area
+      if (isSelected) {
+        area.setAttribute('stroke', this.colors.series[idx % this.colors.series.length]);
+        area.setAttribute('stroke-width', '2');
+      }
+
+      area.addEventListener('click', () => {
+        if (onFilterClick) onFilterClick(task.id);
+      });
+
+      area.addEventListener('mouseenter', (e) => {
+        const totalForTask = months.reduce((sum, m) => sum + (monthlyData[m][task.id] || 0), 0);
+        this.showTooltip(e, `<strong>${task.label}</strong><br>Total Sessions: ${totalForTask.toLocaleString()}<br>Click to filter`);
+      });
+      area.addEventListener('mouseleave', () => this.hideTooltip());
+
       svg.appendChild(area);
     });
 
@@ -580,10 +833,27 @@ const Charts = {
       }
     });
 
-    // Legend
+    // Legend (clickable)
     const legendX = width - 110;
     taskTypes.slice(0, 6).forEach((task, i) => {
       const y = 20 + i * 20;
+      const isSelected = ucFilters.taskType === task.id;
+
+      // Legend item group
+      const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      group.style.cursor = 'pointer';
+
+      // Background highlight for selected
+      if (isSelected) {
+        const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        bg.setAttribute('x', legendX - 4);
+        bg.setAttribute('y', y - 4);
+        bg.setAttribute('width', 100);
+        bg.setAttribute('height', 20);
+        bg.setAttribute('rx', 3);
+        bg.setAttribute('fill', '#e6f2ff');
+        group.appendChild(bg);
+      }
 
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       rect.setAttribute('x', legendX);
@@ -592,22 +862,29 @@ const Charts = {
       rect.setAttribute('height', 12);
       rect.setAttribute('rx', 2);
       rect.setAttribute('fill', this.colors.series[i % this.colors.series.length]);
-      svg.appendChild(rect);
+      group.appendChild(rect);
 
       const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       label.setAttribute('x', legendX + 18);
       label.setAttribute('y', y + 10);
       label.setAttribute('font-size', '10');
-      label.setAttribute('fill', this.colors.gray);
+      label.setAttribute('fill', isSelected ? '#118DFF' : this.colors.gray);
+      label.setAttribute('font-weight', isSelected ? '600' : '400');
       label.textContent = task.label.split('/')[0];
-      svg.appendChild(label);
+      group.appendChild(label);
+
+      group.addEventListener('click', () => {
+        if (onFilterClick) onFilterClick(task.id);
+      });
+
+      svg.appendChild(group);
     });
 
     container.appendChild(svg);
   },
 
   // Render outcome donut (similar to task type donut)
-  renderOutcomeDonut(containerId, byOutcome) {
+  renderOutcomeDonut(containerId, byOutcome, ucFilters = {}, onFilterClick = null) {
     // Reuse donut logic with outcome data
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -635,6 +912,7 @@ const Charts = {
     outcomes.forEach((outcome, i) => {
       const sliceAngle = (outcome.sessionCount / total) * Math.PI * 2;
       const endAngle = startAngle + sliceAngle;
+      const isSelected = ucFilters.outcome === outcome.id;
 
       const x1 = centerX + outerRadius * Math.cos(startAngle);
       const y1 = centerY + outerRadius * Math.sin(startAngle);
@@ -652,11 +930,18 @@ const Charts = {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', pathD);
       path.setAttribute('fill', this.colors.series[i % this.colors.series.length]);
+      path.setAttribute('fill-opacity', isSelected ? '1' : (ucFilters.outcome ? '0.3' : '1'));
       path.style.cursor = 'pointer';
+
+      // Add stroke for selected slice
+      if (isSelected) {
+        path.setAttribute('stroke', '#118DFF');
+        path.setAttribute('stroke-width', '3');
+      }
 
       path.addEventListener('mouseenter', (e) => {
         path.setAttribute('transform', `translate(${Math.cos(startAngle + sliceAngle / 2) * 5}, ${Math.sin(startAngle + sliceAngle / 2) * 5})`);
-        this.showTooltip(e, `<strong>${outcome.label}</strong><br>Sessions: ${outcome.sessionCount.toLocaleString()}<br>${(outcome.percentage * 100).toFixed(1)}%`);
+        this.showTooltip(e, `<strong>${outcome.label}</strong><br>Sessions: ${outcome.sessionCount.toLocaleString()}<br>${(outcome.percentage * 100).toFixed(1)}%<br>Click to filter`);
       });
 
       path.addEventListener('mouseleave', () => {
@@ -664,14 +949,35 @@ const Charts = {
         this.hideTooltip();
       });
 
+      path.addEventListener('click', () => {
+        if (onFilterClick) onFilterClick(outcome.id);
+      });
+
       svg.appendChild(path);
       startAngle = endAngle;
     });
 
-    // Legend
+    // Legend (clickable)
     const legendX = width - 110;
     outcomes.forEach((outcome, i) => {
       const y = 20 + i * 22;
+      const isSelected = ucFilters.outcome === outcome.id;
+
+      // Legend item group
+      const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      group.style.cursor = 'pointer';
+
+      // Background highlight for selected
+      if (isSelected) {
+        const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        bg.setAttribute('x', legendX - 4);
+        bg.setAttribute('y', y - 4);
+        bg.setAttribute('width', 100);
+        bg.setAttribute('height', 20);
+        bg.setAttribute('rx', 3);
+        bg.setAttribute('fill', '#e6f2ff');
+        group.appendChild(bg);
+      }
 
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       rect.setAttribute('x', legendX);
@@ -680,15 +986,22 @@ const Charts = {
       rect.setAttribute('height', 12);
       rect.setAttribute('rx', 2);
       rect.setAttribute('fill', this.colors.series[i % this.colors.series.length]);
-      svg.appendChild(rect);
+      group.appendChild(rect);
 
       const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       label.setAttribute('x', legendX + 18);
       label.setAttribute('y', y + 10);
       label.setAttribute('font-size', '10');
-      label.setAttribute('fill', this.colors.gray);
+      label.setAttribute('fill', isSelected ? '#118DFF' : this.colors.gray);
+      label.setAttribute('font-weight', isSelected ? '600' : '400');
       label.textContent = outcome.label.length > 12 ? outcome.label.substring(0, 10) + '...' : outcome.label;
-      svg.appendChild(label);
+      group.appendChild(label);
+
+      group.addEventListener('click', () => {
+        if (onFilterClick) onFilterClick(outcome.id);
+      });
+
+      svg.appendChild(group);
     });
 
     container.appendChild(svg);
