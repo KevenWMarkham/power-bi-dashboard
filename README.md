@@ -74,12 +74,21 @@ http-server -p 8080
 ```
 Open http://localhost:8080/prototype/ in your browser.
 
-### Option 3: VS Code Live Server
+### Option 3: GitHub Pages (No Install Required)
+1. Fork this repository to your GitHub account
+2. Go to your forked repo → **Settings** → **Pages**
+3. Under "Source", select **Deploy from a branch**
+4. Select **main** branch and **/ (root)** folder
+5. Click **Save**
+6. Wait 1-2 minutes for deployment
+7. Access at: `https://[your-username].github.io/power-bi-dashboard/prototype/`
+
+### Option 4: VS Code Live Server
 1. Install the "Live Server" extension
 2. Open project folder in VS Code
 3. Right-click `prototype/index.html` → "Open with Live Server"
 
-### Option 4: Direct File Access
+### Option 5: Direct File Access
 Open `prototype/index.html` directly in your browser (some features may be limited due to CORS).
 
 ## Pages
