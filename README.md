@@ -4,7 +4,9 @@ A Power BI dashboard prototype for tracking AI tool adoption across an organizat
 
 ## Live Demo
 
-Open `prototype/index.html` in a browser or serve locally (see [Running Locally](#running-locally)).
+**[View Live Dashboard](https://kevenwmarkham.github.io/power-bi-dashboard/prototype/)**
+
+Or run locally (see [Running Locally](#running-locally)).
 
 ## Features
 
