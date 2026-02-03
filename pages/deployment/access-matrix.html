@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Matrix | Power BI Dashboard</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo-link">
+                    <h1>Power BI Dashboard</h1>
+                    <span class="subtitle">[CLIENT_NAME]</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="../../index.html" class="nav-link"><i>📊</i> Dashboard Home</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="../docs/requirements.html" class="nav-link"><i>📋</i> Requirements</a>
+                <a href="../docs/data-dictionary.html" class="nav-link"><i>📖</i> Data Dictionary</a>
+                <a href="../docs/user-guide.html" class="nav-link"><i>📘</i> User Guide</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="../docs/sprint-backlog.html" class="nav-link"><i>🎯</i> Sprint Backlog</a>
+                <a href="../docs/status-report.html" class="nav-link"><i>📈</i> Status Reports</a>
+                <a href="../docs/raci-matrix.html" class="nav-link"><i>👥</i> RACI Matrix</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="../data-model/schema.html" class="nav-link"><i>🗂️</i> Schema</a>
+                <a href="../data-model/dax-measures.html" class="nav-link"><i>📐</i> DAX Measures</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="../testing/test-cases.html" class="nav-link"><i>✅</i> Test Cases</a>
+                <a href="../testing/uat-feedback.html" class="nav-link"><i>💬</i> UAT Feedback</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="runbook.html" class="nav-link"><i>🚀</i> Runbook</a>
+                <a href="access-matrix.html" class="nav-link active"><i>🔐</i> Access Matrix</a>
+                <a href="../dashboard/version-history.html" class="nav-link"><i>📜</i> Version History</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a> / <a href="#">Deployment</a> / <span>Access Matrix</span>
+            </div>
+
+            <div class="page-header">
+                <h1>Access Matrix</h1>
+                <p class="meta">Version 1.0 | Last Updated: [DATE]</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Power BI Workspace Access</h2>
+                <p><strong>Workspace:</strong> [WORKSPACE_NAME]</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Access Level</th>
+                            <th>Permissions</th>
+                            <th>AD Group / Users</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge admin">Admin</span></td>
+                            <td>Full control, manage permissions, delete workspace</td>
+                            <td>[AD_GROUP_ADMINS]</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge member">Member</span></td>
+                            <td>Create/edit/delete content, manage permissions</td>
+                            <td>[AD_GROUP_MEMBERS]</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge contributor">Contributor</span></td>
+                            <td>Create/edit/delete content</td>
+                            <td>[AD_GROUP_CONTRIBUTORS]</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge viewer">Viewer</span></td>
+                            <td>View content only</td>
+                            <td>[AD_GROUP_VIEWERS]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Row-Level Security Roles</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>RLS Role</th>
+                            <th>Data Access</th>
+                            <th>AD Group / Users</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Region - North</td>
+                            <td>North region data only</td>
+                            <td>[AD_GROUP_NORTH]</td>
+                        </tr>
+                        <tr>
+                            <td>Region - South</td>
+                            <td>South region data only</td>
+                            <td>[AD_GROUP_SOUTH]</td>
+                        </tr>
+                        <tr>
+                            <td>Region - East</td>
+                            <td>East region data only</td>
+                            <td>[AD_GROUP_EAST]</td>
+                        </tr>
+                        <tr>
+                            <td>Region - West</td>
+                            <td>West region data only</td>
+                            <td>[AD_GROUP_WEST]</td>
+                        </tr>
+                        <tr>
+                            <td>All Regions</td>
+                            <td>All data</td>
+                            <td>[AD_GROUP_EXECUTIVES]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>User Access List</h2>
+
+                <h3>Viewers</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>RLS Role</th>
+                            <th>Access Granted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>[Name]</td>
+                            <td>[Email]</td>
+                            <td>[Dept]</td>
+                            <td>[Role]</td>
+                            <td>[Date]</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Contributors</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Access Granted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>[Name]</td>
+                            <td>[Email]</td>
+                            <td>[Dept]</td>
+                            <td>[Date]</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Admins</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Access Granted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>[Name]</td>
+                            <td>[Email]</td>
+                            <td>[Dept]</td>
+                            <td>[Date]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Data Source Access</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data Source</th>
+                            <th>Type</th>
+                            <th>Service Account</th>
+                            <th>Access Managed By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>[Source 1]</td>
+                            <td>SQL Server</td>
+                            <td>svc_powerbi_prod</td>
+                            <td>[DBA Team]</td>
+                        </tr>
+                        <tr>
+                            <td>[Source 2]</td>
+                            <td>SharePoint</td>
+                            <td>svc_powerbi_sp</td>
+                            <td>[SharePoint Admin]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>License Requirements</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>License Type</th>
+                            <th>Count Needed</th>
+                            <th>Current</th>
+                            <th>Gap</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Power BI Pro</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                        </tr>
+                        <tr>
+                            <td>Premium Per User (PPU)</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Access Review Schedule</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Review Type</th>
+                            <th>Frequency</th>
+                            <th>Owner</th>
+                            <th>Next Review</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>User access audit</td>
+                            <td>Quarterly</td>
+                            <td>[PM/Admin]</td>
+                            <td>[DATE]</td>
+                        </tr>
+                        <tr>
+                            <td>RLS role review</td>
+                            <td>Semi-annually</td>
+                            <td>[Business Owner]</td>
+                            <td>[DATE]</td>
+                        </tr>
+                        <tr>
+                            <td>Service account review</td>
+                            <td>Annually</td>
+                            <td>[IT Security]</td>
+                            <td>[DATE]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Audit Log</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Performed By</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="empty-state">No audit entries yet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Last updated: [DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

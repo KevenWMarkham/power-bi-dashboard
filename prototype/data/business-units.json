@@ -1,0 +1,144 @@
+{
+  "businessUnits": [
+    {
+      "id": "bu-corp-finance",
+      "name": "Finance",
+      "category": "corporate",
+      "totalEmployees": 420,
+      "licensedUsers": 380,
+      "adoptionTarget": 0.65,
+      "targetDate": "2026-06-30",
+      "primaryTaskTypes": ["data-analysis", "writing", "research"]
+    },
+    {
+      "id": "bu-corp-hr",
+      "name": "Human Resources",
+      "category": "corporate",
+      "totalEmployees": 280,
+      "licensedUsers": 250,
+      "adoptionTarget": 0.60,
+      "targetDate": "2026-06-30",
+      "primaryTaskTypes": ["writing", "research", "internal-comms"]
+    },
+    {
+      "id": "bu-corp-legal",
+      "name": "Legal",
+      "category": "corporate",
+      "totalEmployees": 150,
+      "licensedUsers": 140,
+      "adoptionTarget": 0.50,
+      "targetDate": "2026-06-30",
+      "primaryTaskTypes": ["research", "writing", "data-analysis"]
+    },
+    {
+      "id": "bu-corp-it",
+      "name": "Information Technology",
+      "category": "corporate",
+      "totalEmployees": 850,
+      "licensedUsers": 820,
+      "adoptionTarget": 0.80,
+      "targetDate": "2026-03-31",
+      "primaryTaskTypes": ["code-generation", "research", "technical-docs"]
+    },
+    {
+      "id": "bu-corp-marketing",
+      "name": "Marketing",
+      "category": "corporate",
+      "totalEmployees": 320,
+      "licensedUsers": 300,
+      "adoptionTarget": 0.70,
+      "targetDate": "2026-06-30",
+      "primaryTaskTypes": ["writing", "brainstorming", "customer-content"]
+    },
+    {
+      "id": "bu-corp-sales",
+      "name": "Sales",
+      "category": "corporate",
+      "totalEmployees": 480,
+      "licensedUsers": 420,
+      "adoptionTarget": 0.55,
+      "targetDate": "2026-09-30",
+      "primaryTaskTypes": ["writing", "research", "customer-content"]
+    },
+    {
+      "id": "bu-corp-operations",
+      "name": "Operations",
+      "category": "corporate",
+      "totalEmployees": 380,
+      "licensedUsers": 340,
+      "adoptionTarget": 0.60,
+      "targetDate": "2026-06-30",
+      "primaryTaskTypes": ["data-analysis", "process-automation", "research"]
+    },
+    {
+      "id": "bu-toyota-assembly",
+      "name": "OEM Assembly Plants",
+      "category": "toyota-specific",
+      "totalEmployees": 1200,
+      "licensedUsers": 450,
+      "adoptionTarget": 0.40,
+      "targetDate": "2026-12-31",
+      "primaryTaskTypes": ["technical-docs", "research", "data-analysis"]
+    },
+    {
+      "id": "bu-toyota-logistics",
+      "name": "Logistics",
+      "category": "toyota-specific",
+      "totalEmployees": 680,
+      "licensedUsers": 520,
+      "adoptionTarget": 0.55,
+      "targetDate": "2026-09-30",
+      "primaryTaskTypes": ["data-analysis", "process-automation", "research"]
+    },
+    {
+      "id": "bu-toyota-parts",
+      "name": "Parts & Service",
+      "category": "toyota-specific",
+      "totalEmployees": 540,
+      "licensedUsers": 480,
+      "adoptionTarget": 0.60,
+      "targetDate": "2026-06-30",
+      "primaryTaskTypes": ["technical-docs", "customer-content", "research"]
+    },
+    {
+      "id": "bu-toyota-tfs",
+      "name": "Toyota Financial Services",
+      "category": "toyota-specific",
+      "totalEmployees": 620,
+      "licensedUsers": 580,
+      "adoptionTarget": 0.65,
+      "targetDate": "2026-06-30",
+      "primaryTaskTypes": ["data-analysis", "writing", "research"]
+    },
+    {
+      "id": "bu-toyota-connected",
+      "name": "Connected Services",
+      "category": "toyota-specific",
+      "totalEmployees": 380,
+      "licensedUsers": 360,
+      "adoptionTarget": 0.75,
+      "targetDate": "2026-03-31",
+      "primaryTaskTypes": ["code-generation", "technical-docs", "brainstorming"]
+    },
+    {
+      "id": "bu-toyota-dealer",
+      "name": "Dealer Network",
+      "category": "toyota-specific",
+      "totalEmployees": 720,
+      "licensedUsers": 480,
+      "adoptionTarget": 0.45,
+      "targetDate": "2026-09-30",
+      "primaryTaskTypes": ["customer-content", "writing", "research"]
+    },
+    {
+      "id": "bu-toyota-rd",
+      "name": "Research & Development",
+      "category": "toyota-specific",
+      "totalEmployees": 520,
+      "licensedUsers": 500,
+      "adoptionTarget": 0.85,
+      "targetDate": "2026-03-31",
+      "primaryTaskTypes": ["code-generation", "research", "data-analysis"]
+    }
+  ]
+}

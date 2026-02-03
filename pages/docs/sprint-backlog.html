@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprint Backlog | Power BI Dashboard</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo-link">
+                    <h1>Power BI Dashboard</h1>
+                    <span class="subtitle">[CLIENT_NAME]</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="../../index.html" class="nav-link"><i>📊</i> Dashboard Home</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="requirements.html" class="nav-link"><i>📋</i> Requirements</a>
+                <a href="data-dictionary.html" class="nav-link"><i>📖</i> Data Dictionary</a>
+                <a href="user-guide.html" class="nav-link"><i>📘</i> User Guide</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="sprint-backlog.html" class="nav-link active"><i>🎯</i> Sprint Backlog</a>
+                <a href="status-report.html" class="nav-link"><i>📈</i> Status Reports</a>
+                <a href="raci-matrix.html" class="nav-link"><i>👥</i> RACI Matrix</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="../data-model/schema.html" class="nav-link"><i>🗂️</i> Schema</a>
+                <a href="../data-model/dax-measures.html" class="nav-link"><i>📐</i> DAX Measures</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="../testing/test-cases.html" class="nav-link"><i>✅</i> Test Cases</a>
+                <a href="../testing/uat-feedback.html" class="nav-link"><i>💬</i> UAT Feedback</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="../deployment/runbook.html" class="nav-link"><i>🚀</i> Runbook</a>
+                <a href="../deployment/access-matrix.html" class="nav-link"><i>🔐</i> Access Matrix</a>
+                <a href="../dashboard/version-history.html" class="nav-link"><i>📜</i> Version History</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a> / <a href="#">Project Management</a> / <span>Sprint Backlog</span>
+            </div>
+
+            <div class="page-header">
+                <h1>Sprint Backlog</h1>
+                <p class="meta">Total Duration: 8 weeks | Budget: $79,150</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-value">35</div>
+                    <div class="summary-label">User Stories</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value">330</div>
+                    <div class="summary-label">Est. Hours</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value">4</div>
+                    <div class="summary-label">Phases</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value">8</div>
+                    <div class="summary-label">Sprints</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Phase 1: Discovery & Data Engineering (Weeks 1-2)</h2>
+                <p class="phase-meta">Team Active: PM, Data Engineer, Power BI Lead</p>
+
+                <h3>Sprint 1 (Week 1)</h3>
+                <table class="backlog-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User Story</th>
+                            <th>Owner</th>
+                            <th>Hours</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>US-001</td>
+                            <td>As a PM, I need to conduct a kickoff meeting so that all stakeholders are aligned on project goals</td>
+                            <td>PM</td>
+                            <td>4</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-002</td>
+                            <td>As a Data Engineer, I need to document all data sources so that we understand the data landscape</td>
+                            <td>DE</td>
+                            <td>8</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-003</td>
+                            <td>As a Data Engineer, I need to assess data quality so that we can identify cleansing requirements</td>
+                            <td>DE</td>
+                            <td>12</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-004</td>
+                            <td>As a Power BI Lead, I need to review existing reports so that we can identify reusable assets</td>
+                            <td>PBI</td>
+                            <td>8</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-005</td>
+                            <td>As a PM, I need to finalize requirements with stakeholders so that scope is locked</td>
+                            <td>PM</td>
+                            <td>6</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Sprint 2 (Week 2)</h3>
+                <table class="backlog-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User Story</th>
+                            <th>Owner</th>
+                            <th>Hours</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>US-006</td>
+                            <td>As a Data Engineer, I need to design the semantic model schema so that relationships are optimized</td>
+                            <td>DE</td>
+                            <td>16</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-007</td>
+                            <td>As a Data Engineer, I need to build ETL/dataflows so that data is transformed for reporting</td>
+                            <td>DE</td>
+                            <td>20</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-008</td>
+                            <td>As a Power BI Lead, I need to create the initial data model in Power BI so that development can begin</td>
+                            <td>PBI</td>
+                            <td>16</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-009</td>
+                            <td>As a PM, I need to conduct requirements sign-off meeting so that we can proceed to design</td>
+                            <td>PM</td>
+                            <td>4</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="milestone-marker">
+                    <strong>Milestone:</strong> Requirements signed off, data model complete
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Phase 2: Design & Development (Weeks 3-4)</h2>
+                <p class="phase-meta">Team Active: PM, Data Engineer (wrap-up), Power BI Lead, UX Designer</p>
+
+                <h3>Sprint 3 (Week 3)</h3>
+                <table class="backlog-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User Story</th>
+                            <th>Owner</th>
+                            <th>Hours</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>US-010</td>
+                            <td>As a UX Designer, I need to create wireframes for all 3 views so that visual layout is approved</td>
+                            <td>UX</td>
+                            <td>12</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-011</td>
+                            <td>As a Power BI Lead, I need to develop core DAX measures so that KPIs can be calculated</td>
+                            <td>PBI</td>
+                            <td>20</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-012</td>
+                            <td>As a Power BI Lead, I need to build View 1 so that users can see [primary use case]</td>
+                            <td>PBI</td>
+                            <td>16</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-013</td>
+                            <td>As a Data Engineer, I need to implement data refresh schedule so that data stays current</td>
+                            <td>DE</td>
+                            <td>8</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-014</td>
+                            <td>As a PM, I need to conduct weekly status meeting so that stakeholders are informed</td>
+                            <td>PM</td>
+                            <td>4</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Sprint 4 (Week 4)</h3>
+                <table class="backlog-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User Story</th>
+                            <th>Owner</th>
+                            <th>Hours</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>US-015</td>
+                            <td>As a UX Designer, I need to conduct design review so that visual standards are met</td>
+                            <td>UX</td>
+                            <td>10</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-016</td>
+                            <td>As a Power BI Lead, I need to build View 2 so that users can see [secondary use case]</td>
+                            <td>PBI</td>
+                            <td>16</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-017</td>
+                            <td>As a Power BI Lead, I need to build View 3 so that users can see [tertiary use case]</td>
+                            <td>PBI</td>
+                            <td>16</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-018</td>
+                            <td>As a UX Designer, I need to finalize visual formatting so that dashboard is polished</td>
+                            <td>UX</td>
+                            <td>8</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-019</td>
+                            <td>As a Data Engineer, I need to complete knowledge transfer so that support can be transitioned</td>
+                            <td>DE</td>
+                            <td>8</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="milestone-marker">
+                    <strong>Milestone:</strong> Initial dashboard build complete, UX review complete
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Phase 3: Refinement & Testing (Weeks 5-6)</h2>
+                <p class="phase-meta">Team Active: PM, Power BI Lead, QA Analyst (begins Week 6)</p>
+
+                <h3>Sprint 5 (Week 5)</h3>
+                <table class="backlog-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User Story</th>
+                            <th>Owner</th>
+                            <th>Hours</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>US-020</td>
+                            <td>As a Power BI Lead, I need to implement stakeholder feedback so that dashboard meets expectations</td>
+                            <td>PBI</td>
+                            <td>20</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-021</td>
+                            <td>As a Power BI Lead, I need to optimize query performance so that dashboard loads quickly</td>
+                            <td>PBI</td>
+                            <td>12</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-022</td>
+                            <td>As a Power BI Lead, I need to implement row-level security so that data access is controlled</td>
+                            <td>PBI</td>
+                            <td>8</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-023</td>
+                            <td>As a PM, I need to prepare UAT materials so that testing can proceed smoothly</td>
+                            <td>PM</td>
+                            <td>6</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Sprint 6 (Week 6)</h3>
+                <table class="backlog-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User Story</th>
+                            <th>Owner</th>
+                            <th>Hours</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>US-024</td>
+                            <td>As a Power BI Lead, I need to finalize all dashboard features so that QA can begin</td>
+                            <td>PBI</td>
+                            <td>16</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-025</td>
+                            <td>As a QA Analyst, I need to execute functional test cases so that defects are identified</td>
+                            <td>QA</td>
+                            <td>10</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-026</td>
+                            <td>As a QA Analyst, I need to validate data accuracy so that numbers match source</td>
+                            <td>QA</td>
+                            <td>6</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-027</td>
+                            <td>As a PM, I need to coordinate defect triage so that critical issues are prioritized</td>
+                            <td>PM</td>
+                            <td>4</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="milestone-marker">
+                    <strong>Milestone:</strong> Dashboard development complete, QA begins
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Phase 4: UAT & Deployment (Weeks 7-8)</h2>
+                <p class="phase-meta">Team Active: PM, Power BI Lead (support), QA Analyst</p>
+
+                <h3>Sprint 7 (Week 7)</h3>
+                <table class="backlog-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User Story</th>
+                            <th>Owner</th>
+                            <th>Hours</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>US-028</td>
+                            <td>As a QA Analyst, I need to facilitate UAT sessions so that business users can validate</td>
+                            <td>QA</td>
+                            <td>4</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-029</td>
+                            <td>As a Power BI Lead, I need to fix UAT defects so that dashboard is production-ready</td>
+                            <td>PBI</td>
+                            <td>12</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-030</td>
+                            <td>As a PM, I need to obtain UAT sign-off so that deployment can proceed</td>
+                            <td>PM</td>
+                            <td>4</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-031</td>
+                            <td>As a PM, I need to prepare deployment checklist so that go-live is smooth</td>
+                            <td>PM</td>
+                            <td>4</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Sprint 8 (Week 8)</h3>
+                <table class="backlog-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User Story</th>
+                            <th>Owner</th>
+                            <th>Hours</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>US-032</td>
+                            <td>As a PM, I need to execute production deployment so that dashboard is live</td>
+                            <td>PM</td>
+                            <td>4</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-033</td>
+                            <td>As a PM, I need to conduct end-user training so that users can self-serve</td>
+                            <td>PM</td>
+                            <td>4</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-034</td>
+                            <td>As a PM, I need to complete project documentation so that support has all artifacts</td>
+                            <td>PM</td>
+                            <td>4</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                        <tr>
+                            <td>US-035</td>
+                            <td>As a PM, I need to conduct project closeout so that lessons are captured</td>
+                            <td>PM</td>
+                            <td>4</td>
+                            <td><span class="status todo">To Do</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="milestone-marker">
+                    <strong>Milestone:</strong> UAT complete, Production deployment, Knowledge transfer
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Backlog Summary</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Weeks</th>
+                            <th>User Stories</th>
+                            <th>Est. Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Discovery & Data Engineering</td>
+                            <td>1-2</td>
+                            <td>9</td>
+                            <td>94</td>
+                        </tr>
+                        <tr>
+                            <td>Design & Development</td>
+                            <td>3-4</td>
+                            <td>10</td>
+                            <td>118</td>
+                        </tr>
+                        <tr>
+                            <td>Refinement & Testing</td>
+                            <td>5-6</td>
+                            <td>8</td>
+                            <td>82</td>
+                        </tr>
+                        <tr>
+                            <td>UAT & Deployment</td>
+                            <td>7-8</td>
+                            <td>8</td>
+                            <td>36</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Total</strong></td>
+                            <td><strong>1-8</strong></td>
+                            <td><strong>35</strong></td>
+                            <td><strong>330</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Last updated: [DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

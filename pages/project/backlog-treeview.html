@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Backlog - ToyotaGPT Adoption Dashboard</title>
+  <style>
+    :root {
+      --primary: #118DFF;
+      --primary-dark: #12239E;
+      --success: #4CAF50;
+      --warning: #FFC107;
+      --danger: #F44336;
+      --gray-dark: #252423;
+      --gray: #6B6B6B;
+      --gray-light: #C8C6C4;
+      --gray-lighter: #EDEBE9;
+      --background: #F3F2F1;
+      --white: #FFFFFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--background);
+      color: var(--gray-dark);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Header */
+    .page-header {
+      background: var(--white);
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--gray-light);
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--gray-dark);
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+
+    /* Summary Cards */
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .summary-card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1.6px 3.6px rgba(0,0,0,0.1);
+    }
+
+    .summary-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--gray-dark);
+      margin-top: 4px;
+    }
+
+    .summary-value.primary { color: var(--primary); }
+    .summary-value.success { color: var(--success); }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: var(--gray-lighter);
+      color: var(--gray-dark);
+    }
+
+    .btn-secondary:hover {
+      background: var(--gray-light);
+    }
+
+    .filter-select {
+      padding: 8px 12px;
+      font-size: 13px;
+      border: 1px solid var(--gray-light);
+      border-radius: 4px;
+      background: var(--white);
+      min-width: 150px;
+    }
+
+    /* Tree View Container */
+    .tree-container {
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1.6px 3.6px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .tree-header {
+      display: grid;
+      grid-template-columns: 1fr 120px 100px 100px;
+      gap: 16px;
+      padding: 12px 16px;
+      background: var(--gray-lighter);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .tree-content {
+      max-height: calc(100vh - 350px);
+      overflow-y: auto;
+    }
+
+    /* Tree Items */
+    .tree-item {
+      border-bottom: 1px solid var(--gray-lighter);
+    }
+
+    .tree-item:last-child {
+      border-bottom: none;
+    }
+
+    .tree-row {
+      display: grid;
+      grid-template-columns: 1fr 120px 100px 100px;
+      gap: 16px;
+      padding: 10px 16px;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .tree-row:hover {
+      background: rgba(17, 141, 255, 0.05);
+    }
+
+    .tree-row.expanded {
+      background: rgba(17, 141, 255, 0.08);
+    }
+
+    .tree-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tree-toggle {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--gray);
+      transition: transform 0.2s;
+    }
+
+    .tree-toggle.expanded {
+      transform: rotate(90deg);
+    }
+
+    .tree-toggle.empty {
+      visibility: hidden;
+    }
+
+    .tree-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .tree-icon.epic { background: var(--primary-dark); }
+    .tree-icon.sprint { background: var(--primary); }
+    .tree-icon.task { background: #6B6B6B; }
+    .tree-icon.subtask { background: var(--gray-light); color: var(--gray-dark); }
+
+    .tree-text {
+      font-size: 14px;
+      color: var(--gray-dark);
+    }
+
+    .tree-id {
+      font-size: 12px;
+      color: var(--gray);
+      font-weight: 500;
+      margin-right: 8px;
+    }
+
+    /* Indentation */
+    .indent-1 { padding-left: 32px; }
+    .indent-2 { padding-left: 56px; }
+    .indent-3 { padding-left: 80px; }
+
+    /* Assignee */
+    .assignee {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .assignee-badge {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .assignee-badge.pm { background: #E3F2FD; color: #1565C0; }
+    .assignee-badge.de { background: #E8F5E9; color: #2E7D32; }
+    .assignee-badge.pbi { background: #FFF3E0; color: #E65100; }
+    .assignee-badge.ux { background: #F3E5F5; color: #7B1FA2; }
+    .assignee-badge.qa { background: #FFEBEE; color: #C62828; }
+
+    /* Story Points */
+    .story-points {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* Status */
+    .status {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .status.todo { background: var(--gray-lighter); color: var(--gray); }
+    .status.in-progress { background: #E3F2FD; color: #1565C0; }
+    .status.done { background: #E8F5E9; color: #2E7D32; }
+
+    /* Children container */
+    .tree-children {
+      display: none;
+      background: rgba(0,0,0,0.02);
+    }
+
+    .tree-children.expanded {
+      display: block;
+    }
+
+    /* Progress bar */
+    .progress-mini {
+      height: 4px;
+      background: var(--gray-lighter);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .progress-mini-fill {
+      height: 100%;
+      background: var(--success);
+      border-radius: 2px;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      gap: 24px;
+      padding: 16px;
+      background: var(--white);
+      border-radius: 8px;
+      margin-top: 16px;
+      font-size: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .tree-header,
+      .tree-row {
+        grid-template-columns: 1fr 80px 70px;
+      }
+      .tree-header > *:nth-child(3),
+      .tree-row > *:nth-child(3) {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Project Backlog</h1>
+      <p class="page-subtitle">ToyotaGPT Adoption Dashboard - TMNA AI Governance Team</p>
+    </div>
+    <nav style="display: flex; gap: 16px;">
+      <a href="backlog-treeview.html" style="padding: 8px 16px; background: var(--primary); color: white; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: 500;">Backlog View</a>
+      <a href="sprint-treeview.html" style="padding: 8px 16px; background: var(--gray-lighter); color: var(--gray-dark); border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: 500;">Sprint View</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- Summary Cards -->
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="summary-label">Total Epics</div>
+        <div class="summary-value">5</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Total Tasks</div>
+        <div class="summary-value">25</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Total Subtasks</div>
+        <div class="summary-value">123</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Total Hours</div>
+        <div class="summary-value primary">408</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Completed</div>
+        <div class="summary-value success">0%</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button class="btn btn-primary" onclick="expandAll()">Expand All</button>
+      <button class="btn btn-secondary" onclick="collapseAll()">Collapse All</button>
+      <select class="filter-select" id="filter-sprint" onchange="filterBySprint()">
+        <option value="all">All Sprints</option>
+        <option value="sprint-1">Sprint 1 (Weeks 1-2)</option>
+        <option value="sprint-2">Sprint 2 (Weeks 3-4)</option>
+        <option value="sprint-3">Sprint 3 (Weeks 5-6)</option>
+        <option value="sprint-4">Sprint 4 (Weeks 7-8)</option>
+      </select>
+      <select class="filter-select" id="filter-owner" onchange="filterByOwner()">
+        <option value="all">All Owners</option>
+        <option value="pm">Project Manager</option>
+        <option value="de">Data Engineer</option>
+        <option value="pbi">Power BI Lead</option>
+        <option value="ux">UX Designer</option>
+        <option value="qa">QA Analyst</option>
+      </select>
+    </div>
+
+    <!-- Tree View -->
+    <div class="tree-container">
+      <div class="tree-header">
+        <div>Item</div>
+        <div>Assigned To</div>
+        <div>Points</div>
+        <div>Status</div>
+      </div>
+      <div class="tree-content" id="tree-content">
+        <!-- Tree items will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item">
+        <div class="tree-icon epic">E</div>
+        <span>Epic</span>
+      </div>
+      <div class="legend-item">
+        <div class="tree-icon sprint">S</div>
+        <span>Sprint</span>
+      </div>
+      <div class="legend-item">
+        <div class="tree-icon task">T</div>
+        <span>Task</span>
+      </div>
+      <div class="legend-item">
+        <div class="tree-icon subtask">ST</div>
+        <span>Subtask</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Project Backlog Data
+    const backlogData = {
+      epics: [
+        {
+          id: 'E1',
+          name: 'Discovery & Requirements',
+          owner: 'pm',
+          points: 56,
+          status: 'todo',
+          sprints: ['sprint-1'],
+          tasks: [
+            {
+              id: 'E1-T1',
+              name: 'Stakeholder Requirements Gathering',
+              owner: 'pm',
+              points: 5,
+              status: 'todo',
+              subtasks: [
+                { id: 'E1-T1-S1', name: 'Schedule kickoff meeting with AI Governance team', owner: 'pm', points: 1, status: 'todo' },
+                { id: 'E1-T1-S2', name: 'Conduct requirements workshop with stakeholders', owner: 'pm', points: 2, status: 'todo' },
+                { id: 'E1-T1-S3', name: 'Document business objectives and success criteria', owner: 'pm', points: 2, status: 'todo' },
+                { id: 'E1-T1-S4', name: 'Identify key metrics and KPIs with Governance team', owner: 'pm', points: 2, status: 'todo' },
+                { id: 'E1-T1-S5', name: 'Review and validate requirements document', owner: 'pm', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E1-T2',
+              name: 'Prototype Review & Feedback',
+              owner: 'ux',
+              points: 3,
+              status: 'todo',
+              subtasks: [
+                { id: 'E1-T2-S1', name: 'Present HTML prototype to AI Governance team', owner: 'ux', points: 1, status: 'todo' },
+                { id: 'E1-T2-S2', name: 'Collect feedback on View 1: Executive Summary', owner: 'ux', points: 1, status: 'todo' },
+                { id: 'E1-T2-S3', name: 'Collect feedback on View 2: Business Unit Deep-Dive', owner: 'ux', points: 1, status: 'todo' },
+                { id: 'E1-T2-S4', name: 'Collect feedback on View 3: Use Case Analysis', owner: 'ux', points: 1, status: 'todo' },
+                { id: 'E1-T2-S5', name: 'Document all feedback and prioritize changes', owner: 'ux', points: 1, status: 'todo' },
+                { id: 'E1-T2-S6', name: 'Update prototype based on feedback', owner: 'ux', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E1-T3',
+              name: 'Data Source Assessment',
+              owner: 'de',
+              points: 5,
+              status: 'todo',
+              subtasks: [
+                { id: 'E1-T3-S1', name: 'Identify ToyotaGPT telemetry data source location', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E1-T3-S2', name: 'Document available data fields from AWS Bedrock logs', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E1-T3-S3', name: 'Assess data quality and completeness', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E1-T3-S4', name: 'Identify business unit/employee data source (HR system)', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E1-T3-S5', name: 'Document data refresh requirements and latency', owner: 'de', points: 1, status: 'todo' },
+                { id: 'E1-T3-S6', name: 'Create data access request for required systems', owner: 'de', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E1-T4',
+              name: 'Requirements Sign-Off',
+              owner: 'pm',
+              points: 2,
+              status: 'todo',
+              subtasks: [
+                { id: 'E1-T4-S1', name: 'Finalize requirements document with all feedback', owner: 'pm', points: 2, status: 'todo' },
+                { id: 'E1-T4-S2', name: 'Conduct sign-off meeting with stakeholders', owner: 'pm', points: 1, status: 'todo' },
+                { id: 'E1-T4-S3', name: 'Obtain formal approval from CTO sponsor', owner: 'pm', points: 1, status: 'todo' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'E2',
+          name: 'Data Architecture',
+          owner: 'de',
+          points: 64,
+          status: 'todo',
+          sprints: ['sprint-1', 'sprint-2'],
+          tasks: [
+            {
+              id: 'E2-T1',
+              name: 'Data Model Design',
+              owner: 'de',
+              points: 8,
+              status: 'todo',
+              subtasks: [
+                { id: 'E2-T1-S1', name: 'Design star schema for adoption metrics', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E2-T1-S2', name: 'Create dimension table: DimBusinessUnit', owner: 'de', points: 1, status: 'todo' },
+                { id: 'E2-T1-S3', name: 'Create dimension table: DimUser', owner: 'de', points: 1, status: 'todo' },
+                { id: 'E2-T1-S4', name: 'Create dimension table: DimTaskType', owner: 'de', points: 1, status: 'todo' },
+                { id: 'E2-T1-S5', name: 'Create dimension table: DimBusinessOutcome', owner: 'de', points: 1, status: 'todo' },
+                { id: 'E2-T1-S6', name: 'Create dimension table: DimDate', owner: 'de', points: 1, status: 'todo' },
+                { id: 'E2-T1-S7', name: 'Create fact table: FactSession', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E2-T1-S8', name: 'Create fact table: FactDailyAdoption', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E2-T1-S9', name: 'Document data model in schema.md', owner: 'de', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E2-T2',
+              name: 'Data Pipeline Development',
+              owner: 'de',
+              points: 8,
+              status: 'todo',
+              subtasks: [
+                { id: 'E2-T2-S1', name: 'Set up connection to ToyotaGPT telemetry (AWS)', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E2-T2-S2', name: 'Create ETL for session data extraction', owner: 'de', points: 3, status: 'todo' },
+                { id: 'E2-T2-S3', name: 'Set up connection to HR/employee data source', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E2-T2-S4', name: 'Create ETL for user/business unit mapping', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E2-T2-S5', name: 'Implement incremental refresh logic', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E2-T2-S6', name: 'Configure scheduled refresh (daily)', owner: 'de', points: 2, status: 'todo' },
+                { id: 'E2-T2-S7', name: 'Test data pipeline end-to-end', owner: 'de', points: 2, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E2-T3',
+              name: 'DAX Measures Development',
+              owner: 'pbi',
+              points: 8,
+              status: 'todo',
+              subtasks: [
+                { id: 'E2-T3-S1', name: 'Create base measures: Total Users, Active Users', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E2-T3-S2', name: 'Create adoption rate measure with target comparison', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E2-T3-S3', name: 'Create session count and average measures', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E2-T3-S4', name: 'Create engagement tier classification measure', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E2-T3-S5', name: 'Create period-over-period comparison measures', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E2-T3-S6', name: 'Create target status measure (above/on-track/below)', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E2-T3-S7', name: 'Create funnel stage measures', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E2-T3-S8', name: 'Document all DAX measures in dax-measures.md', owner: 'pbi', points: 2, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E2-T4',
+              name: 'Row-Level Security Implementation',
+              owner: 'pbi',
+              points: 2,
+              status: 'todo',
+              subtasks: [
+                { id: 'E2-T4-S1', name: 'Define RLS requirements with Governance team', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E2-T4-S2', name: 'Create RLS roles (Admin, BU Leader, Viewer)', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E2-T4-S3', name: 'Implement RLS filters on data model', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E2-T4-S4', name: 'Test RLS with sample users', owner: 'pbi', points: 1, status: 'todo' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'E3',
+          name: 'Dashboard Development',
+          owner: 'pbi',
+          points: 108,
+          status: 'todo',
+          sprints: ['sprint-2', 'sprint-3'],
+          tasks: [
+            {
+              id: 'E3-T1',
+              name: 'View 1 - Executive Summary',
+              owner: 'pbi',
+              points: 8,
+              status: 'todo',
+              subtasks: [
+                { id: 'E3-T1-S1', name: 'Create page layout and navigation structure', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T1-S2', name: 'Build KPI card: Total Active Users', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T1-S3', name: 'Build KPI card: Adoption Rate with gauge', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T1-S4', name: 'Build KPI card: Total Sessions with sparkline', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T1-S5', name: 'Build KPI card: Avg Sessions per User', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T1-S6', name: 'Build Adoption Trend line chart (12 months)', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T1-S7', name: 'Build Business Unit Adoption bar chart', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T1-S8', name: 'Build Top Use Cases donut chart', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T1-S9', name: 'Build Business Outcome breakdown chart', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T1-S10', name: 'Configure drill-through to View 2', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T1-S11', name: 'Configure drill-through to View 3', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T1-S12', name: 'Add global date range filter', owner: 'pbi', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E3-T2',
+              name: 'View 2 - Business Unit Deep-Dive',
+              owner: 'pbi',
+              points: 8,
+              status: 'todo',
+              subtasks: [
+                { id: 'E3-T2-S1', name: 'Create page layout with business unit selector', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T2-S2', name: 'Build KPI card: Unit Adoption Rate vs Target', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T2-S3', name: 'Build KPI card: Active Users count', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T2-S4', name: 'Build KPI card: Avg Engagement', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T2-S5', name: 'Build KPI card: Top Task Type', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T2-S6', name: 'Build User Adoption Funnel visual', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T2-S7', name: 'Build Monthly Active Users trend', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T2-S8', name: 'Build Task Type Distribution chart', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T2-S9', name: 'Build Feature Usage chart', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T2-S10', name: 'Build User Table with sorting', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T2-S11', name: 'Add Export to CSV functionality', owner: 'pbi', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E3-T3',
+              name: 'View 3 - Use Case Analysis',
+              owner: 'pbi',
+              points: 8,
+              status: 'todo',
+              subtasks: [
+                { id: 'E3-T3-S1', name: 'Create page layout with task type filters', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T3-S2', name: 'Build KPI card: Total Use Cases', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T3-S3', name: 'Build KPI card: Most Popular Task', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T3-S4', name: 'Build KPI card: Fastest Growing', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T3-S5', name: 'Build KPI card: Highest Engagement', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T3-S6', name: 'Build Task Type x Business Unit Heatmap', owner: 'pbi', points: 3, status: 'todo' },
+                { id: 'E3-T3-S7', name: 'Build Task Type Trend stacked area chart', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T3-S8', name: 'Build Business Outcome donut chart', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T3-S9', name: 'Build Top Scenarios table', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T3-S10', name: 'Build Feature Adoption by Task chart', owner: 'pbi', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E3-T4',
+              name: 'UX Review & Refinement',
+              owner: 'ux',
+              points: 5,
+              status: 'todo',
+              subtasks: [
+                { id: 'E3-T4-S1', name: 'Review visual consistency across all views', owner: 'ux', points: 2, status: 'todo' },
+                { id: 'E3-T4-S2', name: 'Validate color palette and accessibility', owner: 'ux', points: 1, status: 'todo' },
+                { id: 'E3-T4-S3', name: 'Review tooltip content and formatting', owner: 'ux', points: 1, status: 'todo' },
+                { id: 'E3-T4-S4', name: 'Test filter interactions and cross-filtering', owner: 'ux', points: 1, status: 'todo' },
+                { id: 'E3-T4-S5', name: 'Optimize layout for different screen sizes', owner: 'ux', points: 2, status: 'todo' },
+                { id: 'E3-T4-S6', name: 'Document UX feedback and implement changes', owner: 'ux', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E3-T5',
+              name: 'Performance Optimization',
+              owner: 'pbi',
+              points: 3,
+              status: 'todo',
+              subtasks: [
+                { id: 'E3-T5-S1', name: 'Analyze DAX query performance', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T5-S2', name: 'Optimize slow-running measures', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E3-T5-S3', name: 'Validate <5 second load time requirement', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E3-T5-S4', name: 'Configure aggregations if needed', owner: 'pbi', points: 1, status: 'todo' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'E4',
+          name: 'Testing & Quality Assurance',
+          owner: 'qa',
+          points: 72,
+          status: 'todo',
+          sprints: ['sprint-3', 'sprint-4'],
+          tasks: [
+            {
+              id: 'E4-T1',
+              name: 'Test Case Development',
+              owner: 'qa',
+              points: 5,
+              status: 'todo',
+              subtasks: [
+                { id: 'E4-T1-S1', name: 'Create test cases for View 1: Executive Summary', owner: 'qa', points: 2, status: 'todo' },
+                { id: 'E4-T1-S2', name: 'Create test cases for View 2: Business Unit', owner: 'qa', points: 2, status: 'todo' },
+                { id: 'E4-T1-S3', name: 'Create test cases for View 3: Use Case Analysis', owner: 'qa', points: 2, status: 'todo' },
+                { id: 'E4-T1-S4', name: 'Create test cases for filters and drill-throughs', owner: 'qa', points: 1, status: 'todo' },
+                { id: 'E4-T1-S5', name: 'Create test cases for data accuracy', owner: 'qa', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E4-T2',
+              name: 'Functional Testing',
+              owner: 'qa',
+              points: 5,
+              status: 'todo',
+              subtasks: [
+                { id: 'E4-T2-S1', name: 'Execute View 1 test cases', owner: 'qa', points: 2, status: 'todo' },
+                { id: 'E4-T2-S2', name: 'Execute View 2 test cases', owner: 'qa', points: 2, status: 'todo' },
+                { id: 'E4-T2-S3', name: 'Execute View 3 test cases', owner: 'qa', points: 2, status: 'todo' },
+                { id: 'E4-T2-S4', name: 'Execute filter and navigation test cases', owner: 'qa', points: 2, status: 'todo' },
+                { id: 'E4-T2-S5', name: 'Document defects and retest fixes', owner: 'qa', points: 2, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E4-T3',
+              name: 'Data Validation Testing',
+              owner: 'qa',
+              points: 3,
+              status: 'todo',
+              subtasks: [
+                { id: 'E4-T3-S1', name: 'Validate KPI calculations against source data', owner: 'qa', points: 2, status: 'todo' },
+                { id: 'E4-T3-S2', name: 'Validate adoption rate calculations', owner: 'qa', points: 1, status: 'todo' },
+                { id: 'E4-T3-S3', name: 'Validate session counts by business unit', owner: 'qa', points: 1, status: 'todo' },
+                { id: 'E4-T3-S4', name: 'Validate trend data accuracy', owner: 'qa', points: 1, status: 'todo' },
+                { id: 'E4-T3-S5', name: 'Validate RLS filtering', owner: 'qa', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E4-T4',
+              name: 'User Acceptance Testing (UAT)',
+              owner: 'pm',
+              points: 5,
+              status: 'todo',
+              subtasks: [
+                { id: 'E4-T4-S1', name: 'Prepare UAT environment and test data', owner: 'pm', points: 2, status: 'todo' },
+                { id: 'E4-T4-S2', name: 'Create UAT test scripts for Governance team', owner: 'pm', points: 2, status: 'todo' },
+                { id: 'E4-T4-S3', name: 'Conduct UAT session 1 with key stakeholders', owner: 'pm', points: 2, status: 'todo' },
+                { id: 'E4-T4-S4', name: 'Document UAT feedback and prioritize fixes', owner: 'pm', points: 1, status: 'todo' },
+                { id: 'E4-T4-S5', name: 'Implement UAT feedback changes', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E4-T4-S6', name: 'Conduct UAT session 2 (verification)', owner: 'pm', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E4-T5',
+              name: 'UAT Sign-Off',
+              owner: 'pm',
+              points: 1,
+              status: 'todo',
+              subtasks: [
+                { id: 'E4-T5-S1', name: 'Obtain UAT sign-off from AI Governance team', owner: 'pm', points: 1, status: 'todo' },
+                { id: 'E4-T5-S2', name: 'Document any deferred items for future releases', owner: 'pm', points: 1, status: 'todo' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'E5',
+          name: 'Deployment & Enablement',
+          owner: 'pm',
+          points: 68,
+          status: 'todo',
+          sprints: ['sprint-4'],
+          tasks: [
+            {
+              id: 'E5-T1',
+              name: 'Production Deployment Preparation',
+              owner: 'pbi',
+              points: 5,
+              status: 'todo',
+              subtasks: [
+                { id: 'E5-T1-S1', name: 'Create production workspace in Power BI Service', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T1-S2', name: 'Configure production data gateway', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E5-T1-S3', name: 'Set up production scheduled refresh', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T1-S4', name: 'Configure workspace access permissions', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T1-S5', name: 'Create deployment checklist/runbook', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E5-T1-S6', name: 'Conduct deployment dry-run', owner: 'pbi', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E5-T2',
+              name: 'Production Deployment',
+              owner: 'pbi',
+              points: 2,
+              status: 'todo',
+              subtasks: [
+                { id: 'E5-T2-S1', name: 'Deploy dashboard to production workspace', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T2-S2', name: 'Verify all data connections', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T2-S3', name: 'Verify scheduled refresh is working', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T2-S4', name: 'Conduct smoke test in production', owner: 'pbi', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E5-T3',
+              name: 'Access Management',
+              owner: 'pm',
+              points: 2,
+              status: 'todo',
+              subtasks: [
+                { id: 'E5-T3-S1', name: 'Define user access groups with Governance team', owner: 'pm', points: 1, status: 'todo' },
+                { id: 'E5-T3-S2', name: 'Create access request process documentation', owner: 'pm', points: 1, status: 'todo' },
+                { id: 'E5-T3-S3', name: 'Provision initial user access', owner: 'pm', points: 1, status: 'todo' },
+                { id: 'E5-T3-S4', name: 'Update access-matrix.md', owner: 'pm', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E5-T4',
+              name: 'Documentation',
+              owner: 'pbi',
+              points: 5,
+              status: 'todo',
+              subtasks: [
+                { id: 'E5-T4-S1', name: 'Create user guide with screenshots', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E5-T4-S2', name: 'Document filter usage and drill-through navigation', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T4-S3', name: 'Create FAQ document', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T4-S4', name: 'Document data refresh schedule and SLAs', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T4-S5', name: 'Create technical documentation for support team', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E5-T4-S6', name: 'Update data dictionary with final field mappings', owner: 'pbi', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E5-T5',
+              name: 'Training & Knowledge Transfer',
+              owner: 'pbi',
+              points: 3,
+              status: 'todo',
+              subtasks: [
+                { id: 'E5-T5-S1', name: 'Prepare training materials and slide deck', owner: 'pbi', points: 2, status: 'todo' },
+                { id: 'E5-T5-S2', name: 'Conduct training session for AI Governance team', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T5-S3', name: 'Conduct training session for business unit leaders', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T5-S4', name: 'Record training video for on-demand access', owner: 'pbi', points: 1, status: 'todo' },
+                { id: 'E5-T5-S5', name: 'Conduct knowledge transfer to support team', owner: 'pbi', points: 1, status: 'todo' }
+              ]
+            },
+            {
+              id: 'E5-T6',
+              name: 'Project Closeout',
+              owner: 'pm',
+              points: 2,
+              status: 'todo',
+              subtasks: [
+                { id: 'E5-T6-S1', name: 'Conduct project retrospective', owner: 'pm', points: 1, status: 'todo' },
+                { id: 'E5-T6-S2', name: 'Document lessons learned', owner: 'pm', points: 1, status: 'todo' },
+                { id: 'E5-T6-S3', name: 'Obtain final project sign-off', owner: 'pm', points: 1, status: 'todo' },
+                { id: 'E5-T6-S4', name: 'Archive project documentation', owner: 'pm', points: 1, status: 'todo' }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    // Owner labels
+    const ownerLabels = {
+      pm: 'Project Manager',
+      de: 'Data Engineer',
+      pbi: 'Power BI Lead',
+      ux: 'UX Designer',
+      qa: 'QA Analyst'
+    };
+
+    // Render the tree
+    function renderTree() {
+      const container = document.getElementById('tree-content');
+      container.innerHTML = '';
+
+      const sprintFilter = document.getElementById('filter-sprint').value;
+      const ownerFilter = document.getElementById('filter-owner').value;
+
+      backlogData.epics.forEach(epic => {
+        // Filter by sprint
+        if (sprintFilter !== 'all' && !epic.sprints.includes(sprintFilter)) {
+          return;
+        }
+
+        // Epic row
+        const epicDiv = document.createElement('div');
+        epicDiv.className = 'tree-item';
+        epicDiv.dataset.id = epic.id;
+
+        const epicTasks = filterTasks(epic.tasks, ownerFilter);
+        const hasChildren = epicTasks.length > 0;
+
+        epicDiv.innerHTML = `
+          <div class="tree-row" onclick="toggleItem('${epic.id}')">
+            <div class="tree-label">
+              <span class="tree-toggle ${hasChildren ? '' : 'empty'}">&#9658;</span>
+              <div class="tree-icon epic">E</div>
+              <span class="tree-id">${epic.id}</span>
+              <span class="tree-text">${epic.name}</span>
+            </div>
+            <div class="assignee">
+              <span class="assignee-badge ${epic.owner}">${ownerLabels[epic.owner]}</span>
+            </div>
+            <div class="story-points">${epic.points} pts</div>
+            <div><span class="status ${epic.status}">${formatStatus(epic.status)}</span></div>
+          </div>
+          <div class="tree-children" id="children-${epic.id}">
+            ${renderTasks(epicTasks, epic.id)}
+          </div>
+        `;
+
+        container.appendChild(epicDiv);
+      });
+    }
+
+    function filterTasks(tasks, ownerFilter) {
+      if (ownerFilter === 'all') return tasks;
+      return tasks.filter(t => t.owner === ownerFilter || t.subtasks.some(s => s.owner === ownerFilter));
+    }
+
+    function renderTasks(tasks, parentId) {
+      return tasks.map(task => {
+        const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+        return `
+          <div class="tree-item" data-id="${task.id}">
+            <div class="tree-row indent-1" onclick="toggleItem('${task.id}')">
+              <div class="tree-label">
+                <span class="tree-toggle ${hasSubtasks ? '' : 'empty'}">&#9658;</span>
+                <div class="tree-icon task">T</div>
+                <span class="tree-id">${task.id}</span>
+                <span class="tree-text">${task.name}</span>
+              </div>
+              <div class="assignee">
+                <span class="assignee-badge ${task.owner}">${ownerLabels[task.owner]}</span>
+              </div>
+              <div class="story-points">${task.points} pts</div>
+              <div><span class="status ${task.status}">${formatStatus(task.status)}</span></div>
+            </div>
+            ${hasSubtasks ? `
+              <div class="tree-children" id="children-${task.id}">
+                ${renderSubtasks(task.subtasks)}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderSubtasks(subtasks) {
+      return subtasks.map(subtask => `
+        <div class="tree-item" data-id="${subtask.id}">
+          <div class="tree-row indent-2">
+            <div class="tree-label">
+              <span class="tree-toggle empty"></span>
+              <div class="tree-icon subtask">ST</div>
+              <span class="tree-id">${subtask.id}</span>
+              <span class="tree-text">${subtask.name}</span>
+            </div>
+            <div class="assignee">
+              <span class="assignee-badge ${subtask.owner}">${ownerLabels[subtask.owner]}</span>
+            </div>
+            <div class="story-points">${subtask.points} pts</div>
+            <div><span class="status ${subtask.status}">${formatStatus(subtask.status)}</span></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function formatStatus(status) {
+      const labels = {
+        'todo': 'To Do',
+        'in-progress': 'In Progress',
+        'done': 'Done'
+      };
+      return labels[status] || status;
+    }
+
+    function toggleItem(id) {
+      const children = document.getElementById(`children-${id}`);
+      const item = document.querySelector(`[data-id="${id}"]`);
+      const toggle = item.querySelector('.tree-toggle');
+      const row = item.querySelector('.tree-row');
+
+      if (children) {
+        children.classList.toggle('expanded');
+        toggle.classList.toggle('expanded');
+        row.classList.toggle('expanded');
+      }
+    }
+
+    function expandAll() {
+      document.querySelectorAll('.tree-children').forEach(el => el.classList.add('expanded'));
+      document.querySelectorAll('.tree-toggle').forEach(el => el.classList.add('expanded'));
+      document.querySelectorAll('.tree-row').forEach(el => {
+        if (el.nextElementSibling?.classList.contains('tree-children')) {
+          el.classList.add('expanded');
+        }
+      });
+    }
+
+    function collapseAll() {
+      document.querySelectorAll('.tree-children').forEach(el => el.classList.remove('expanded'));
+      document.querySelectorAll('.tree-toggle').forEach(el => el.classList.remove('expanded'));
+      document.querySelectorAll('.tree-row').forEach(el => el.classList.remove('expanded'));
+    }
+
+    function filterBySprint() {
+      renderTree();
+    }
+
+    function filterByOwner() {
+      renderTree();
+    }
+
+    // Initial render
+    document.addEventListener('DOMContentLoaded', renderTree);
+  </script>
+</body>
+</html>

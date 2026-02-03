@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAX Measures | Power BI Dashboard</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo-link">
+                    <h1>Power BI Dashboard</h1>
+                    <span class="subtitle">[CLIENT_NAME]</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="../../index.html" class="nav-link"><i>📊</i> Dashboard Home</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="../docs/requirements.html" class="nav-link"><i>📋</i> Requirements</a>
+                <a href="../docs/data-dictionary.html" class="nav-link"><i>📖</i> Data Dictionary</a>
+                <a href="../docs/user-guide.html" class="nav-link"><i>📘</i> User Guide</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="../docs/sprint-backlog.html" class="nav-link"><i>🎯</i> Sprint Backlog</a>
+                <a href="../docs/status-report.html" class="nav-link"><i>📈</i> Status Reports</a>
+                <a href="../docs/raci-matrix.html" class="nav-link"><i>👥</i> RACI Matrix</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="schema.html" class="nav-link"><i>🗂️</i> Schema</a>
+                <a href="dax-measures.html" class="nav-link active"><i>📐</i> DAX Measures</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="../testing/test-cases.html" class="nav-link"><i>✅</i> Test Cases</a>
+                <a href="../testing/uat-feedback.html" class="nav-link"><i>💬</i> UAT Feedback</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="../deployment/runbook.html" class="nav-link"><i>🚀</i> Runbook</a>
+                <a href="../deployment/access-matrix.html" class="nav-link"><i>🔐</i> Access Matrix</a>
+                <a href="../dashboard/version-history.html" class="nav-link"><i>📜</i> Version History</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a> / <a href="#">Data Model</a> / <span>DAX Measures</span>
+            </div>
+
+            <div class="page-header">
+                <h1>DAX Measures Documentation</h1>
+                <p class="meta">Version 1.0 | Last Updated: [DATE]</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Naming Conventions</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Prefix</th>
+                            <th>Usage</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>(none)</td>
+                            <td>Base measures</td>
+                            <td><code>Total Sales</code></td>
+                        </tr>
+                        <tr>
+                            <td>%</td>
+                            <td>Percentage measures</td>
+                            <td><code>% Growth YoY</code></td>
+                        </tr>
+                        <tr>
+                            <td>#</td>
+                            <td>Count measures</td>
+                            <td><code># Customers</code></td>
+                        </tr>
+                        <tr>
+                            <td>Avg</td>
+                            <td>Average measures</td>
+                            <td><code>Avg Order Value</code></td>
+                        </tr>
+                        <tr>
+                            <td>_</td>
+                            <td>Helper/hidden measures</td>
+                            <td><code>_FilteredSales</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Core Measures</h2>
+
+                <div class="measure-card">
+                    <div class="measure-header">
+                        <h3>Total Sales</h3>
+                        <span class="badge">Sales</span>
+                    </div>
+                    <pre class="dax-code">Total Sales =
+SUM(FactSales[Amount])</pre>
+                    <div class="measure-details">
+                        <div class="detail-row">
+                            <span class="label">Format:</span>
+                            <span class="value">$#,##0.00</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Description:</span>
+                            <span class="value">Sum of all sales amounts excluding tax</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Used In:</span>
+                            <span class="value">View 1, View 2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="measure-card">
+                    <div class="measure-header">
+                        <h3>Total Quantity</h3>
+                        <span class="badge">Sales</span>
+                    </div>
+                    <pre class="dax-code">Total Quantity =
+SUM(FactSales[Quantity])</pre>
+                    <div class="measure-details">
+                        <div class="detail-row">
+                            <span class="label">Format:</span>
+                            <span class="value">#,##0</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Description:</span>
+                            <span class="value">Sum of all units sold</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Used In:</span>
+                            <span class="value">View 1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="measure-card">
+                    <div class="measure-header">
+                        <h3># Transactions</h3>
+                        <span class="badge">Sales</span>
+                    </div>
+                    <pre class="dax-code"># Transactions =
+COUNTROWS(FactSales)</pre>
+                    <div class="measure-details">
+                        <div class="detail-row">
+                            <span class="label">Format:</span>
+                            <span class="value">#,##0</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Description:</span>
+                            <span class="value">Count of sales transactions</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Used In:</span>
+                            <span class="value">View 2, View 3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="measure-card">
+                    <div class="measure-header">
+                        <h3>Avg Order Value</h3>
+                        <span class="badge">Sales</span>
+                    </div>
+                    <pre class="dax-code">Avg Order Value =
+DIVIDE([Total Sales], [# Transactions], 0)</pre>
+                    <div class="measure-details">
+                        <div class="detail-row">
+                            <span class="label">Format:</span>
+                            <span class="value">$#,##0.00</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Description:</span>
+                            <span class="value">Average sales amount per transaction</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Dependencies:</span>
+                            <span class="value">[Total Sales], [# Transactions]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Time Intelligence Measures</h2>
+
+                <div class="measure-card">
+                    <div class="measure-header">
+                        <h3>Sales YTD</h3>
+                        <span class="badge">Time Intelligence</span>
+                    </div>
+                    <pre class="dax-code">Sales YTD =
+TOTALYTD([Total Sales], DimDate[Date])</pre>
+                    <div class="measure-details">
+                        <div class="detail-row">
+                            <span class="label">Format:</span>
+                            <span class="value">$#,##0.00</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Description:</span>
+                            <span class="value">Year-to-date sales total</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Dependencies:</span>
+                            <span class="value">[Total Sales], DimDate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="measure-card">
+                    <div class="measure-header">
+                        <h3>Sales PY (Prior Year)</h3>
+                        <span class="badge">Time Intelligence</span>
+                    </div>
+                    <pre class="dax-code">Sales PY =
+CALCULATE(
+    [Total Sales],
+    SAMEPERIODLASTYEAR(DimDate[Date])
+)</pre>
+                    <div class="measure-details">
+                        <div class="detail-row">
+                            <span class="label">Format:</span>
+                            <span class="value">$#,##0.00</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Description:</span>
+                            <span class="value">Sales for same period in prior year</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Dependencies:</span>
+                            <span class="value">[Total Sales], DimDate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="measure-card">
+                    <div class="measure-header">
+                        <h3>% Growth YoY</h3>
+                        <span class="badge">Time Intelligence</span>
+                    </div>
+                    <pre class="dax-code">% Growth YoY =
+VAR CurrentSales = [Total Sales]
+VAR PriorSales = [Sales PY]
+RETURN
+DIVIDE(CurrentSales - PriorSales, PriorSales, BLANK())</pre>
+                    <div class="measure-details">
+                        <div class="detail-row">
+                            <span class="label">Format:</span>
+                            <span class="value">0.0%;-0.0%;0.0%</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Description:</span>
+                            <span class="value">Year-over-year growth percentage</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Dependencies:</span>
+                            <span class="value">[Total Sales], [Sales PY]</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="measure-card">
+                    <div class="measure-header">
+                        <h3>Sales Rolling 12M</h3>
+                        <span class="badge">Time Intelligence</span>
+                    </div>
+                    <pre class="dax-code">Sales Rolling 12M =
+CALCULATE(
+    [Total Sales],
+    DATESINPERIOD(
+        DimDate[Date],
+        MAX(DimDate[Date]),
+        -12,
+        MONTH
+    )
+)</pre>
+                    <div class="measure-details">
+                        <div class="detail-row">
+                            <span class="label">Format:</span>
+                            <span class="value">$#,##0.00</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Description:</span>
+                            <span class="value">Rolling 12-month sales total</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Dependencies:</span>
+                            <span class="value">[Total Sales], DimDate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>KPI Measures</h2>
+
+                <div class="measure-card">
+                    <div class="measure-header">
+                        <h3>% Target Achievement</h3>
+                        <span class="badge">KPIs</span>
+                    </div>
+                    <pre class="dax-code">% Target Achievement =
+DIVIDE([Total Sales], [Sales Target], BLANK())</pre>
+                    <div class="measure-details">
+                        <div class="detail-row">
+                            <span class="label">Format:</span>
+                            <span class="value">0.0%</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Description:</span>
+                            <span class="value">Percentage of target achieved</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="measure-card">
+                    <div class="measure-header">
+                        <h3>KPI Status</h3>
+                        <span class="badge">KPIs</span>
+                    </div>
+                    <pre class="dax-code">KPI Status =
+SWITCH(
+    TRUE(),
+    [% Target Achievement] >= 1, "Green",
+    [% Target Achievement] >= 0.9, "Yellow",
+    "Red"
+)</pre>
+                    <div class="measure-details">
+                        <div class="detail-row">
+                            <span class="label">Format:</span>
+                            <span class="value">Text</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Description:</span>
+                            <span class="value">RAG status based on target achievement</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Used In:</span>
+                            <span class="value">View 1 (conditional formatting)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Measure Dependencies</h2>
+                <pre class="dependency-tree">
+Total Sales
+├── Sales YTD
+├── Sales PY
+│   └── % Growth YoY
+├── Sales MTD
+├── Sales Rolling 12M
+├── Avg Order Value (+ # Transactions)
+├── Sales vs Target (+ Sales Target)
+└── % Target Achievement (+ Sales Target)
+    └── KPI Status
+                </pre>
+            </div>
+
+            <div class="footer">
+                <p>Last updated: [DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

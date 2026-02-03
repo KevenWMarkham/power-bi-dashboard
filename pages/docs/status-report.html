@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Report | Power BI Dashboard</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo-link">
+                    <h1>Power BI Dashboard</h1>
+                    <span class="subtitle">[CLIENT_NAME]</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="../../index.html" class="nav-link"><i>📊</i> Dashboard Home</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="requirements.html" class="nav-link"><i>📋</i> Requirements</a>
+                <a href="data-dictionary.html" class="nav-link"><i>📖</i> Data Dictionary</a>
+                <a href="user-guide.html" class="nav-link"><i>📘</i> User Guide</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="sprint-backlog.html" class="nav-link"><i>🎯</i> Sprint Backlog</a>
+                <a href="status-report.html" class="nav-link active"><i>📈</i> Status Reports</a>
+                <a href="raci-matrix.html" class="nav-link"><i>👥</i> RACI Matrix</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="../data-model/schema.html" class="nav-link"><i>🗂️</i> Schema</a>
+                <a href="../data-model/dax-measures.html" class="nav-link"><i>📐</i> DAX Measures</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="../testing/test-cases.html" class="nav-link"><i>✅</i> Test Cases</a>
+                <a href="../testing/uat-feedback.html" class="nav-link"><i>💬</i> UAT Feedback</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="../deployment/runbook.html" class="nav-link"><i>🚀</i> Runbook</a>
+                <a href="../deployment/access-matrix.html" class="nav-link"><i>🔐</i> Access Matrix</a>
+                <a href="../dashboard/version-history.html" class="nav-link"><i>📜</i> Version History</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a> / <a href="#">Project Management</a> / <span>Status Report</span>
+            </div>
+
+            <div class="page-header">
+                <h1>Weekly Status Report</h1>
+                <p class="meta">Report Date: [DATE] | Week [X] of 8</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Executive Summary</h2>
+                <p>[2-3 sentence summary of overall project health and key updates]</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Project Health</h2>
+                <div class="health-grid">
+                    <div class="health-card green">
+                        <div class="health-label">Overall</div>
+                        <div class="health-status">On Track</div>
+                    </div>
+                    <div class="health-card green">
+                        <div class="health-label">Schedule</div>
+                        <div class="health-status">On Track</div>
+                    </div>
+                    <div class="health-card green">
+                        <div class="health-label">Budget</div>
+                        <div class="health-status">On Track</div>
+                    </div>
+                    <div class="health-card green">
+                        <div class="health-label">Scope</div>
+                        <div class="health-status">On Track</div>
+                    </div>
+                    <div class="health-card green">
+                        <div class="health-label">Resources</div>
+                        <div class="health-status">On Track</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Hours Tracking</h2>
+
+                <h3>By Role</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Planned (Total)</th>
+                            <th>Planned (To Date)</th>
+                            <th>Actual (To Date)</th>
+                            <th>Variance</th>
+                            <th>% Used</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Project Manager</td>
+                            <td>80</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]%</td>
+                        </tr>
+                        <tr>
+                            <td>Data Engineer</td>
+                            <td>80</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]%</td>
+                        </tr>
+                        <tr>
+                            <td>Power BI Lead</td>
+                            <td>180</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]%</td>
+                        </tr>
+                        <tr>
+                            <td>UX Designer</td>
+                            <td>30</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]%</td>
+                        </tr>
+                        <tr>
+                            <td>QA Analyst</td>
+                            <td>20</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]</td>
+                            <td>[X]%</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Total</strong></td>
+                            <td><strong>390</strong></td>
+                            <td><strong>[X]</strong></td>
+                            <td><strong>[X]</strong></td>
+                            <td><strong>[X]</strong></td>
+                            <td><strong>[X]%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Milestone Tracking</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Milestone</th>
+                            <th>Target Date</th>
+                            <th>Status</th>
+                            <th>Completion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Requirements sign-off</td>
+                            <td>Week 2</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 0%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Data model complete</td>
+                            <td>Week 2</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 0%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Initial dashboard build</td>
+                            <td>Week 4</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 0%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dashboard development complete</td>
+                            <td>Week 6</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 0%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>UAT sign-off</td>
+                            <td>Week 7</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 0%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Production deployment</td>
+                            <td>Week 8</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 0%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section two-column">
+                <div class="column">
+                    <h2>This Week's Accomplishments</h2>
+                    <ul class="check-list">
+                        <li>[Accomplishment 1]</li>
+                        <li>[Accomplishment 2]</li>
+                        <li>[Accomplishment 3]</li>
+                        <li>[Accomplishment 4]</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h2>Next Week's Priorities</h2>
+                    <table class="compact">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Task</th>
+                                <th>Owner</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>[Task description]</td>
+                                <td>[Name]</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>[Task description]</td>
+                                <td>[Name]</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>[Task description]</td>
+                                <td>[Name]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Risks and Issues</h2>
+
+                <h3>Active Risks</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Description</th>
+                            <th>Probability</th>
+                            <th>Impact</th>
+                            <th>Mitigation</th>
+                            <th>Owner</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>R-001</td>
+                            <td>[Description]</td>
+                            <td><span class="badge medium">Medium</span></td>
+                            <td><span class="badge high">High</span></td>
+                            <td>[Mitigation plan]</td>
+                            <td>[Name]</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Active Issues</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Description</th>
+                            <th>Impact</th>
+                            <th>Resolution Plan</th>
+                            <th>Owner</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>I-001</td>
+                            <td>[Description]</td>
+                            <td>[Impact]</td>
+                            <td>[Resolution]</td>
+                            <td>[Name]</td>
+                            <td>[Date]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Budget Summary</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Budget</th>
+                            <th>Spent</th>
+                            <th>Remaining</th>
+                            <th>% Used</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Labor</td>
+                            <td>$79,150</td>
+                            <td>$[X]</td>
+                            <td>$[X]</td>
+                            <td>[X]%</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Total</strong></td>
+                            <td><strong>$79,150</strong></td>
+                            <td><strong>$[X]</strong></td>
+                            <td><strong>$[X]</strong></td>
+                            <td><strong>[X]%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Next Status Report Due: [DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

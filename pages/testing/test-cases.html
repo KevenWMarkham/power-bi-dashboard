@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Cases | Power BI Dashboard</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo-link">
+                    <h1>Power BI Dashboard</h1>
+                    <span class="subtitle">[CLIENT_NAME]</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="../../index.html" class="nav-link"><i>📊</i> Dashboard Home</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="../docs/requirements.html" class="nav-link"><i>📋</i> Requirements</a>
+                <a href="../docs/data-dictionary.html" class="nav-link"><i>📖</i> Data Dictionary</a>
+                <a href="../docs/user-guide.html" class="nav-link"><i>📘</i> User Guide</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="../docs/sprint-backlog.html" class="nav-link"><i>🎯</i> Sprint Backlog</a>
+                <a href="../docs/status-report.html" class="nav-link"><i>📈</i> Status Reports</a>
+                <a href="../docs/raci-matrix.html" class="nav-link"><i>👥</i> RACI Matrix</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="../data-model/schema.html" class="nav-link"><i>🗂️</i> Schema</a>
+                <a href="../data-model/dax-measures.html" class="nav-link"><i>📐</i> DAX Measures</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="test-cases.html" class="nav-link active"><i>✅</i> Test Cases</a>
+                <a href="uat-feedback.html" class="nav-link"><i>💬</i> UAT Feedback</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="../deployment/runbook.html" class="nav-link"><i>🚀</i> Runbook</a>
+                <a href="../deployment/access-matrix.html" class="nav-link"><i>🔐</i> Access Matrix</a>
+                <a href="../dashboard/version-history.html" class="nav-link"><i>📜</i> Version History</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a> / <a href="#">Testing</a> / <span>Test Cases</span>
+            </div>
+
+            <div class="page-header">
+                <h1>Test Cases</h1>
+                <p class="meta">Version 1.0 | QA Analyst: [Name]</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Test Summary</h2>
+                <div class="test-summary-grid">
+                    <div class="test-summary-card">
+                        <div class="test-category">Functional</div>
+                        <div class="test-stats">
+                            <span class="total">15</span>
+                            <span class="passed">0</span>
+                            <span class="failed">0</span>
+                        </div>
+                    </div>
+                    <div class="test-summary-card">
+                        <div class="test-category">Data Validation</div>
+                        <div class="test-stats">
+                            <span class="total">10</span>
+                            <span class="passed">0</span>
+                            <span class="failed">0</span>
+                        </div>
+                    </div>
+                    <div class="test-summary-card">
+                        <div class="test-category">Performance</div>
+                        <div class="test-stats">
+                            <span class="total">5</span>
+                            <span class="passed">0</span>
+                            <span class="failed">0</span>
+                        </div>
+                    </div>
+                    <div class="test-summary-card">
+                        <div class="test-category">Security</div>
+                        <div class="test-stats">
+                            <span class="total">5</span>
+                            <span class="passed">0</span>
+                            <span class="failed">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Functional Test Cases</h2>
+
+                <h3>View 1: [VIEW_NAME]</h3>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th>TC ID</th>
+                            <th>Test Case</th>
+                            <th>Expected Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TC-F-001</td>
+                            <td>Verify View 1 loads correctly</td>
+                            <td>All visuals load without error</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-002</td>
+                            <td>Verify date filter functionality</td>
+                            <td>All visuals filter to selected dates</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-003</td>
+                            <td>Verify cross-filter between visuals</td>
+                            <td>Related visuals filter accordingly</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-004</td>
+                            <td>Verify tooltip displays</td>
+                            <td>Tooltip shows expected metrics</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-005</td>
+                            <td>Verify drill-down functionality</td>
+                            <td>Drill-down to next level works</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>View 2: [VIEW_NAME]</h3>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th>TC ID</th>
+                            <th>Test Case</th>
+                            <th>Expected Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TC-F-006</td>
+                            <td>Verify View 2 loads correctly</td>
+                            <td>All visuals load without error</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-007</td>
+                            <td>Verify slicer selections persist</td>
+                            <td>Slicer selection maintained</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-008</td>
+                            <td>Verify KPI visual displays correctly</td>
+                            <td>Shows correct value, target, status</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-009</td>
+                            <td>Verify export to Excel</td>
+                            <td>Excel file downloads with correct data</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-010</td>
+                            <td>Verify bookmark navigation</td>
+                            <td>View changes to bookmarked state</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>View 3: [VIEW_NAME]</h3>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th>TC ID</th>
+                            <th>Test Case</th>
+                            <th>Expected Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TC-F-011</td>
+                            <td>Verify View 3 loads correctly</td>
+                            <td>All visuals load without error</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-012</td>
+                            <td>Verify table sorting</td>
+                            <td>Table sorts by column</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-013</td>
+                            <td>Verify conditional formatting</td>
+                            <td>Colors match business rules</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-014</td>
+                            <td>Verify matrix expand/collapse</td>
+                            <td>Hierarchy expands/collapses</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-F-015</td>
+                            <td>Verify page navigation</td>
+                            <td>Navigation works between views</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Data Validation Test Cases</h2>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th>TC ID</th>
+                            <th>Test Case</th>
+                            <th>Source Query</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TC-D-001</td>
+                            <td>Validate Total Sales matches source</td>
+                            <td><code>SELECT SUM(Amount) FROM Sales</code></td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-D-002</td>
+                            <td>Validate customer count</td>
+                            <td><code>SELECT COUNT(DISTINCT CustomerID)</code></td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-D-003</td>
+                            <td>Validate transaction count</td>
+                            <td><code>SELECT COUNT(*) FROM Sales</code></td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-D-004</td>
+                            <td>Validate YTD calculation</td>
+                            <td>Manual calculation</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-D-005</td>
+                            <td>Validate prior year calculation</td>
+                            <td><code>SELECT SUM(...) WHERE Year = @PY</code></td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Performance Test Cases</h2>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th>TC ID</th>
+                            <th>Test Case</th>
+                            <th>Threshold</th>
+                            <th>Actual</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TC-P-001</td>
+                            <td>Initial dashboard load time</td>
+                            <td>&lt; 5 seconds</td>
+                            <td>-</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-P-002</td>
+                            <td>Filter selection response</td>
+                            <td>&lt; 3 seconds</td>
+                            <td>-</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-P-003</td>
+                            <td>Visual render after slicer change</td>
+                            <td>&lt; 3 seconds</td>
+                            <td>-</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-P-004</td>
+                            <td>Drill-down response time</td>
+                            <td>&lt; 3 seconds</td>
+                            <td>-</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-P-005</td>
+                            <td>Export to Excel performance</td>
+                            <td>&lt; 10 seconds</td>
+                            <td>-</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Security Test Cases</h2>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th>TC ID</th>
+                            <th>Test Case</th>
+                            <th>Expected Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TC-S-001</td>
+                            <td>Verify RLS - Region North</td>
+                            <td>Only North data visible</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-S-002</td>
+                            <td>Verify RLS - Region South</td>
+                            <td>Only South data visible</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-S-003</td>
+                            <td>Verify RLS - Admin</td>
+                            <td>All data visible</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-S-004</td>
+                            <td>Verify unauthorized access denied</td>
+                            <td>Access denied message</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                        <tr>
+                            <td>TC-S-005</td>
+                            <td>Verify data export restrictions</td>
+                            <td>Export blocked per policy</td>
+                            <td><span class="status not-run">Not Run</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Defect Log</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Defect ID</th>
+                            <th>TC ID</th>
+                            <th>Severity</th>
+                            <th>Summary</th>
+                            <th>Status</th>
+                            <th>Assigned To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="empty-state">No defects logged yet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Last updated: [DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

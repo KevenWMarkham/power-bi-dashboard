@@ -1,0 +1,39 @@
+{
+  "taskTypes": [
+    { "id": "writing", "label": "Writing/Editing", "icon": "edit" },
+    { "id": "data-analysis", "label": "Data Analysis", "icon": "chart" },
+    { "id": "code-generation", "label": "Code Generation", "icon": "code" },
+    { "id": "research", "label": "Research/Summarization", "icon": "search" },
+    { "id": "brainstorming", "label": "Brainstorming", "icon": "lightbulb" },
+    { "id": "translation", "label": "Translation", "icon": "globe" }
+  ],
+  "businessOutcomes": [
+    { "id": "process-automation", "label": "Process Automation" },
+    { "id": "decision-support", "label": "Decision Support" },
+    { "id": "customer-content", "label": "Customer-Facing Content" },
+    { "id": "internal-comms", "label": "Internal Communications" },
+    { "id": "technical-docs", "label": "Technical Documentation" }
+  ],
+  "engagementTiers": [
+    { "id": "inactive", "label": "Inactive", "minSessions": 0, "maxSessions": 0, "color": "#E0E0E0" },
+    { "id": "tried", "label": "Tried", "minSessions": 1, "maxSessions": 4, "color": "#FFC107" },
+    { "id": "regular", "label": "Regular", "minSessions": 5, "maxSessions": 19, "color": "#4CAF50" },
+    { "id": "power-user", "label": "Power User", "minSessions": 20, "maxSessions": null, "color": "#118DFF" }
+  ],
+  "features": [
+    { "id": "chat", "label": "Standard Chat", "description": "Basic conversational queries" },
+    { "id": "doc-upload", "label": "Document Upload", "description": "Upload and analyze documents" },
+    { "id": "code-mode", "label": "Code Mode", "description": "Code generation and debugging" },
+    { "id": "image-analysis", "label": "Image Analysis", "description": "Analyze uploaded images" },
+    { "id": "data-export", "label": "Data Export", "description": "Export responses and analysis" }
+  ],
+  "targetStatus": [
+    { "id": "above", "label": "Above Target", "color": "#4CAF50", "threshold": 1.0 },
+    { "id": "on-track", "label": "On Track", "color": "#FFC107", "threshold": 0.9 },
+    { "id": "below", "label": "Below Target", "color": "#F44336", "threshold": 0 }
+  ],
+  "dateRange": {
+    "start": "2025-02-01",
+    "end": "2026-01-31"
+  }
+}

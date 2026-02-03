@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprint View - ToyotaGPT Adoption Dashboard</title>
+  <style>
+    :root {
+      --primary: #118DFF;
+      --primary-dark: #12239E;
+      --success: #4CAF50;
+      --warning: #FFC107;
+      --danger: #F44336;
+      --gray-dark: #252423;
+      --gray: #6B6B6B;
+      --gray-light: #C8C6C4;
+      --gray-lighter: #EDEBE9;
+      --background: #F3F2F1;
+      --white: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--background);
+      color: var(--gray-dark);
+      line-height: 1.5;
+    }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+    .page-header {
+      background: var(--white);
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--gray-light);
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-title { font-size: 28px; font-weight: 600; }
+    .page-subtitle { font-size: 14px; color: var(--gray); margin-top: 4px; }
+
+    .nav-links { display: flex; gap: 16px; }
+    .nav-link {
+      padding: 8px 16px;
+      background: var(--gray-lighter);
+      border-radius: 4px;
+      text-decoration: none;
+      color: var(--gray-dark);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .nav-link:hover { background: var(--gray-light); }
+    .nav-link.active { background: var(--primary); color: white; }
+
+    /* Sprint Cards */
+    .sprint-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .sprint-card {
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1.6px 3.6px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .sprint-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-lighter);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sprint-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .sprint-weeks {
+      font-size: 12px;
+      color: var(--gray);
+      padding: 4px 10px;
+      background: var(--gray-lighter);
+      border-radius: 12px;
+    }
+
+    .sprint-meta {
+      display: flex;
+      gap: 16px;
+      padding: 12px 20px;
+      background: var(--gray-lighter);
+      font-size: 12px;
+    }
+
+    .sprint-meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sprint-meta-label { color: var(--gray); }
+    .sprint-meta-value { font-weight: 600; font-size: 16px; }
+
+    .sprint-progress {
+      padding: 12px 20px;
+      background: var(--white);
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--gray-lighter);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--success);
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+
+    .sprint-content {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    /* Tree styles */
+    .tree-item { border-bottom: 1px solid var(--gray-lighter); }
+    .tree-item:last-child { border-bottom: none; }
+
+    .tree-row {
+      display: grid;
+      grid-template-columns: 1fr 90px 70px 80px;
+      gap: 12px;
+      padding: 10px 16px;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-size: 13px;
+    }
+
+    .tree-row:hover { background: rgba(17, 141, 255, 0.05); }
+    .tree-row.expanded { background: rgba(17, 141, 255, 0.08); }
+
+    .tree-label { display: flex; align-items: center; gap: 8px; }
+
+    .tree-toggle {
+      width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--gray);
+      transition: transform 0.2s;
+    }
+    .tree-toggle.expanded { transform: rotate(90deg); }
+    .tree-toggle.empty { visibility: hidden; }
+
+    .tree-icon {
+      width: 22px; height: 22px;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 600; color: white;
+    }
+    .tree-icon.epic { background: var(--primary-dark); }
+    .tree-icon.task { background: #6B6B6B; }
+    .tree-icon.subtask { background: var(--gray-light); color: var(--gray-dark); }
+
+    .tree-text { color: var(--gray-dark); }
+    .tree-id { font-size: 11px; color: var(--gray); font-weight: 500; }
+
+    .indent-1 { padding-left: 32px; }
+    .indent-2 { padding-left: 52px; }
+
+    .assignee-badge {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 500;
+    }
+    .assignee-badge.pm { background: #E3F2FD; color: #1565C0; }
+    .assignee-badge.de { background: #E8F5E9; color: #2E7D32; }
+    .assignee-badge.pbi { background: #FFF3E0; color: #E65100; }
+    .assignee-badge.ux { background: #F3E5F5; color: #7B1FA2; }
+    .assignee-badge.qa { background: #FFEBEE; color: #C62828; }
+
+    .story-points { font-weight: 600; color: var(--primary); text-align: center; }
+
+    .status {
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 500;
+      text-align: center;
+    }
+    .status.todo { background: var(--gray-lighter); color: var(--gray); }
+    .status.in-progress { background: #E3F2FD; color: #1565C0; }
+    .status.done { background: #E8F5E9; color: #2E7D32; }
+
+    .tree-children {
+      display: none;
+      background: rgba(0,0,0,0.02);
+    }
+    .tree-children.expanded { display: block; }
+
+    .sprint-footer {
+      padding: 12px 20px;
+      background: var(--gray-lighter);
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .team-avatars {
+      display: flex;
+      gap: -8px;
+    }
+
+    .team-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 600; color: white;
+      border: 2px solid var(--white);
+      margin-left: -8px;
+    }
+    .team-avatar:first-child { margin-left: 0; }
+    .team-avatar.pm { background: #1565C0; }
+    .team-avatar.de { background: #2E7D32; }
+    .team-avatar.pbi { background: #E65100; }
+    .team-avatar.ux { background: #7B1FA2; }
+    .team-avatar.qa { background: #C62828; }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Sprint View</h1>
+      <p class="page-subtitle">ToyotaGPT Adoption Dashboard - 8 Week Timeline</p>
+    </div>
+    <nav class="nav-links">
+      <a href="backlog-treeview.html" class="nav-link">Backlog View</a>
+      <a href="sprint-treeview.html" class="nav-link active">Sprint View</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="sprint-grid" id="sprint-grid">
+      <!-- Sprints will be rendered here -->
+    </div>
+  </div>
+
+  <script>
+    // Sprint Data
+    const sprintData = [
+      {
+        id: 'sprint-1',
+        name: 'Sprint 1',
+        weeks: 'Weeks 1-2',
+        focus: 'Discovery & Data Model',
+        totalPoints: 56,
+        completedPoints: 0,
+        team: ['pm', 'de', 'ux'],
+        tasks: [
+          {
+            id: 'E1-T1', epic: 'E1', name: 'Stakeholder Requirements Gathering', owner: 'pm', points: 5, status: 'todo',
+            subtasks: [
+              { id: 'E1-T1-S1', name: 'Schedule kickoff meeting', owner: 'pm', points: 1, status: 'todo' },
+              { id: 'E1-T1-S2', name: 'Conduct requirements workshop', owner: 'pm', points: 2, status: 'todo' },
+              { id: 'E1-T1-S3', name: 'Document business objectives', owner: 'pm', points: 2, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E1-T2', epic: 'E1', name: 'Prototype Review & Feedback', owner: 'ux', points: 3, status: 'todo',
+            subtasks: [
+              { id: 'E1-T2-S1', name: 'Present HTML prototype', owner: 'ux', points: 1, status: 'todo' },
+              { id: 'E1-T2-S2', name: 'Collect feedback on all views', owner: 'ux', points: 1, status: 'todo' },
+              { id: 'E1-T2-S3', name: 'Update prototype based on feedback', owner: 'ux', points: 1, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E1-T3', epic: 'E1', name: 'Data Source Assessment', owner: 'de', points: 5, status: 'todo',
+            subtasks: [
+              { id: 'E1-T3-S1', name: 'Identify ToyotaGPT telemetry sources', owner: 'de', points: 2, status: 'todo' },
+              { id: 'E1-T3-S2', name: 'Document AWS Bedrock log fields', owner: 'de', points: 2, status: 'todo' },
+              { id: 'E1-T3-S3', name: 'Assess data quality', owner: 'de', points: 1, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E1-T4', epic: 'E1', name: 'Requirements Sign-Off', owner: 'pm', points: 2, status: 'todo',
+            subtasks: [
+              { id: 'E1-T4-S1', name: 'Finalize requirements document', owner: 'pm', points: 1, status: 'todo' },
+              { id: 'E1-T4-S2', name: 'Obtain CTO sponsor approval', owner: 'pm', points: 1, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E2-T1', epic: 'E2', name: 'Data Model Design', owner: 'de', points: 8, status: 'todo',
+            subtasks: [
+              { id: 'E2-T1-S1', name: 'Design star schema', owner: 'de', points: 2, status: 'todo' },
+              { id: 'E2-T1-S2', name: 'Create dimension tables', owner: 'de', points: 3, status: 'todo' },
+              { id: 'E2-T1-S3', name: 'Create fact tables', owner: 'de', points: 3, status: 'todo' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sprint-2',
+        name: 'Sprint 2',
+        weeks: 'Weeks 3-4',
+        focus: 'Data Pipeline & View 1',
+        totalPoints: 64,
+        completedPoints: 0,
+        team: ['de', 'pbi'],
+        tasks: [
+          {
+            id: 'E2-T2', epic: 'E2', name: 'Data Pipeline Development', owner: 'de', points: 8, status: 'todo',
+            subtasks: [
+              { id: 'E2-T2-S1', name: 'Set up AWS connection', owner: 'de', points: 2, status: 'todo' },
+              { id: 'E2-T2-S2', name: 'Create session data ETL', owner: 'de', points: 3, status: 'todo' },
+              { id: 'E2-T2-S3', name: 'Configure scheduled refresh', owner: 'de', points: 2, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E2-T3', epic: 'E2', name: 'DAX Measures Development', owner: 'pbi', points: 8, status: 'todo',
+            subtasks: [
+              { id: 'E2-T3-S1', name: 'Create base measures', owner: 'pbi', points: 2, status: 'todo' },
+              { id: 'E2-T3-S2', name: 'Create engagement tier measures', owner: 'pbi', points: 2, status: 'todo' },
+              { id: 'E2-T3-S3', name: 'Create target comparison measures', owner: 'pbi', points: 2, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E2-T4', epic: 'E2', name: 'Row-Level Security', owner: 'pbi', points: 2, status: 'todo',
+            subtasks: [
+              { id: 'E2-T4-S1', name: 'Define RLS requirements', owner: 'pbi', points: 1, status: 'todo' },
+              { id: 'E2-T4-S2', name: 'Implement RLS roles', owner: 'pbi', points: 1, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E3-T1', epic: 'E3', name: 'View 1 - Executive Summary', owner: 'pbi', points: 8, status: 'todo',
+            subtasks: [
+              { id: 'E3-T1-S1', name: 'Build KPI cards', owner: 'pbi', points: 2, status: 'todo' },
+              { id: 'E3-T1-S2', name: 'Build adoption trend chart', owner: 'pbi', points: 2, status: 'todo' },
+              { id: 'E3-T1-S3', name: 'Build BU adoption bar chart', owner: 'pbi', points: 2, status: 'todo' },
+              { id: 'E3-T1-S4', name: 'Configure drill-throughs', owner: 'pbi', points: 2, status: 'todo' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sprint-3',
+        name: 'Sprint 3',
+        weeks: 'Weeks 5-6',
+        focus: 'Views 2-3 & QA',
+        totalPoints: 80,
+        completedPoints: 0,
+        team: ['pbi', 'ux', 'qa'],
+        tasks: [
+          {
+            id: 'E3-T2', epic: 'E3', name: 'View 2 - Business Unit Deep-Dive', owner: 'pbi', points: 8, status: 'todo',
+            subtasks: [
+              { id: 'E3-T2-S1', name: 'Build unit KPI cards', owner: 'pbi', points: 2, status: 'todo' },
+              { id: 'E3-T2-S2', name: 'Build adoption funnel', owner: 'pbi', points: 2, status: 'todo' },
+              { id: 'E3-T2-S3', name: 'Build user table', owner: 'pbi', points: 2, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E3-T3', epic: 'E3', name: 'View 3 - Use Case Analysis', owner: 'pbi', points: 8, status: 'todo',
+            subtasks: [
+              { id: 'E3-T3-S1', name: 'Build heatmap', owner: 'pbi', points: 3, status: 'todo' },
+              { id: 'E3-T3-S2', name: 'Build task type trend', owner: 'pbi', points: 2, status: 'todo' },
+              { id: 'E3-T3-S3', name: 'Build scenarios table', owner: 'pbi', points: 2, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E3-T4', epic: 'E3', name: 'UX Review & Refinement', owner: 'ux', points: 5, status: 'todo',
+            subtasks: [
+              { id: 'E3-T4-S1', name: 'Review visual consistency', owner: 'ux', points: 2, status: 'todo' },
+              { id: 'E3-T4-S2', name: 'Validate accessibility', owner: 'ux', points: 1, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E4-T1', epic: 'E4', name: 'Test Case Development', owner: 'qa', points: 5, status: 'todo',
+            subtasks: [
+              { id: 'E4-T1-S1', name: 'Create test cases for all views', owner: 'qa', points: 3, status: 'todo' },
+              { id: 'E4-T1-S2', name: 'Create data validation tests', owner: 'qa', points: 2, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E4-T2', epic: 'E4', name: 'Functional Testing', owner: 'qa', points: 5, status: 'todo',
+            subtasks: [
+              { id: 'E4-T2-S1', name: 'Execute all test cases', owner: 'qa', points: 3, status: 'todo' },
+              { id: 'E4-T2-S2', name: 'Document defects', owner: 'qa', points: 2, status: 'todo' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sprint-4',
+        name: 'Sprint 4',
+        weeks: 'Weeks 7-8',
+        focus: 'UAT & Deployment',
+        totalPoints: 68,
+        completedPoints: 0,
+        team: ['pm', 'pbi', 'qa'],
+        tasks: [
+          {
+            id: 'E4-T4', epic: 'E4', name: 'User Acceptance Testing', owner: 'pm', points: 5, status: 'todo',
+            subtasks: [
+              { id: 'E4-T4-S1', name: 'Prepare UAT environment', owner: 'pm', points: 2, status: 'todo' },
+              { id: 'E4-T4-S2', name: 'Conduct UAT sessions', owner: 'pm', points: 2, status: 'todo' },
+              { id: 'E4-T4-S3', name: 'Obtain UAT sign-off', owner: 'pm', points: 1, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E5-T1', epic: 'E5', name: 'Production Deployment Prep', owner: 'pbi', points: 5, status: 'todo',
+            subtasks: [
+              { id: 'E5-T1-S1', name: 'Create production workspace', owner: 'pbi', points: 1, status: 'todo' },
+              { id: 'E5-T1-S2', name: 'Configure data gateway', owner: 'pbi', points: 2, status: 'todo' },
+              { id: 'E5-T1-S3', name: 'Create deployment runbook', owner: 'pbi', points: 2, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E5-T2', epic: 'E5', name: 'Production Deployment', owner: 'pbi', points: 2, status: 'todo',
+            subtasks: [
+              { id: 'E5-T2-S1', name: 'Deploy to production', owner: 'pbi', points: 1, status: 'todo' },
+              { id: 'E5-T2-S2', name: 'Smoke test production', owner: 'pbi', points: 1, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E5-T4', epic: 'E5', name: 'Documentation', owner: 'pbi', points: 5, status: 'todo',
+            subtasks: [
+              { id: 'E5-T4-S1', name: 'Create user guide', owner: 'pbi', points: 2, status: 'todo' },
+              { id: 'E5-T4-S2', name: 'Create FAQ document', owner: 'pbi', points: 1, status: 'todo' },
+              { id: 'E5-T4-S3', name: 'Technical documentation', owner: 'pbi', points: 2, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E5-T5', epic: 'E5', name: 'Training & Knowledge Transfer', owner: 'pbi', points: 3, status: 'todo',
+            subtasks: [
+              { id: 'E5-T5-S1', name: 'Prepare training materials', owner: 'pbi', points: 1, status: 'todo' },
+              { id: 'E5-T5-S2', name: 'Conduct training sessions', owner: 'pbi', points: 2, status: 'todo' }
+            ]
+          },
+          {
+            id: 'E5-T6', epic: 'E5', name: 'Project Closeout', owner: 'pm', points: 2, status: 'todo',
+            subtasks: [
+              { id: 'E5-T6-S1', name: 'Conduct retrospective', owner: 'pm', points: 1, status: 'todo' },
+              { id: 'E5-T6-S2', name: 'Final sign-off', owner: 'pm', points: 1, status: 'todo' }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const ownerLabels = {
+      pm: 'PM', de: 'DE', pbi: 'PBI', ux: 'UX', qa: 'QA'
+    };
+
+    function renderSprints() {
+      const grid = document.getElementById('sprint-grid');
+      grid.innerHTML = sprintData.map(sprint => `
+        <div class="sprint-card">
+          <div class="sprint-header">
+            <div class="sprint-title">${sprint.name}</div>
+            <div class="sprint-weeks">${sprint.weeks}</div>
+          </div>
+          <div class="sprint-meta">
+            <div class="sprint-meta-item">
+              <span class="sprint-meta-label">Focus</span>
+              <span class="sprint-meta-value" style="font-size: 13px;">${sprint.focus}</span>
+            </div>
+            <div class="sprint-meta-item">
+              <span class="sprint-meta-label">Points</span>
+              <span class="sprint-meta-value">${sprint.totalPoints}</span>
+            </div>
+            <div class="sprint-meta-item">
+              <span class="sprint-meta-label">Tasks</span>
+              <span class="sprint-meta-value">${sprint.tasks.length}</span>
+            </div>
+          </div>
+          <div class="sprint-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${(sprint.completedPoints / sprint.totalPoints) * 100}%"></div>
+            </div>
+            <div class="progress-label">
+              <span>${sprint.completedPoints} / ${sprint.totalPoints} pts</span>
+              <span>${Math.round((sprint.completedPoints / sprint.totalPoints) * 100)}% Complete</span>
+            </div>
+          </div>
+          <div class="sprint-content">
+            ${sprint.tasks.map(task => renderTask(task, sprint.id)).join('')}
+          </div>
+          <div class="sprint-footer">
+            <div class="team-avatars">
+              ${sprint.team.map(t => `<div class="team-avatar ${t}">${ownerLabels[t]}</div>`).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderTask(task, sprintId) {
+      const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+      return `
+        <div class="tree-item" data-id="${task.id}">
+          <div class="tree-row" onclick="toggleItem('${task.id}')">
+            <div class="tree-label">
+              <span class="tree-toggle ${hasSubtasks ? '' : 'empty'}">&#9658;</span>
+              <div class="tree-icon task">T</div>
+              <span class="tree-text">${task.name}</span>
+            </div>
+            <span class="assignee-badge ${task.owner}">${ownerLabels[task.owner]}</span>
+            <span class="story-points">${task.points}</span>
+            <span class="status ${task.status}">${task.status === 'todo' ? 'To Do' : task.status}</span>
+          </div>
+          ${hasSubtasks ? `
+            <div class="tree-children" id="children-${task.id}">
+              ${task.subtasks.map(st => `
+                <div class="tree-item">
+                  <div class="tree-row indent-1">
+                    <div class="tree-label">
+                      <span class="tree-toggle empty"></span>
+                      <div class="tree-icon subtask">ST</div>
+                      <span class="tree-text">${st.name}</span>
+                    </div>
+                    <span class="assignee-badge ${st.owner}">${ownerLabels[st.owner]}</span>
+                    <span class="story-points">${st.points}</span>
+                    <span class="status ${st.status}">${st.status === 'todo' ? 'To Do' : st.status}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function toggleItem(id) {
+      const children = document.getElementById(`children-${id}`);
+      const item = document.querySelector(`[data-id="${id}"]`);
+      const toggle = item.querySelector('.tree-toggle');
+
+      if (children) {
+        children.classList.toggle('expanded');
+        toggle.classList.toggle('expanded');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', renderSprints);
+  </script>
+</body>
+</html>

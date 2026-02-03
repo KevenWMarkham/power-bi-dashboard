@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToyotaGPT Adoption Dashboard</title>
+  <link rel="stylesheet" href="css/powerbi-theme.css">
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading dashboard data...</div>
+  </div>
+
+  <div class="dashboard-container">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div>
+        <h1 class="dashboard-title">ToyotaGPT Adoption Dashboard</h1>
+        <p class="dashboard-subtitle">AI Governance Team - TMNA</p>
+      </div>
+      <div class="refresh-info">
+        Last updated: <span id="last-updated">January 22, 2026</span>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-tab active" data-view="executive-summary">Executive Summary</button>
+      <button class="nav-tab" data-view="business-unit">Business Unit</button>
+      <button class="nav-tab" data-view="use-case">Use Case Analysis</button>
+    </nav>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <label class="filter-label">Date Range:</label>
+        <input type="date" id="filter-date-start" class="filter-input" value="2025-02-01">
+        <span>to</span>
+        <input type="date" id="filter-date-end" class="filter-input" value="2026-01-31">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Business Unit:</label>
+        <select id="filter-business-unit" class="filter-select">
+          <option value="all">All Business Units</option>
+        </select>
+      </div>
+      <div class="filter-group" id="task-type-filter-group" style="display: none;">
+        <label class="filter-label">Task Type:</label>
+        <select id="filter-task-type" class="filter-select">
+          <option value="all">All Task Types</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+
+      <!-- View 1: Executive Summary -->
+      <div id="executive-summary" class="view-container active">
+        <!-- KPI Row -->
+        <div class="kpi-row">
+          <div class="kpi-card" id="kpi-active-users">
+            <div class="kpi-label">Active Users</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-change positive">-</div>
+          </div>
+          <div class="kpi-card" id="kpi-adoption-rate">
+            <div class="kpi-label">Adoption Rate</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-change positive">-</div>
+          </div>
+          <div class="kpi-card" id="kpi-total-sessions">
+            <div class="kpi-label">Total Sessions</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-change positive">-</div>
+          </div>
+          <div class="kpi-card" id="kpi-avg-sessions">
+            <div class="kpi-label">Avg Sessions/User</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-change positive">-</div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-grid">
+          <div class="chart-card">
+            <h3 class="chart-title">Adoption Trend (12 Months)</h3>
+            <div id="chart-adoption-trend" class="chart-container"></div>
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-title">Top Use Cases</h3>
+            <div id="chart-task-types" class="chart-container"></div>
+          </div>
+          <div class="chart-card full-width">
+            <h3 class="chart-title">Business Unit Adoption (click to drill-down)</h3>
+            <div id="chart-bu-adoption" class="chart-container large"></div>
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-title">Business Outcome Distribution</h3>
+            <div id="chart-outcomes" class="chart-container"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View 2: Business Unit Deep-Dive -->
+      <div id="business-unit" class="view-container">
+        <!-- KPI Row -->
+        <div class="kpi-row">
+          <div class="kpi-card" id="kpi-unit-adoption">
+            <div class="kpi-label">Unit Adoption Rate</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-subtext">-</div>
+          </div>
+          <div class="kpi-card" id="kpi-unit-users">
+            <div class="kpi-label">Active Users</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-subtext">-</div>
+          </div>
+          <div class="kpi-card" id="kpi-unit-sessions">
+            <div class="kpi-label">Total Sessions</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-subtext">-</div>
+          </div>
+          <div class="kpi-card" id="kpi-unit-top-task">
+            <div class="kpi-label">Top Task Type</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-subtext">-</div>
+          </div>
+        </div>
+
+        <!-- Charts and Tables -->
+        <div class="charts-grid">
+          <div class="chart-card">
+            <h3 class="chart-title">User Adoption Funnel</h3>
+            <div id="chart-adoption-funnel" class="chart-container"></div>
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-title">Monthly Active Users</h3>
+            <div id="chart-unit-trend" class="chart-container"></div>
+          </div>
+        </div>
+
+        <!-- Business Unit Comparison Table -->
+        <div class="data-table-container mt-md">
+          <div class="data-table-header">
+            <h3 class="data-table-title">Business Unit Comparison</h3>
+            <button class="btn btn-secondary" onclick="exportTableToCSV('bu-comparison')">Export CSV</button>
+          </div>
+          <table class="data-table" id="bu-comparison-table">
+            <thead>
+              <tr>
+                <th>Business Unit</th>
+                <th>Category</th>
+                <th>Active / Licensed</th>
+                <th>Adoption Rate</th>
+                <th>Target</th>
+                <th>Status</th>
+                <th>Sessions</th>
+              </tr>
+            </thead>
+            <tbody id="bu-table-body">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- User Table (shown when specific unit selected) -->
+        <div class="data-table-container mt-md" id="user-table-container" style="display: none;">
+          <div class="data-table-header">
+            <h3 class="data-table-title">Users in Selected Unit</h3>
+            <button class="btn btn-secondary" onclick="exportTableToCSV('users')">Export CSV</button>
+          </div>
+          <table class="data-table" id="user-table">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Last Active</th>
+                <th>Total Sessions</th>
+                <th>Engagement Tier</th>
+              </tr>
+            </thead>
+            <tbody id="user-table-body">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- View 3: Use Case Analysis -->
+      <div id="use-case" class="view-container">
+        <!-- KPI Row -->
+        <div class="kpi-row">
+          <div class="kpi-card" id="kpi-use-cases">
+            <div class="kpi-label">Use Cases Tracked</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-subtext">-</div>
+          </div>
+          <div class="kpi-card" id="kpi-top-task">
+            <div class="kpi-label">Most Popular Task</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-subtext">-</div>
+          </div>
+          <div class="kpi-card" id="kpi-fastest-growing">
+            <div class="kpi-label">Fastest Growing</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-subtext">-</div>
+          </div>
+          <div class="kpi-card" id="kpi-highest-engagement">
+            <div class="kpi-label">Highest Engagement</div>
+            <div class="kpi-value">-</div>
+            <div class="kpi-subtext">-</div>
+          </div>
+        </div>
+
+        <!-- Heatmap -->
+        <div class="chart-card full-width">
+          <h3 class="chart-title">Task Type by Business Unit (Heatmap)</h3>
+          <div id="chart-heatmap" class="heatmap-container"></div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-grid mt-md">
+          <div class="chart-card">
+            <h3 class="chart-title">Task Type Trend</h3>
+            <div id="chart-task-trend" class="chart-container"></div>
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-title">Business Outcome Distribution</h3>
+            <div id="chart-outcome-donut" class="chart-container"></div>
+          </div>
+        </div>
+
+        <!-- Scenarios Table -->
+        <div class="data-table-container mt-md">
+          <div class="data-table-header">
+            <h3 class="data-table-title">Top Scenarios</h3>
+          </div>
+          <table class="data-table" id="scenarios-table">
+            <thead>
+              <tr>
+                <th>Task Type</th>
+                <th>Business Outcome</th>
+                <th>Session Count</th>
+                <th>Avg Rating</th>
+              </tr>
+            </thead>
+            <tbody id="scenarios-table-body">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data-generator.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // Utility function for CSV export
+    function exportTableToCSV(tableType) {
+      let table;
+      let filename;
+
+      switch(tableType) {
+        case 'bu-comparison':
+          table = document.getElementById('bu-comparison-table');
+          filename = 'business-unit-comparison.csv';
+          break;
+        case 'users':
+          table = document.getElementById('user-table');
+          filename = 'users.csv';
+          break;
+        default:
+          return;
+      }
+
+      if (!table) return;
+
+      const rows = table.querySelectorAll('tr');
+      const csv = [];
+
+      rows.forEach(row => {
+        const cols = row.querySelectorAll('th, td');
+        const rowData = [];
+        cols.forEach(col => {
+          // Clean the text content
+          let text = col.textContent.trim().replace(/"/g, '""');
+          rowData.push(`"${text}"`);
+        });
+        csv.push(rowData.join(','));
+      });
+
+      const csvContent = csv.join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+
+    // Show/hide task type filter based on view
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const taskTypeFilter = document.getElementById('task-type-filter-group');
+        taskTypeFilter.style.display = tab.dataset.view === 'use-case' ? 'flex' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

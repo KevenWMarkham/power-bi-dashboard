@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schema | Power BI Dashboard</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo-link">
+                    <h1>Power BI Dashboard</h1>
+                    <span class="subtitle">[CLIENT_NAME]</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="../../index.html" class="nav-link"><i>📊</i> Dashboard Home</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="../docs/requirements.html" class="nav-link"><i>📋</i> Requirements</a>
+                <a href="../docs/data-dictionary.html" class="nav-link"><i>📖</i> Data Dictionary</a>
+                <a href="../docs/user-guide.html" class="nav-link"><i>📘</i> User Guide</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="../docs/sprint-backlog.html" class="nav-link"><i>🎯</i> Sprint Backlog</a>
+                <a href="../docs/status-report.html" class="nav-link"><i>📈</i> Status Reports</a>
+                <a href="../docs/raci-matrix.html" class="nav-link"><i>👥</i> RACI Matrix</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="schema.html" class="nav-link active"><i>🗂️</i> Schema</a>
+                <a href="dax-measures.html" class="nav-link"><i>📐</i> DAX Measures</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="../testing/test-cases.html" class="nav-link"><i>✅</i> Test Cases</a>
+                <a href="../testing/uat-feedback.html" class="nav-link"><i>💬</i> UAT Feedback</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="../deployment/runbook.html" class="nav-link"><i>🚀</i> Runbook</a>
+                <a href="../deployment/access-matrix.html" class="nav-link"><i>🔐</i> Access Matrix</a>
+                <a href="../dashboard/version-history.html" class="nav-link"><i>📜</i> Version History</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a> / <a href="#">Data Model</a> / <span>Schema</span>
+            </div>
+
+            <div class="page-header">
+                <h1>Data Model Schema</h1>
+                <p class="meta">Version 1.0 | Last Updated: [DATE]</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Model Overview</h2>
+                <div class="schema-diagram">
+                    <pre>
+┌─────────────────┐     ┌─────────────────┐
+│    DimDate      │     │   DimCustomer   │
+│  (Date Table)   │     │                 │
+└────────┬────────┘     └────────┬────────┘
+         │                       │
+         │ 1:*               1:* │
+         │                       │
+         ▼                       ▼
+┌─────────────────────────────────────────┐
+│              FactSales                  │
+│         (Transaction Fact)              │
+└─────────────────────────────────────────┘
+         │
+         │ *:1
+         ▼
+┌─────────────────┐
+│   DimProduct    │
+│                 │
+└─────────────────┘
+                    </pre>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Fact Tables</h2>
+
+                <div class="table-card">
+                    <div class="table-card-header">
+                        <h3>FactSales</h3>
+                        <div class="table-meta">
+                            <span class="badge">Grain: Transaction Line Item</span>
+                            <span class="badge">Load: Incremental</span>
+                            <span class="badge">Refresh: Daily</span>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Column</th>
+                                <th>Data Type</th>
+                                <th>Key</th>
+                                <th>Nullable</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>SalesKey</code></td>
+                                <td>INT</td>
+                                <td><span class="key pk">PK</span></td>
+                                <td>No</td>
+                                <td>Surrogate key</td>
+                            </tr>
+                            <tr>
+                                <td><code>DateKey</code></td>
+                                <td>INT</td>
+                                <td><span class="key fk">FK</span></td>
+                                <td>No</td>
+                                <td>Link to DimDate</td>
+                            </tr>
+                            <tr>
+                                <td><code>CustomerKey</code></td>
+                                <td>INT</td>
+                                <td><span class="key fk">FK</span></td>
+                                <td>Yes</td>
+                                <td>Link to DimCustomer</td>
+                            </tr>
+                            <tr>
+                                <td><code>ProductKey</code></td>
+                                <td>INT</td>
+                                <td><span class="key fk">FK</span></td>
+                                <td>Yes</td>
+                                <td>Link to DimProduct</td>
+                            </tr>
+                            <tr>
+                                <td><code>Amount</code></td>
+                                <td>DECIMAL(18,2)</td>
+                                <td></td>
+                                <td>No</td>
+                                <td>Transaction amount</td>
+                            </tr>
+                            <tr>
+                                <td><code>Quantity</code></td>
+                                <td>INT</td>
+                                <td></td>
+                                <td>No</td>
+                                <td>Units sold</td>
+                            </tr>
+                            <tr>
+                                <td><code>Cost</code></td>
+                                <td>DECIMAL(18,2)</td>
+                                <td></td>
+                                <td>Yes</td>
+                                <td>Cost of goods</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Dimension Tables</h2>
+
+                <div class="table-card">
+                    <div class="table-card-header">
+                        <h3>DimDate</h3>
+                        <div class="table-meta">
+                            <span class="badge">Type: Role-playing</span>
+                            <span class="badge">Load: Full (Generated)</span>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Column</th>
+                                <th>Data Type</th>
+                                <th>Key</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>DateKey</code></td>
+                                <td>INT</td>
+                                <td><span class="key pk">PK</span></td>
+                                <td>YYYYMMDD format</td>
+                            </tr>
+                            <tr>
+                                <td><code>Date</code></td>
+                                <td>DATE</td>
+                                <td></td>
+                                <td>Full date</td>
+                            </tr>
+                            <tr>
+                                <td><code>Year</code></td>
+                                <td>INT</td>
+                                <td></td>
+                                <td>Calendar year</td>
+                            </tr>
+                            <tr>
+                                <td><code>Quarter</code></td>
+                                <td>INT</td>
+                                <td></td>
+                                <td>Calendar quarter</td>
+                            </tr>
+                            <tr>
+                                <td><code>Month</code></td>
+                                <td>INT</td>
+                                <td></td>
+                                <td>Month number</td>
+                            </tr>
+                            <tr>
+                                <td><code>MonthName</code></td>
+                                <td>VARCHAR(20)</td>
+                                <td></td>
+                                <td>Month name</td>
+                            </tr>
+                            <tr>
+                                <td><code>IsWeekend</code></td>
+                                <td>BIT</td>
+                                <td></td>
+                                <td>Weekend flag</td>
+                            </tr>
+                            <tr>
+                                <td><code>FiscalYear</code></td>
+                                <td>INT</td>
+                                <td></td>
+                                <td>Fiscal year</td>
+                            </tr>
+                            <tr>
+                                <td><code>FiscalQuarter</code></td>
+                                <td>INT</td>
+                                <td></td>
+                                <td>Fiscal quarter</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-card-header">
+                        <h3>DimCustomer</h3>
+                        <div class="table-meta">
+                            <span class="badge">Type: Type 1 SCD</span>
+                            <span class="badge">Load: Full</span>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Column</th>
+                                <th>Data Type</th>
+                                <th>Key</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>CustomerKey</code></td>
+                                <td>INT</td>
+                                <td><span class="key pk">PK</span></td>
+                                <td>Surrogate key</td>
+                            </tr>
+                            <tr>
+                                <td><code>CustomerID</code></td>
+                                <td>VARCHAR(50)</td>
+                                <td><span class="key bk">BK</span></td>
+                                <td>Business key</td>
+                            </tr>
+                            <tr>
+                                <td><code>CustomerName</code></td>
+                                <td>VARCHAR(100)</td>
+                                <td></td>
+                                <td>Customer name</td>
+                            </tr>
+                            <tr>
+                                <td><code>Segment</code></td>
+                                <td>VARCHAR(50)</td>
+                                <td></td>
+                                <td>Customer segment</td>
+                            </tr>
+                            <tr>
+                                <td><code>Region</code></td>
+                                <td>VARCHAR(50)</td>
+                                <td></td>
+                                <td>Geographic region</td>
+                            </tr>
+                            <tr>
+                                <td><code>Country</code></td>
+                                <td>VARCHAR(50)</td>
+                                <td></td>
+                                <td>Country</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-card-header">
+                        <h3>DimProduct</h3>
+                        <div class="table-meta">
+                            <span class="badge">Type: Type 2 SCD</span>
+                            <span class="badge">Load: Incremental</span>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Column</th>
+                                <th>Data Type</th>
+                                <th>Key</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>ProductKey</code></td>
+                                <td>INT</td>
+                                <td><span class="key pk">PK</span></td>
+                                <td>Surrogate key</td>
+                            </tr>
+                            <tr>
+                                <td><code>ProductID</code></td>
+                                <td>VARCHAR(50)</td>
+                                <td><span class="key bk">BK</span></td>
+                                <td>Business key</td>
+                            </tr>
+                            <tr>
+                                <td><code>ProductName</code></td>
+                                <td>VARCHAR(100)</td>
+                                <td></td>
+                                <td>Product name</td>
+                            </tr>
+                            <tr>
+                                <td><code>Category</code></td>
+                                <td>VARCHAR(50)</td>
+                                <td></td>
+                                <td>Product category</td>
+                            </tr>
+                            <tr>
+                                <td><code>SubCategory</code></td>
+                                <td>VARCHAR(50)</td>
+                                <td></td>
+                                <td>Product subcategory</td>
+                            </tr>
+                            <tr>
+                                <td><code>ValidFrom</code></td>
+                                <td>DATE</td>
+                                <td></td>
+                                <td>SCD effective date</td>
+                            </tr>
+                            <tr>
+                                <td><code>ValidTo</code></td>
+                                <td>DATE</td>
+                                <td></td>
+                                <td>SCD end date</td>
+                            </tr>
+                            <tr>
+                                <td><code>IsCurrent</code></td>
+                                <td>BIT</td>
+                                <td></td>
+                                <td>Current record flag</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Relationships</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>From Table</th>
+                            <th>From Column</th>
+                            <th>To Table</th>
+                            <th>To Column</th>
+                            <th>Cardinality</th>
+                            <th>Active</th>
+                            <th>Cross-Filter</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>FactSales</td>
+                            <td>DateKey</td>
+                            <td>DimDate</td>
+                            <td>DateKey</td>
+                            <td>*:1</td>
+                            <td>Yes</td>
+                            <td>Single</td>
+                        </tr>
+                        <tr>
+                            <td>FactSales</td>
+                            <td>CustomerKey</td>
+                            <td>DimCustomer</td>
+                            <td>CustomerKey</td>
+                            <td>*:1</td>
+                            <td>Yes</td>
+                            <td>Single</td>
+                        </tr>
+                        <tr>
+                            <td>FactSales</td>
+                            <td>ProductKey</td>
+                            <td>DimProduct</td>
+                            <td>ProductKey</td>
+                            <td>*:1</td>
+                            <td>Yes</td>
+                            <td>Single</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Row-Level Security</h2>
+
+                <h3>Security Roles</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Role Name</th>
+                            <th>Filter Table</th>
+                            <th>DAX Filter Expression</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Region - North</td>
+                            <td>DimCustomer</td>
+                            <td><code>[Region] = "North"</code></td>
+                        </tr>
+                        <tr>
+                            <td>Region - South</td>
+                            <td>DimCustomer</td>
+                            <td><code>[Region] = "South"</code></td>
+                        </tr>
+                        <tr>
+                            <td>Region - All</td>
+                            <td>(none)</td>
+                            <td>(no filter)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Role Membership</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>AD Group / Users</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Region - North</td>
+                            <td>[AD_Group_North]</td>
+                        </tr>
+                        <tr>
+                            <td>Region - South</td>
+                            <td>[AD_Group_South]</td>
+                        </tr>
+                        <tr>
+                            <td>Region - All</td>
+                            <td>[AD_Group_Admins]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Last updated: [DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

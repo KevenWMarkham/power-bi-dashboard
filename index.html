@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power BI Dashboard Project</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <style>
+        /* Index-specific styles */
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .header h2 {
+            font-size: 28px;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .info-card .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .info-card .value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .info-card .value.small {
+            font-size: 18px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+
+        .section h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #1a1a2e;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+
+        .timeline-item {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: #e0e0e0;
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        .timeline-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e94560;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 auto 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-dot.pending {
+            background: #ccc;
+        }
+
+        .timeline-label {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>Power BI Dashboard</h1>
+                <span class="subtitle">[CLIENT_NAME]</span>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="index.html" class="nav-link active">
+                    <i>📊</i> Dashboard Home
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="pages/docs/requirements.html" class="nav-link">
+                    <i>📋</i> Requirements
+                </a>
+                <a href="pages/docs/data-dictionary.html" class="nav-link">
+                    <i>📖</i> Data Dictionary
+                </a>
+                <a href="pages/docs/user-guide.html" class="nav-link">
+                    <i>📘</i> User Guide
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="pages/docs/sprint-backlog.html" class="nav-link">
+                    <i>🎯</i> Sprint Backlog
+                </a>
+                <a href="pages/docs/status-report.html" class="nav-link">
+                    <i>📈</i> Status Reports
+                </a>
+                <a href="pages/docs/raci-matrix.html" class="nav-link">
+                    <i>👥</i> RACI Matrix
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="pages/data-model/schema.html" class="nav-link">
+                    <i>🗂️</i> Schema
+                </a>
+                <a href="pages/data-model/dax-measures.html" class="nav-link">
+                    <i>📐</i> DAX Measures
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="pages/testing/test-cases.html" class="nav-link">
+                    <i>✅</i> Test Cases
+                </a>
+                <a href="pages/testing/uat-feedback.html" class="nav-link">
+                    <i>💬</i> UAT Feedback
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="pages/deployment/runbook.html" class="nav-link">
+                    <i>🚀</i> Runbook
+                </a>
+                <a href="pages/deployment/access-matrix.html" class="nav-link">
+                    <i>🔐</i> Access Matrix
+                </a>
+                <a href="pages/dashboard/version-history.html" class="nav-link">
+                    <i>📜</i> Version History
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h2>Project Dashboard</h2>
+                <p>Power BI Dashboard Engagement Overview</p>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="label">Duration</div>
+                    <div class="value">8 <span style="font-size: 14px; font-weight: normal;">weeks</span></div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Budget</div>
+                    <div class="value small">$79,150</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Scope</div>
+                    <div class="value">3 <span style="font-size: 14px; font-weight: normal;">views</span></div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Status</div>
+                    <div class="value"><span class="status active">Active</span></div>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="section">
+                <h3>Project Timeline</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot">1-2</div>
+                        <div class="timeline-label">Discovery &<br>Data Engineering</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot pending">3-4</div>
+                        <div class="timeline-label">Design &<br>Development</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot pending">5-6</div>
+                        <div class="timeline-label">Refinement &<br>Testing</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot pending">7-8</div>
+                        <div class="timeline-label">UAT &<br>Deployment</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Allocation -->
+            <div class="section">
+                <h3>Team Allocation</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>FTE</th>
+                            <th>Hours</th>
+                            <th>Active Weeks</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Project Manager</td>
+                            <td>0.25</td>
+                            <td>80</td>
+                            <td>1-8</td>
+                            <td><span class="status active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Data Engineer</td>
+                            <td>0.5</td>
+                            <td>80</td>
+                            <td>1-4</td>
+                            <td><span class="status active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Power BI Lead</td>
+                            <td>0.75</td>
+                            <td>180</td>
+                            <td>1-6</td>
+                            <td><span class="status active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>UX Designer</td>
+                            <td>0.25</td>
+                            <td>30</td>
+                            <td>2-4</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>QA Analyst</td>
+                            <td>0.25</td>
+                            <td>20</td>
+                            <td>6-7</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Key Milestones -->
+            <div class="section">
+                <h3>Key Milestones</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Milestone</th>
+                            <th>Target Week</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Requirements Sign-off</td>
+                            <td>Week 2</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>Data Model Complete</td>
+                            <td>Week 2</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>Initial Dashboard Build</td>
+                            <td>Week 4</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>UX Review Complete</td>
+                            <td>Week 4</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>Dashboard Development Complete</td>
+                            <td>Week 6</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>UAT Sign-off</td>
+                            <td>Week 7</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>Production Deployment</td>
+                            <td>Week 8</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Last updated: [DATE] | Project Start: [START_DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

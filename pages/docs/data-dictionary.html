@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Dictionary | Power BI Dashboard</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo-link">
+                    <h1>Power BI Dashboard</h1>
+                    <span class="subtitle">[CLIENT_NAME]</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="../../index.html" class="nav-link">
+                    <i>📊</i> Dashboard Home
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="requirements.html" class="nav-link">
+                    <i>📋</i> Requirements
+                </a>
+                <a href="data-dictionary.html" class="nav-link active">
+                    <i>📖</i> Data Dictionary
+                </a>
+                <a href="user-guide.html" class="nav-link">
+                    <i>📘</i> User Guide
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="sprint-backlog.html" class="nav-link">
+                    <i>🎯</i> Sprint Backlog
+                </a>
+                <a href="status-report.html" class="nav-link">
+                    <i>📈</i> Status Reports
+                </a>
+                <a href="raci-matrix.html" class="nav-link">
+                    <i>👥</i> RACI Matrix
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="../data-model/schema.html" class="nav-link">
+                    <i>🗂️</i> Schema
+                </a>
+                <a href="../data-model/dax-measures.html" class="nav-link">
+                    <i>📐</i> DAX Measures
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="../testing/test-cases.html" class="nav-link">
+                    <i>✅</i> Test Cases
+                </a>
+                <a href="../testing/uat-feedback.html" class="nav-link">
+                    <i>💬</i> UAT Feedback
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="../deployment/runbook.html" class="nav-link">
+                    <i>🚀</i> Runbook
+                </a>
+                <a href="../deployment/access-matrix.html" class="nav-link">
+                    <i>🔐</i> Access Matrix
+                </a>
+                <a href="../dashboard/version-history.html" class="nav-link">
+                    <i>📜</i> Version History
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a> / <a href="#">Documentation</a> / <span>Data Dictionary</span>
+            </div>
+
+            <div class="page-header">
+                <h1>Data Dictionary</h1>
+                <p class="meta">Version 1.0 | Last Updated: [DATE]</p>
+            </div>
+
+            <div class="content-section">
+                <h2>1. Overview</h2>
+                <p>This document defines all data elements used in the Power BI dashboard, including source mappings, transformations, and business definitions.</p>
+            </div>
+
+            <div class="content-section">
+                <h2>2. Data Sources</h2>
+
+                <div class="info-card-inline">
+                    <h3>Source 1: [SOURCE_NAME]</h3>
+                    <ul>
+                        <li><strong>Connection Type:</strong> [SQL Server / Excel / API / etc.]</li>
+                        <li><strong>Server/Path:</strong> [Connection details]</li>
+                        <li><strong>Database:</strong> [Database name]</li>
+                        <li><strong>Refresh Schedule:</strong> [Daily / Weekly / etc.]</li>
+                    </ul>
+                </div>
+
+                <div class="info-card-inline">
+                    <h3>Source 2: [SOURCE_NAME]</h3>
+                    <ul>
+                        <li><strong>Connection Type:</strong> [Type]</li>
+                        <li><strong>Server/Path:</strong> [Connection details]</li>
+                        <li><strong>Refresh Schedule:</strong> [Schedule]</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>3. Tables</h2>
+
+                <h3>3.1 Fact Tables</h3>
+
+                <div class="table-header">
+                    <h4>FactSales</h4>
+                    <span class="badge">Example</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column Name</th>
+                            <th>Data Type</th>
+                            <th>Source Field</th>
+                            <th>Description</th>
+                            <th>Business Rules</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>SalesID</code></td>
+                            <td>INT</td>
+                            <td>sales.id</td>
+                            <td>Primary key</td>
+                            <td>Auto-increment</td>
+                        </tr>
+                        <tr>
+                            <td><code>DateKey</code></td>
+                            <td>INT</td>
+                            <td>sales.date</td>
+                            <td>Foreign key to DimDate</td>
+                            <td>YYYYMMDD format</td>
+                        </tr>
+                        <tr>
+                            <td><code>CustomerKey</code></td>
+                            <td>INT</td>
+                            <td>sales.customer_id</td>
+                            <td>Foreign key to DimCustomer</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><code>Amount</code></td>
+                            <td>DECIMAL(18,2)</td>
+                            <td>sales.amount</td>
+                            <td>Transaction amount</td>
+                            <td>Excludes tax</td>
+                        </tr>
+                        <tr>
+                            <td><code>Quantity</code></td>
+                            <td>INT</td>
+                            <td>sales.qty</td>
+                            <td>Units sold</td>
+                            <td>Must be &gt; 0</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>3.2 Dimension Tables</h3>
+
+                <div class="table-header">
+                    <h4>DimDate</h4>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column Name</th>
+                            <th>Data Type</th>
+                            <th>Description</th>
+                            <th>Sample Values</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>DateKey</code></td>
+                            <td>INT</td>
+                            <td>Primary key (YYYYMMDD)</td>
+                            <td>20260122</td>
+                        </tr>
+                        <tr>
+                            <td><code>Date</code></td>
+                            <td>DATE</td>
+                            <td>Full date</td>
+                            <td>2026-01-22</td>
+                        </tr>
+                        <tr>
+                            <td><code>Year</code></td>
+                            <td>INT</td>
+                            <td>Calendar year</td>
+                            <td>2026</td>
+                        </tr>
+                        <tr>
+                            <td><code>Quarter</code></td>
+                            <td>INT</td>
+                            <td>Calendar quarter</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td><code>Month</code></td>
+                            <td>INT</td>
+                            <td>Calendar month</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td><code>MonthName</code></td>
+                            <td>VARCHAR(20)</td>
+                            <td>Month name</td>
+                            <td>January</td>
+                        </tr>
+                        <tr>
+                            <td><code>IsWeekend</code></td>
+                            <td>BIT</td>
+                            <td>Weekend flag</td>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="table-header">
+                    <h4>DimCustomer</h4>
+                    <span class="badge">Example</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column Name</th>
+                            <th>Data Type</th>
+                            <th>Source Field</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>CustomerKey</code></td>
+                            <td>INT</td>
+                            <td>customer.id</td>
+                            <td>Primary key</td>
+                        </tr>
+                        <tr>
+                            <td><code>CustomerName</code></td>
+                            <td>VARCHAR(100)</td>
+                            <td>customer.name</td>
+                            <td>Full name</td>
+                        </tr>
+                        <tr>
+                            <td><code>Segment</code></td>
+                            <td>VARCHAR(50)</td>
+                            <td>customer.segment</td>
+                            <td>Customer segment</td>
+                        </tr>
+                        <tr>
+                            <td><code>Region</code></td>
+                            <td>VARCHAR(50)</td>
+                            <td>customer.region</td>
+                            <td>Geographic region</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>4. Calculated Columns</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Table</th>
+                            <th>Column Name</th>
+                            <th>DAX Expression</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>DimDate</td>
+                            <td><code>YearMonth</code></td>
+                            <td><code>FORMAT([Date], "YYYY-MM")</code></td>
+                            <td>Year-month string</td>
+                        </tr>
+                        <tr>
+                            <td>[Table]</td>
+                            <td><code>[Column]</code></td>
+                            <td><code>[Expression]</code></td>
+                            <td>[Description]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>5. Relationships</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>From Table</th>
+                            <th>From Column</th>
+                            <th>To Table</th>
+                            <th>To Column</th>
+                            <th>Cardinality</th>
+                            <th>Cross-Filter</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>FactSales</td>
+                            <td>DateKey</td>
+                            <td>DimDate</td>
+                            <td>DateKey</td>
+                            <td>Many-to-One</td>
+                            <td>Single</td>
+                        </tr>
+                        <tr>
+                            <td>FactSales</td>
+                            <td>CustomerKey</td>
+                            <td>DimCustomer</td>
+                            <td>CustomerKey</td>
+                            <td>Many-to-One</td>
+                            <td>Single</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>6. Data Quality Rules</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rule ID</th>
+                            <th>Table</th>
+                            <th>Column</th>
+                            <th>Rule</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>DQ-001</td>
+                            <td>FactSales</td>
+                            <td>Amount</td>
+                            <td>Amount &gt;= 0</td>
+                            <td>Reject row</td>
+                        </tr>
+                        <tr>
+                            <td>DQ-002</td>
+                            <td>DimCustomer</td>
+                            <td>CustomerName</td>
+                            <td>Not null</td>
+                            <td>Flag for review</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>7. Change Log</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Version</th>
+                            <th>Date</th>
+                            <th>Author</th>
+                            <th>Changes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1.0</td>
+                            <td>[DATE]</td>
+                            <td>[Name]</td>
+                            <td>Initial version</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Last updated: [DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

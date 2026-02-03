@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requirements | Power BI Dashboard</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo-link">
+                    <h1>Power BI Dashboard</h1>
+                    <span class="subtitle">[CLIENT_NAME]</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="../../index.html" class="nav-link">
+                    <i>📊</i> Dashboard Home
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="requirements.html" class="nav-link active">
+                    <i>📋</i> Requirements
+                </a>
+                <a href="data-dictionary.html" class="nav-link">
+                    <i>📖</i> Data Dictionary
+                </a>
+                <a href="user-guide.html" class="nav-link">
+                    <i>📘</i> User Guide
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="sprint-backlog.html" class="nav-link">
+                    <i>🎯</i> Sprint Backlog
+                </a>
+                <a href="status-report.html" class="nav-link">
+                    <i>📈</i> Status Reports
+                </a>
+                <a href="raci-matrix.html" class="nav-link">
+                    <i>👥</i> RACI Matrix
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="../data-model/schema.html" class="nav-link">
+                    <i>🗂️</i> Schema
+                </a>
+                <a href="../data-model/dax-measures.html" class="nav-link">
+                    <i>📐</i> DAX Measures
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="../testing/test-cases.html" class="nav-link">
+                    <i>✅</i> Test Cases
+                </a>
+                <a href="../testing/uat-feedback.html" class="nav-link">
+                    <i>💬</i> UAT Feedback
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="../deployment/runbook.html" class="nav-link">
+                    <i>🚀</i> Runbook
+                </a>
+                <a href="../deployment/access-matrix.html" class="nav-link">
+                    <i>🔐</i> Access Matrix
+                </a>
+                <a href="../dashboard/version-history.html" class="nav-link">
+                    <i>📜</i> Version History
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a> / <a href="#">Documentation</a> / <span>Requirements</span>
+            </div>
+
+            <div class="page-header">
+                <h1>Requirements Document</h1>
+                <p class="meta">Version 1.0 | Last Updated: [DATE] | Status: Draft</p>
+            </div>
+
+            <div class="content-section">
+                <h2>1. Executive Summary</h2>
+                <p>This document outlines the functional and non-functional requirements for the Power BI dashboard engagement.</p>
+            </div>
+
+            <div class="content-section">
+                <h2>2. Business Objectives</h2>
+                <div class="checklist">
+                    <label><input type="checkbox"> Objective 1: [Define primary business goal]</label>
+                    <label><input type="checkbox"> Objective 2: [Define secondary business goal]</label>
+                    <label><input type="checkbox"> Objective 3: [Define tertiary business goal]</label>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>3. Scope</h2>
+
+                <h3>3.1 In Scope</h3>
+                <ul>
+                    <li>1 dashboard screen with 3 views</li>
+                    <li>Data integration from [SOURCE_SYSTEMS]</li>
+                    <li>User access controls</li>
+                    <li>Scheduled refresh configuration</li>
+                </ul>
+
+                <h3>3.2 Out of Scope</h3>
+                <ul>
+                    <li>Historical data migration beyond [X] years</li>
+                    <li>Real-time streaming data</li>
+                    <li>Custom embedded solutions</li>
+                    <li>Mobile app development</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h2>4. Dashboard Views</h2>
+
+                <h3>View 1: [NAME]</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Requirement ID</th>
+                            <th>Description</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>REQ-V1-001</td>
+                            <td>[Description]</td>
+                            <td><span class="badge high">High</span></td>
+                            <td><span class="badge draft">Draft</span></td>
+                        </tr>
+                        <tr>
+                            <td>REQ-V1-002</td>
+                            <td>[Description]</td>
+                            <td><span class="badge medium">Medium</span></td>
+                            <td><span class="badge draft">Draft</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>View 2: [NAME]</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Requirement ID</th>
+                            <th>Description</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>REQ-V2-001</td>
+                            <td>[Description]</td>
+                            <td><span class="badge high">High</span></td>
+                            <td><span class="badge draft">Draft</span></td>
+                        </tr>
+                        <tr>
+                            <td>REQ-V2-002</td>
+                            <td>[Description]</td>
+                            <td><span class="badge medium">Medium</span></td>
+                            <td><span class="badge draft">Draft</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>View 3: [NAME]</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Requirement ID</th>
+                            <th>Description</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>REQ-V3-001</td>
+                            <td>[Description]</td>
+                            <td><span class="badge high">High</span></td>
+                            <td><span class="badge draft">Draft</span></td>
+                        </tr>
+                        <tr>
+                            <td>REQ-V3-002</td>
+                            <td>[Description]</td>
+                            <td><span class="badge medium">Medium</span></td>
+                            <td><span class="badge draft">Draft</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>5. Data Requirements</h2>
+
+                <h3>5.1 Data Sources</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Source</th>
+                            <th>Type</th>
+                            <th>Refresh Frequency</th>
+                            <th>Owner</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>[Source 1]</td>
+                            <td>SQL Database</td>
+                            <td>Daily</td>
+                            <td>[Name]</td>
+                        </tr>
+                        <tr>
+                            <td>[Source 2]</td>
+                            <td>Excel/CSV</td>
+                            <td>Weekly</td>
+                            <td>[Name]</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>5.2 Data Quality Requirements</h3>
+                <ul>
+                    <li>Data completeness: [X]%</li>
+                    <li>Data accuracy: [X]%</li>
+                    <li>Acceptable latency: [X] hours</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h2>6. Non-Functional Requirements</h2>
+
+                <h3>6.1 Performance</h3>
+                <ul>
+                    <li>Dashboard load time: &lt; 5 seconds</li>
+                    <li>Visual refresh: &lt; 3 seconds</li>
+                    <li>Concurrent users: [X]</li>
+                </ul>
+
+                <h3>6.2 Security</h3>
+                <ul>
+                    <li>Row-level security required: Yes/No</li>
+                    <li>SSO integration: Yes/No</li>
+                    <li>Data classification: [Level]</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h2>7. Assumptions</h2>
+                <ol>
+                    <li>[Assumption 1]</li>
+                    <li>[Assumption 2]</li>
+                    <li>[Assumption 3]</li>
+                </ol>
+            </div>
+
+            <div class="content-section">
+                <h2>8. Dependencies</h2>
+                <ol>
+                    <li>[Dependency 1]</li>
+                    <li>[Dependency 2]</li>
+                </ol>
+            </div>
+
+            <div class="content-section">
+                <h2>9. Sign-off</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Signature</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>[Name]</td>
+                            <td>Business Owner</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>[Name]</td>
+                            <td>Technical Lead</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>[Name]</td>
+                            <td>Project Manager</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Last updated: [DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAT Feedback | Power BI Dashboard</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo-link">
+                    <h1>Power BI Dashboard</h1>
+                    <span class="subtitle">[CLIENT_NAME]</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="../../index.html" class="nav-link"><i>📊</i> Dashboard Home</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="../docs/requirements.html" class="nav-link"><i>📋</i> Requirements</a>
+                <a href="../docs/data-dictionary.html" class="nav-link"><i>📖</i> Data Dictionary</a>
+                <a href="../docs/user-guide.html" class="nav-link"><i>📘</i> User Guide</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="../docs/sprint-backlog.html" class="nav-link"><i>🎯</i> Sprint Backlog</a>
+                <a href="../docs/status-report.html" class="nav-link"><i>📈</i> Status Reports</a>
+                <a href="../docs/raci-matrix.html" class="nav-link"><i>👥</i> RACI Matrix</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="../data-model/schema.html" class="nav-link"><i>🗂️</i> Schema</a>
+                <a href="../data-model/dax-measures.html" class="nav-link"><i>📐</i> DAX Measures</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="test-cases.html" class="nav-link"><i>✅</i> Test Cases</a>
+                <a href="uat-feedback.html" class="nav-link active"><i>💬</i> UAT Feedback</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="../deployment/runbook.html" class="nav-link"><i>🚀</i> Runbook</a>
+                <a href="../deployment/access-matrix.html" class="nav-link"><i>🔐</i> Access Matrix</a>
+                <a href="../dashboard/version-history.html" class="nav-link"><i>📜</i> Version History</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a> / <a href="#">Testing</a> / <span>UAT Feedback</span>
+            </div>
+
+            <div class="page-header">
+                <h1>UAT Feedback Log</h1>
+                <p class="meta">UAT Period: [START_DATE] to [END_DATE] | Facilitator: [PM Name]</p>
+            </div>
+
+            <div class="content-section">
+                <h2>UAT Participants</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Sessions Attended</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>[Name]</td>
+                            <td>Business Owner</td>
+                            <td>[Dept]</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>[Name]</td>
+                            <td>End User</td>
+                            <td>[Dept]</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>[Name]</td>
+                            <td>End User</td>
+                            <td>[Dept]</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Session Schedule</h2>
+                <div class="session-cards">
+                    <div class="session-card">
+                        <div class="session-header">
+                            <span class="session-number">UAT-1</span>
+                            <span class="session-date">[DATE]</span>
+                        </div>
+                        <div class="session-body">
+                            <p><strong>Focus:</strong> View 1 walkthrough</p>
+                            <p><strong>Time:</strong> [TIME]</p>
+                            <p><strong>Attendees:</strong> -</p>
+                        </div>
+                    </div>
+                    <div class="session-card">
+                        <div class="session-header">
+                            <span class="session-number">UAT-2</span>
+                            <span class="session-date">[DATE]</span>
+                        </div>
+                        <div class="session-body">
+                            <p><strong>Focus:</strong> View 2 & 3 walkthrough</p>
+                            <p><strong>Time:</strong> [TIME]</p>
+                            <p><strong>Attendees:</strong> -</p>
+                        </div>
+                    </div>
+                    <div class="session-card">
+                        <div class="session-header">
+                            <span class="session-number">UAT-3</span>
+                            <span class="session-date">[DATE]</span>
+                        </div>
+                        <div class="session-body">
+                            <p><strong>Focus:</strong> End-to-end testing</p>
+                            <p><strong>Time:</strong> [TIME]</p>
+                            <p><strong>Attendees:</strong> -</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Feedback Summary</h2>
+                <div class="feedback-summary">
+                    <div class="feedback-stat">
+                        <div class="stat-label">Bugs</div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-detail">0 Resolved</div>
+                    </div>
+                    <div class="feedback-stat">
+                        <div class="stat-label">Enhancements</div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-detail">0 Resolved</div>
+                    </div>
+                    <div class="feedback-stat">
+                        <div class="stat-label">Questions</div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-detail">0 Resolved</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Feedback Items</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Reported By</th>
+                            <th>Type</th>
+                            <th>View</th>
+                            <th>Description</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="7" class="empty-state">No feedback items logged yet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>UAT Acceptance Criteria</h2>
+                <div class="checklist-card">
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>All critical bugs resolved</span>
+                    </label>
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>All high-priority bugs resolved</span>
+                    </label>
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Data accuracy validated</span>
+                    </label>
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Performance acceptable</span>
+                    </label>
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Usability approved</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>UAT Sign-off</h2>
+                <div class="signoff-box">
+                    <p>By signing below, I confirm that User Acceptance Testing has been completed and the Power BI dashboard is approved for production deployment.</p>
+
+                    <table class="signoff-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Signature</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>[Name]</td>
+                                <td>Business Owner</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>[Name]</td>
+                                <td>Technical Lead</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>[Name]</td>
+                                <td>Project Manager</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>Last updated: [DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runbook | Power BI Dashboard</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo-link">
+                    <h1>Power BI Dashboard</h1>
+                    <span class="subtitle">[CLIENT_NAME]</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="../../index.html" class="nav-link"><i>📊</i> Dashboard Home</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="../docs/requirements.html" class="nav-link"><i>📋</i> Requirements</a>
+                <a href="../docs/data-dictionary.html" class="nav-link"><i>📖</i> Data Dictionary</a>
+                <a href="../docs/user-guide.html" class="nav-link"><i>📘</i> User Guide</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="../docs/sprint-backlog.html" class="nav-link"><i>🎯</i> Sprint Backlog</a>
+                <a href="../docs/status-report.html" class="nav-link"><i>📈</i> Status Reports</a>
+                <a href="../docs/raci-matrix.html" class="nav-link"><i>👥</i> RACI Matrix</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="../data-model/schema.html" class="nav-link"><i>🗂️</i> Schema</a>
+                <a href="../data-model/dax-measures.html" class="nav-link"><i>📐</i> DAX Measures</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="../testing/test-cases.html" class="nav-link"><i>✅</i> Test Cases</a>
+                <a href="../testing/uat-feedback.html" class="nav-link"><i>💬</i> UAT Feedback</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="runbook.html" class="nav-link active"><i>🚀</i> Runbook</a>
+                <a href="access-matrix.html" class="nav-link"><i>🔐</i> Access Matrix</a>
+                <a href="../dashboard/version-history.html" class="nav-link"><i>📜</i> Version History</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a> / <a href="#">Deployment</a> / <span>Runbook</span>
+            </div>
+
+            <div class="page-header">
+                <h1>Deployment Runbook</h1>
+                <p class="meta">Version 1.0 | Last Updated: [DATE]</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Pre-Deployment Checklist</h2>
+
+                <h3>1 Week Before Go-Live</h3>
+                <div class="checklist-card">
+                    <label class="checklist-item"><input type="checkbox"><span>UAT sign-off obtained</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>All critical/high defects resolved</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>Final PBIX file reviewed and approved</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>Access matrix finalized</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>User training scheduled</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>Communication plan ready</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>Rollback plan documented</span></label>
+                </div>
+
+                <h3>1 Day Before Go-Live</h3>
+                <div class="checklist-card">
+                    <label class="checklist-item"><input type="checkbox"><span>Production workspace access verified</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>Gateway connectivity tested</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>Data source credentials validated</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>Scheduled refresh configured (disabled)</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>RLS roles tested with production users</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>User guide finalized</span></label>
+                </div>
+
+                <h3>Day of Go-Live</h3>
+                <div class="checklist-card">
+                    <label class="checklist-item"><input type="checkbox"><span>Final data refresh completed</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>Dashboard published to production workspace</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>User access granted</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>Scheduled refresh enabled</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>Go-live communication sent</span></label>
+                    <label class="checklist-item"><input type="checkbox"><span>Support team briefed</span></label>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Deployment Steps</h2>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">1</span>
+                        <h3>Prepare Production Workspace</h3>
+                    </div>
+                    <div class="step-meta">Owner: Power BI Admin / PM</div>
+                    <ol>
+                        <li>Navigate to Power BI Service: [URL]</li>
+                        <li>Verify workspace exists: <strong>[WORKSPACE_NAME]</strong></li>
+                        <li>Confirm workspace capacity assignment</li>
+                        <li>Verify admin access to workspace</li>
+                    </ol>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">2</span>
+                        <h3>Publish Dashboard</h3>
+                    </div>
+                    <div class="step-meta">Owner: Power BI Lead</div>
+                    <ol>
+                        <li>Open final PBIX file: <code>[FILENAME].pbix</code></li>
+                        <li>Verify data model is connected (not local file)</li>
+                        <li>Click <strong>Publish</strong> → Select <strong>[WORKSPACE_NAME]</strong></li>
+                        <li>Wait for publish confirmation</li>
+                        <li>Navigate to workspace to verify report appears</li>
+                    </ol>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">3</span>
+                        <h3>Configure Data Source Credentials</h3>
+                    </div>
+                    <div class="step-meta">Owner: Power BI Lead</div>
+                    <ol>
+                        <li>Go to <strong>Workspace</strong> → <strong>Settings</strong> → <strong>Datasets</strong></li>
+                        <li>Click <strong>Data source credentials</strong></li>
+                        <li>For each data source: select auth method, enter credentials, test connection</li>
+                        <li>Document any credential issues</li>
+                    </ol>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">4</span>
+                        <h3>Configure Scheduled Refresh</h3>
+                    </div>
+                    <div class="step-meta">Owner: Power BI Lead</div>
+                    <ol>
+                        <li>Go to <strong>Dataset settings</strong> → <strong>Scheduled refresh</strong></li>
+                        <li>Configure: Time zone, Refresh frequency (Daily), Time (off-peak hours)</li>
+                        <li>Set failure notifications email</li>
+                        <li><strong>Do not enable until go-live confirmation</strong></li>
+                    </ol>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">5</span>
+                        <h3>Configure Row-Level Security</h3>
+                    </div>
+                    <div class="step-meta">Owner: Power BI Lead</div>
+                    <ol>
+                        <li>Go to <strong>Dataset</strong> → <strong>Security</strong></li>
+                        <li>For each RLS role: Add AD group or individual users</li>
+                        <li>Document assignments per access matrix</li>
+                        <li>Test each role using <strong>"Test as role"</strong></li>
+                    </ol>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">6</span>
+                        <h3>Grant User Access</h3>
+                    </div>
+                    <div class="step-meta">Owner: PM / Power BI Admin</div>
+                    <ol>
+                        <li>Go to <strong>Workspace</strong> → <strong>Access</strong></li>
+                        <li>Add users/groups per access matrix</li>
+                        <li>For app workspace, publish app and configure audience</li>
+                    </ol>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">7</span>
+                        <h3>Enable Scheduled Refresh</h3>
+                    </div>
+                    <div class="step-meta">Owner: Power BI Lead</div>
+                    <ol>
+                        <li>Return to <strong>Dataset settings</strong> → <strong>Scheduled refresh</strong></li>
+                        <li>Toggle <strong>Keep your data up to date</strong> to ON</li>
+                        <li>Click <strong>Apply</strong></li>
+                        <li>Verify next refresh time displayed</li>
+                    </ol>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">8</span>
+                        <h3>Send Go-Live Communication</h3>
+                    </div>
+                    <div class="step-meta">Owner: PM</div>
+                    <ol>
+                        <li>Send pre-drafted email to stakeholder list</li>
+                        <li>Include: Dashboard URL, User guide link, Support contact info, Training details</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Rollback Plan</h2>
+
+                <div class="callout warning">
+                    <h3>Triggers for Rollback</h3>
+                    <ul>
+                        <li>Critical data accuracy issues discovered post-go-live</li>
+                        <li>Widespread access/permission failures</li>
+                        <li>Performance issues impacting business operations</li>
+                        <li>Request from Business Owner</li>
+                    </ul>
+                </div>
+
+                <h3>Rollback Steps</h3>
+                <ol>
+                    <li><strong>Disable Dashboard Access</strong> - Remove viewer permissions or unpublish app</li>
+                    <li><strong>Disable Scheduled Refresh</strong> - Prevent further data updates</li>
+                    <li><strong>Notify Stakeholders</strong> - Communicate temporary unavailability</li>
+                    <li><strong>Restore Previous Version</strong> - Re-publish previous PBIX from backup</li>
+                    <li><strong>Document Issues</strong> - Log issues and create action plan</li>
+                </ol>
+            </div>
+
+            <div class="content-section">
+                <h2>Support Contacts</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Contact</th>
+                            <th>Response Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>L1 - User Questions</td>
+                            <td>[Help Desk]</td>
+                            <td>4 hours</td>
+                        </tr>
+                        <tr>
+                            <td>L2 - Technical Issues</td>
+                            <td>[Power BI Admin]</td>
+                            <td>8 hours</td>
+                        </tr>
+                        <tr>
+                            <td>L3 - Data Issues</td>
+                            <td>[Data Engineer]</td>
+                            <td>24 hours</td>
+                        </tr>
+                        <tr>
+                            <td>L4 - Critical</td>
+                            <td>[PM]</td>
+                            <td>Immediate</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Last updated: [DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

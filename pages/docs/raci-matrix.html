@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RACI Matrix | Power BI Dashboard</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo-link">
+                    <h1>Power BI Dashboard</h1>
+                    <span class="subtitle">[CLIENT_NAME]</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="../../index.html" class="nav-link"><i>📊</i> Dashboard Home</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentation</div>
+                <a href="requirements.html" class="nav-link"><i>📋</i> Requirements</a>
+                <a href="data-dictionary.html" class="nav-link"><i>📖</i> Data Dictionary</a>
+                <a href="user-guide.html" class="nav-link"><i>📘</i> User Guide</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Project Management</div>
+                <a href="sprint-backlog.html" class="nav-link"><i>🎯</i> Sprint Backlog</a>
+                <a href="status-report.html" class="nav-link"><i>📈</i> Status Reports</a>
+                <a href="raci-matrix.html" class="nav-link active"><i>👥</i> RACI Matrix</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Model</div>
+                <a href="../data-model/schema.html" class="nav-link"><i>🗂️</i> Schema</a>
+                <a href="../data-model/dax-measures.html" class="nav-link"><i>📐</i> DAX Measures</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <a href="../testing/test-cases.html" class="nav-link"><i>✅</i> Test Cases</a>
+                <a href="../testing/uat-feedback.html" class="nav-link"><i>💬</i> UAT Feedback</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Deployment</div>
+                <a href="../deployment/runbook.html" class="nav-link"><i>🚀</i> Runbook</a>
+                <a href="../deployment/access-matrix.html" class="nav-link"><i>🔐</i> Access Matrix</a>
+                <a href="../dashboard/version-history.html" class="nav-link"><i>📜</i> Version History</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Home</a> / <a href="#">Project Management</a> / <span>RACI Matrix</span>
+            </div>
+
+            <div class="page-header">
+                <h1>RACI Matrix</h1>
+                <p class="meta">Version 1.0 | Last Updated: [DATE]</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Legend</h2>
+                <div class="raci-legend">
+                    <span class="raci-item"><span class="raci r">R</span> Responsible (does the work)</span>
+                    <span class="raci-item"><span class="raci a">A</span> Accountable (final decision maker)</span>
+                    <span class="raci-item"><span class="raci c">C</span> Consulted (provides input)</span>
+                    <span class="raci-item"><span class="raci i">I</span> Informed (notified after)</span>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Team Members</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Abbr</th>
+                            <th>Role</th>
+                            <th>Name</th>
+                            <th>Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>PM</td><td>Project Manager</td><td>[Name]</td><td>80</td></tr>
+                        <tr><td>DE</td><td>Data Engineer</td><td>[Name]</td><td>80</td></tr>
+                        <tr><td>PBI</td><td>Power BI Lead</td><td>[Name]</td><td>180</td></tr>
+                        <tr><td>UX</td><td>UX Designer</td><td>[Name]</td><td>30</td></tr>
+                        <tr><td>QA</td><td>QA Analyst</td><td>[Name]</td><td>20</td></tr>
+                        <tr><td>BO</td><td>Business Owner</td><td>[Name]</td><td>-</td></tr>
+                        <tr><td>TL</td><td>Technical Lead (Client)</td><td>[Name]</td><td>-</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Phase 1: Discovery & Data Engineering</h2>
+                <table class="raci-table">
+                    <thead>
+                        <tr>
+                            <th>Deliverable</th>
+                            <th>PM</th>
+                            <th>DE</th>
+                            <th>PBI</th>
+                            <th>UX</th>
+                            <th>QA</th>
+                            <th>BO</th>
+                            <th>TL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Project kickoff meeting</td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>Requirements document</td>
+                            <td><span class="raci r">R</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci a">A</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>Data source inventory</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>Data profiling report</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>Data model schema (ERD)</td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>ETL/Dataflow implementation</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>Data dictionary</td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Phase 2: Design & Development</h2>
+                <table class="raci-table">
+                    <thead>
+                        <tr>
+                            <th>Deliverable</th>
+                            <th>PM</th>
+                            <th>DE</th>
+                            <th>PBI</th>
+                            <th>UX</th>
+                            <th>QA</th>
+                            <th>BO</th>
+                            <th>TL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Dashboard wireframes</td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>Power BI data model</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>DAX measures</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>View 1 development</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>View 2 development</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>View 3 development</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>Data refresh configuration</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci r">R</span></td>
+                            <td><span class="raci a">A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Phase 3: Refinement & Testing</h2>
+                <table class="raci-table">
+                    <thead>
+                        <tr>
+                            <th>Deliverable</th>
+                            <th>PM</th>
+                            <th>DE</th>
+                            <th>PBI</th>
+                            <th>UX</th>
+                            <th>QA</th>
+                            <th>BO</th>
+                            <th>TL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Feedback incorporation</td>
+                            <td><span class="raci r">R</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci a">A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>Performance optimization</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>Row-level security</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>Functional testing</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>Data validation testing</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>Defect resolution</td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-section">
+                <h2>Phase 4: UAT & Deployment</h2>
+                <table class="raci-table">
+                    <thead>
+                        <tr>
+                            <th>Deliverable</th>
+                            <th>PM</th>
+                            <th>DE</th>
+                            <th>PBI</th>
+                            <th>UX</th>
+                            <th>QA</th>
+                            <th>BO</th>
+                            <th>TL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>UAT plan & test cases</td>
+                            <td><span class="raci r">R</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci a">A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>UAT facilitation</td>
+                            <td><span class="raci r">R</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci a">A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>UAT sign-off</td>
+                            <td><span class="raci r">R</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci a">A</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>Deployment runbook</td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>Production deployment</td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>User training</td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>User guide</td>
+                            <td><span class="raci r">R</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci a">A</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci c">C</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>Project closeout</td>
+                            <td><span class="raci r">R/A</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci i">I</span></td>
+                            <td><span class="raci a">A</span></td>
+                            <td><span class="raci i">I</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Last updated: [DATE]</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
