@@ -1,7 +1,7 @@
 # Sprint Backlog
 
-## Project: ToyotaGPT Adoption Dashboard
-**Client:** Toyota Motor North America (TMNA)
+## Project: Enterprise AI Adoption Dashboard
+**Client:** Acme Corporation
 **Sponsor:** CTO / AI Governance Team
 **Total Duration:** 8 weeks
 **Total Budget:** $79,150
@@ -16,8 +16,8 @@
 | ID | User Story | Acceptance Criteria | Owner | Est. Hours | Status |
 |----|------------|---------------------|-------|------------|--------|
 | US-001 | As the AI Governance team, I need a kickoff meeting so that project goals and timeline are aligned | Kickoff deck delivered; meeting minutes captured; RACI confirmed | PM | 4 | To Do |
-| US-002 | As a Data Engineer, I need to identify ToyotaGPT telemetry data sources so that we understand what data is available | AWS Bedrock log location documented; available fields cataloged | DE | 8 | To Do |
-| US-003 | As a Data Engineer, I need to assess data quality from ToyotaGPT logs so that we can identify any data gaps | Data profiling report delivered; quality issues documented | DE | 8 | To Do |
+| US-002 | As a Data Engineer, I need to identify Enterprise AI telemetry data sources so that we understand what data is available | AWS Bedrock log location documented; available fields cataloged | DE | 8 | To Do |
+| US-003 | As a Data Engineer, I need to assess data quality from Enterprise AI logs so that we can identify any data gaps | Data profiling report delivered; quality issues documented | DE | 8 | To Do |
 | US-004 | As a Data Engineer, I need to identify HR/employee data source so that we can map users to business units | HR system access confirmed; business unit hierarchy documented | DE | 4 | To Do |
 | US-005 | As the AI Governance team, I need to review the HTML prototype so that dashboard layout is validated | Prototype reviewed; feedback documented; changes prioritized | UX | 8 | To Do |
 | US-006 | As a PM, I need to document adoption targets by business unit so that we can measure against goals | Targets confirmed for all 14 business units; documented in requirements | PM | 4 | To Do |
@@ -36,7 +36,7 @@
 
 | ID | User Story | Acceptance Criteria | Owner | Est. Hours | Status |
 |----|------------|---------------------|-------|------------|--------|
-| US-010 | As a Data Engineer, I need to build ETL for ToyotaGPT session data so that telemetry flows into the data model | ETL extracts session data from AWS; incremental refresh configured | DE | 16 | To Do |
+| US-010 | As a Data Engineer, I need to build ETL for Enterprise AI session data so that telemetry flows into the data model | ETL extracts session data from AWS; incremental refresh configured | DE | 16 | To Do |
 | US-011 | As a Data Engineer, I need to build ETL for user/business unit mapping so that sessions can be attributed | User-to-BU mapping populated; refresh schedule configured | DE | 8 | To Do |
 | US-012 | As a Data Engineer, I need to configure daily scheduled refresh so that dashboard shows current data | Scheduled refresh running daily; failure alerts configured | DE | 4 | To Do |
 | US-013 | As a Power BI Lead, I need to create core DAX measures so that KPIs can be calculated | Measures: Active Users, Adoption Rate, Session Count, Avg Sessions/User created | PBI | 8 | To Do |

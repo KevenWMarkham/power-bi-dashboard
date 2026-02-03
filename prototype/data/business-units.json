@@ -71,9 +71,9 @@
       "primaryTaskTypes": ["data-analysis", "process-automation", "research"]
     },
     {
-      "id": "bu-toyota-assembly",
+      "id": "bu-ind-assembly",
       "name": "OEM Assembly Plants",
-      "category": "toyota-specific",
+      "category": "industry",
       "totalEmployees": 1200,
       "licensedUsers": 450,
       "adoptionTarget": 0.40,
@@ -81,9 +81,9 @@
       "primaryTaskTypes": ["technical-docs", "research", "data-analysis"]
     },
     {
-      "id": "bu-toyota-logistics",
+      "id": "bu-ind-logistics",
       "name": "Logistics",
-      "category": "toyota-specific",
+      "category": "industry",
       "totalEmployees": 680,
       "licensedUsers": 520,
       "adoptionTarget": 0.55,
@@ -91,9 +91,9 @@
       "primaryTaskTypes": ["data-analysis", "process-automation", "research"]
     },
     {
-      "id": "bu-toyota-parts",
+      "id": "bu-ind-parts",
       "name": "Parts & Service",
-      "category": "toyota-specific",
+      "category": "industry",
       "totalEmployees": 540,
       "licensedUsers": 480,
       "adoptionTarget": 0.60,
@@ -101,9 +101,9 @@
       "primaryTaskTypes": ["technical-docs", "customer-content", "research"]
     },
     {
-      "id": "bu-toyota-tfs",
-      "name": "Toyota Financial Services",
-      "category": "toyota-specific",
+      "id": "bu-ind-tfs",
+      "name": "Financial Services",
+      "category": "industry",
       "totalEmployees": 620,
       "licensedUsers": 580,
       "adoptionTarget": 0.65,
@@ -111,9 +111,9 @@
       "primaryTaskTypes": ["data-analysis", "writing", "research"]
     },
     {
-      "id": "bu-toyota-connected",
+      "id": "bu-ind-connected",
       "name": "Connected Services",
-      "category": "toyota-specific",
+      "category": "industry",
       "totalEmployees": 380,
       "licensedUsers": 360,
       "adoptionTarget": 0.75,
@@ -121,9 +121,9 @@
       "primaryTaskTypes": ["code-generation", "technical-docs", "brainstorming"]
     },
     {
-      "id": "bu-toyota-dealer",
+      "id": "bu-ind-dealer",
       "name": "Dealer Network",
-      "category": "toyota-specific",
+      "category": "industry",
       "totalEmployees": 720,
       "licensedUsers": 480,
       "adoptionTarget": 0.45,
@@ -131,9 +131,9 @@
       "primaryTaskTypes": ["customer-content", "writing", "research"]
     },
     {
-      "id": "bu-toyota-rd",
+      "id": "bu-ind-rd",
       "name": "Research & Development",
-      "category": "toyota-specific",
+      "category": "industry",
       "totalEmployees": 520,
       "licensedUsers": 500,
       "adoptionTarget": 0.85,

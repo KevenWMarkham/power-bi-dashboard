@@ -1,7 +1,7 @@
 # D11 Sprint Plan - Measurement & Adoption Scorecard
 
 **Deliverable:** D11 - Measurement & Adoption Scorecard MVP
-**Client:** Toyota Motor North America (TMNA)
+**Client:** Acme Corporation
 **Sponsor:** CTO / AI Governance Team
 **Delivery Date:** March 10, 2026 (Previously March 27, 2026)
 **Duration:** 5 Weeks
@@ -15,7 +15,7 @@
 |-------------|-------------|--------|
 | Scorecard Design | Fully designed AI adoption scorecard by tool and by function | To Do |
 | Metrics | Up to 10 defined metrics | To Do |
-| Data Sources | Data from up to 5 Toyota systems | To Do |
+| Data Sources | Data from up to 5 Acme systems | To Do |
 | Reporting Structure | Defined reporting hierarchy | To Do |
 | Dashboard | 1 screen with 3 populated views in Power BI | To Do |
 | Documentation | Documentation for repeatable use | To Do |
@@ -43,7 +43,7 @@
 | S1-001 | Kickoff meeting with AI Governance team | PM | 2 | To Do |
 | S1-002 | Define 10 adoption metrics with stakeholders | PM | 4 | To Do |
 | S1-003 | Document reporting structure by function/tool | PM | 4 | To Do |
-| S1-004 | Identify 5 Toyota data source systems | DE | 8 | To Do |
+| S1-004 | Identify 5 Acme data source systems | DE | 8 | To Do |
 | S1-005 | Obtain data access for all source systems | DE | 4 | To Do |
 | S1-006 | Review/update HTML prototype with stakeholders | UX | 4 | To Do |
 
@@ -77,7 +77,7 @@
 
 | ID | Task | Owner | Est. Hrs | Status |
 |----|------|-------|----------|--------|
-| S2-001 | Build ETL for ToyotaGPT telemetry data | DE | 8 | To Do |
+| S2-001 | Build ETL for Enterprise AI telemetry data | DE | 8 | To Do |
 | S2-002 | Build ETL for HR/employee mapping | DE | 4 | To Do |
 | S2-003 | Build ETL for remaining 3 data sources | DE | 8 | To Do |
 | S2-004 | Configure daily scheduled refresh | DE | 4 | To Do |
@@ -165,11 +165,11 @@
 
 ---
 
-## 5 Toyota Data Sources
+## 5 Acme Data Sources
 
 | # | System | Data | Refresh | Priority |
 |---|--------|------|---------|----------|
-| 1 | ToyotaGPT Telemetry (AWS Bedrock) | Session logs, queries, responses | Daily | P1 |
+| 1 | Enterprise AI Telemetry (AWS Bedrock) | Session logs, queries, responses | Daily | P1 |
 | 2 | HR System (Workday) | Employee data, business unit mapping | Daily | P1 |
 | 3 | License Management | Licensed users by tool/function | Weekly | P2 |
 | 4 | Azure AD | User authentication, login data | Daily | P2 |
@@ -232,7 +232,7 @@ Due to the compressed 5-week timeline (vs. original 8 weeks), the following adju
 The D11 deliverable is complete when:
 
 - [ ] 10 metrics defined and documented with calculations
-- [ ] 5 Toyota data sources integrated with automated refresh
+- [ ] 5 Acme data sources integrated with automated refresh
 - [ ] Reporting structure documented by tool and function
 - [ ] 1 Power BI dashboard with 3 fully populated views
 - [ ] Row-level security implemented and tested

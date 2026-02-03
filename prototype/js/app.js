@@ -1,4 +1,4 @@
-// Main Application Logic for ToyotaGPT Adoption Dashboard Prototype
+// Main Application Logic for Enterprise AI Adoption Dashboard Prototype
 
 const App = {
   // Application state
@@ -142,7 +142,7 @@ const App = {
 
     // Group by category
     const corporate = this.state.businessUnits.businessUnits.filter(u => u.category === 'corporate');
-    const toyotaSpecific = this.state.businessUnits.businessUnits.filter(u => u.category === 'toyota-specific');
+    const toyotaSpecific = this.state.businessUnits.businessUnits.filter(u => u.category === 'industry');
 
     const corpGroup = document.createElement('optgroup');
     corpGroup.label = 'Corporate Functions';
@@ -155,7 +155,7 @@ const App = {
     select.appendChild(corpGroup);
 
     const toyotaGroup = document.createElement('optgroup');
-    toyotaGroup.label = 'Toyota Divisions';
+    toyotaGroup.label = 'Industry Divisions';
     toyotaSpecific.forEach(u => {
       const opt = document.createElement('option');
       opt.value = u.id;
@@ -496,7 +496,7 @@ const App = {
     container.innerHTML = units.map(unit => `
       <tr class="clickable" data-unit-id="${unit.id}">
         <td><strong>${unit.name}</strong></td>
-        <td>${unit.category === 'corporate' ? 'Corporate' : 'Toyota Division'}</td>
+        <td>${unit.category === 'corporate' ? 'Corporate' : 'Industry Division'}</td>
         <td>${this.formatNumber(unit.activeUsers)} / ${this.formatNumber(unit.totalUsers)}</td>
         <td>
           <div style="display: flex; align-items: center; gap: 8px;">

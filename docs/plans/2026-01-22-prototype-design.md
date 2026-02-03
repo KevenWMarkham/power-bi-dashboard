@@ -1,21 +1,21 @@
-# ToyotaGPT Adoption Dashboard - Prototype Design
+# Enterprise AI Adoption Dashboard - Prototype Design
 
 **Date:** 2026-01-22
 **Status:** Approved
 **Author:** Keven / AI Governance Team
-**Sponsor:** CTO, Toyota Motor North America
+**Sponsor:** CTO, Acme Corporation
 
 ---
 
 ## 1. Overview
 
-An interactive HTML/JS prototype to validate requirements for the ToyotaGPT Adoption Dashboard before Power BI development begins. The prototype uses mock JSON data and allows rapid iteration based on stakeholder feedback.
+An interactive HTML/JS prototype to validate requirements for the Enterprise AI Adoption Dashboard before Power BI development begins. The prototype uses mock JSON data and allows rapid iteration based on stakeholder feedback.
 
 ### Purpose
-Track AI adoption across TMNA business functional areas, starting with ToyotaGPT - an internal multi-model, multi-modal AI tool hosted on AWS Bedrock.
+Track AI adoption across Acme business functional areas, starting with Enterprise AI - an internal multi-model, multi-modal AI tool hosted on AWS Bedrock.
 
 ### Primary Audience
-AI Governance Team (internal to TMNA, sponsored by CTO)
+AI Governance Team (internal to Acme, sponsored by CTO)
 
 ### Key Objectives
 - Understand usage depth (frequency and engagement levels)
@@ -35,11 +35,11 @@ AI Governance Team (internal to TMNA, sponsored by CTO)
 - Sales
 - Operations
 
-### Toyota-Specific Divisions
+### Industry-Specific Divisions
 - OEM Assembly Plants
 - Logistics
 - Parts & Service
-- Toyota Financial Services
+- Financial Services
 - Connected Services
 - Dealer Network
 - R&D
@@ -68,7 +68,7 @@ AI Governance Team (internal to TMNA, sponsored by CTO)
 ## 4. Dashboard Views
 
 ### View 1: Executive Summary
-**Purpose:** Quick pulse on overall ToyotaGPT adoption in under 30 seconds.
+**Purpose:** Quick pulse on overall Enterprise AI adoption in under 30 seconds.
 
 **KPI Cards:**
 | Metric | Description |
@@ -118,7 +118,7 @@ AI Governance Team (internal to TMNA, sponsored by CTO)
 ---
 
 ### View 3: Use Case Analysis
-**Purpose:** Understand how ToyotaGPT is being used across the organization.
+**Purpose:** Understand how Enterprise AI is being used across the organization.
 
 **Filters:**
 - Task Type (multi-select)
@@ -224,7 +224,7 @@ AI Governance Team (internal to TMNA, sponsored by CTO)
 ```
 
 ### Mock Data Specifications
-- 14 business units (7 corporate + 7 Toyota-specific)
+- 14 business units (7 corporate + 7 industry-specific)
 - ~5,000 simulated users across units
 - ~150,000 sessions over 12 months
 - Realistic patterns: adoption ramp-up, seasonal dips, unit-specific task preferences

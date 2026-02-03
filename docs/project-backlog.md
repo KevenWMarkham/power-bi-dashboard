@@ -1,7 +1,7 @@
-# ToyotaGPT Adoption Dashboard - Project Backlog
+# Enterprise AI Adoption Dashboard - Project Backlog
 
-**Project:** ToyotaGPT Adoption Dashboard
-**Client:** Toyota Motor North America (TMNA)
+**Project:** Enterprise AI Adoption Dashboard
+**Client:** Acme Corporation
 **Sponsor:** CTO / AI Governance Team
 **Duration:** 8 Weeks
 **Created:** 2026-01-22
@@ -61,7 +61,7 @@
 
 | Subtask ID | Description | Estimate | Status |
 |------------|-------------|----------|--------|
-| E1-T3-S1 | Identify ToyotaGPT telemetry data source location | 4 hrs | To Do |
+| E1-T3-S1 | Identify Enterprise AI telemetry data source location | 4 hrs | To Do |
 | E1-T3-S2 | Document available data fields from AWS Bedrock logs | 4 hrs | To Do |
 | E1-T3-S3 | Assess data quality and completeness | 4 hrs | To Do |
 | E1-T3-S4 | Identify business unit/employee data source (HR system) | 4 hrs | To Do |
@@ -101,7 +101,7 @@
 
 | Subtask ID | Description | Estimate | Status |
 |------------|-------------|----------|--------|
-| E2-T2-S1 | Set up connection to ToyotaGPT telemetry (AWS) | 4 hrs | To Do |
+| E2-T2-S1 | Set up connection to Enterprise AI telemetry (AWS) | 4 hrs | To Do |
 | E2-T2-S2 | Create ETL for session data extraction | 8 hrs | To Do |
 | E2-T2-S3 | Set up connection to HR/employee data source | 4 hrs | To Do |
 | E2-T2-S4 | Create ETL for user/business unit mapping | 4 hrs | To Do |
@@ -403,7 +403,7 @@
 
 | Risk ID | Description | Impact | Probability | Mitigation |
 |---------|-------------|--------|-------------|------------|
-| R1 | ToyotaGPT telemetry data access delayed | High | Medium | Early engagement with AWS/platform team |
+| R1 | Enterprise AI telemetry data access delayed | High | Medium | Early engagement with AWS/platform team |
 | R2 | Data quality issues in source systems | High | Medium | Early data profiling, establish data quality rules |
 | R3 | Stakeholder availability for UAT | Medium | Medium | Schedule UAT sessions early, identify backup reviewers |
 | R4 | Performance issues with large data volume | Medium | Low | Implement aggregations, test with production-scale data early |

@@ -1,4 +1,4 @@
-// Data Generator for ToyotaGPT Adoption Dashboard Prototype
+// Data Generator for Enterprise AI Adoption Dashboard Prototype
 // Generates realistic mock data for ~5K users and ~150K sessions over 12 months
 
 const DataGenerator = {

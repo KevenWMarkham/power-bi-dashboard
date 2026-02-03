@@ -1,4 +1,4 @@
-// Chart rendering functions for ToyotaGPT Adoption Dashboard Prototype
+// Chart rendering functions for Enterprise AI Adoption Dashboard Prototype
 // Uses vanilla JS + Canvas/SVG for dependency-free visualizations
 
 const Charts = {
