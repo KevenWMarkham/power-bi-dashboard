@@ -275,9 +275,36 @@ const App = {
   renderBusinessUnitComparison() {
     const metrics = this.state.metrics;
 
+    // Update KPIs with aggregate data
+    this.updateKPICard('kpi-unit-adoption', {
+      value: this.formatPercent(metrics.overview.adoptionRate),
+      subtext: 'Overall adoption rate'
+    });
+
+    this.updateKPICard('kpi-unit-users', {
+      value: this.formatNumber(metrics.overview.totalActiveUsers),
+      subtext: `of ${this.formatNumber(metrics.overview.totalLicensedUsers)} licensed`
+    });
+
+    this.updateKPICard('kpi-unit-sessions', {
+      value: this.formatNumber(metrics.overview.totalSessions),
+      subtext: 'Total sessions'
+    });
+
+    // Calculate top task type
+    const taskTypes = Object.values(metrics.byTaskType);
+    const topTask = taskTypes.sort((a, b) => b.sessionCount - a.sessionCount)[0];
+    this.updateKPICard('kpi-unit-top-task', {
+      value: topTask?.label || '-',
+      subtext: `${this.formatNumber(topTask?.sessionCount || 0)} sessions`
+    });
+
     // Render funnel for overall org
     const overallFunnel = this.calculateOverallFunnel();
     Charts.renderFunnel('chart-adoption-funnel', overallFunnel);
+
+    // Render monthly active users trend
+    Charts.renderAdoptionTrend('chart-unit-trend', metrics.trends);
 
     // Render business unit table
     this.renderBusinessUnitTable();
@@ -299,11 +326,99 @@ const App = {
       subtext: `of ${unitMetrics.totalUsers} licensed`
     });
 
+    this.updateKPICard('kpi-unit-sessions', {
+      value: this.formatNumber(unitMetrics.totalSessions),
+      subtext: `${unitMetrics.avgSessionsPerUser.toFixed(1)} per user`
+    });
+
+    // Calculate top task type for this unit
+    const unitSessions = this.state.sessions.filter(s => s.businessUnitId === unitId);
+    const taskCounts = {};
+    unitSessions.forEach(s => {
+      taskCounts[s.taskType] = (taskCounts[s.taskType] || 0) + 1;
+    });
+    const topTaskId = Object.entries(taskCounts).sort((a, b) => b[1] - a[1])[0];
+    const topTaskType = topTaskId ? this.state.referenceData.taskTypes.find(t => t.id === topTaskId[0]) : null;
+
+    this.updateKPICard('kpi-unit-top-task', {
+      value: topTaskType?.label || '-',
+      subtext: topTaskId ? `${this.formatNumber(topTaskId[1])} sessions` : '-'
+    });
+
     // Render unit-specific charts
     Charts.renderFunnel('chart-adoption-funnel', unitMetrics.engagementBreakdown);
 
+    // Calculate and render unit-specific monthly trend
+    const unitTrends = this.calculateUnitTrends(unitId);
+    Charts.renderAdoptionTrend('chart-unit-trend', unitTrends);
+
     // Render user table for this unit
     this.renderUserTable(unitId);
+  },
+
+  // Calculate monthly trends for a specific business unit
+  calculateUnitTrends(unitId) {
+    const unitSessions = this.state.sessions.filter(s => s.businessUnitId === unitId);
+    const unitUsers = this.state.users.filter(u => u.businessUnitId === unitId);
+
+    // Group by month
+    const months = [];
+    const startDate = new Date('2025-02-01');
+    for (let i = 0; i < 12; i++) {
+      const monthDate = new Date(startDate);
+      monthDate.setMonth(monthDate.getMonth() + i);
+      const monthStr = monthDate.toISOString().slice(0, 7);
+      months.push(monthStr);
+    }
+
+    return months.map(month => {
+      const monthSessions = unitSessions.filter(s => s.date.startsWith(month));
+      const activeUserIds = new Set(monthSessions.map(s => s.userId));
+
+      return {
+        month,
+        activeUsers: activeUserIds.size,
+        sessions: monthSessions.length
+      };
+    });
+  },
+
+  // Calculate fastest growing task type
+  calculateFastestGrowing() {
+    const sessions = this.state.sessions;
+    const taskTypes = this.state.referenceData.taskTypes;
+
+    // Define time periods (last 3 months vs previous 3 months)
+    const recentStart = '2025-11-01';
+    const recentEnd = '2026-01-31';
+    const previousStart = '2025-08-01';
+    const previousEnd = '2025-10-31';
+
+    const growth = taskTypes.map(task => {
+      const recentCount = sessions.filter(s =>
+        s.taskType === task.id && s.date >= recentStart && s.date <= recentEnd
+      ).length;
+
+      const previousCount = sessions.filter(s =>
+        s.taskType === task.id && s.date >= previousStart && s.date <= previousEnd
+      ).length;
+
+      const growthPercent = previousCount > 0
+        ? Math.round(((recentCount - previousCount) / previousCount) * 100)
+        : (recentCount > 0 ? 100 : 0);
+
+      return {
+        ...task,
+        recentCount,
+        previousCount,
+        growthPercent
+      };
+    });
+
+    // Return task with highest growth (must have some previous activity)
+    return growth
+      .filter(t => t.previousCount > 10) // Minimum baseline
+      .sort((a, b) => b.growthPercent - a.growthPercent)[0];
   },
 
   // Render Use Case Analysis view
@@ -312,7 +427,7 @@ const App = {
 
     // Update KPIs
     const taskTypes = Object.values(metrics.byTaskType);
-    const topTask = taskTypes.sort((a, b) => b.sessionCount - a.sessionCount)[0];
+    const topTask = [...taskTypes].sort((a, b) => b.sessionCount - a.sessionCount)[0];
 
     this.updateKPICard('kpi-use-cases', {
       value: taskTypes.length,
@@ -322,6 +437,20 @@ const App = {
     this.updateKPICard('kpi-top-task', {
       value: topTask?.label || '-',
       subtext: `${this.formatNumber(topTask?.sessionCount || 0)} sessions`
+    });
+
+    // Calculate fastest growing task type (compare last 3 months vs previous 3 months)
+    const fastestGrowing = this.calculateFastestGrowing();
+    this.updateKPICard('kpi-fastest-growing', {
+      value: fastestGrowing?.label || '-',
+      subtext: fastestGrowing ? `+${fastestGrowing.growthPercent}% growth` : '-'
+    });
+
+    // Calculate highest engagement (by avg session duration)
+    const highestEngagement = [...taskTypes].sort((a, b) => b.avgDuration - a.avgDuration)[0];
+    this.updateKPICard('kpi-highest-engagement', {
+      value: highestEngagement?.label || '-',
+      subtext: highestEngagement ? `${highestEngagement.avgDuration.toFixed(1)} min avg` : '-'
     });
 
     // Render heatmap
@@ -465,7 +594,12 @@ const App = {
     const changeEl = card.querySelector('.kpi-change');
     const subtextEl = card.querySelector('.kpi-subtext');
 
-    if (valueEl) valueEl.textContent = data.value;
+    if (valueEl) {
+      valueEl.textContent = data.value;
+      // Add text-value class for non-numeric values (longer text)
+      const isTextValue = typeof data.value === 'string' && isNaN(parseFloat(data.value.replace(/[,%]/g, '')));
+      valueEl.classList.toggle('text-value', isTextValue);
+    }
 
     if (changeEl && data.change) {
       changeEl.textContent = data.change;

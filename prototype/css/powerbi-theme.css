@@ -206,6 +206,11 @@ html, body {
   line-height: 1.2;
 }
 
+.kpi-value.text-value {
+  font-size: var(--font-size-lg);
+  word-break: break-word;
+}
+
 .kpi-change {
   display: inline-flex;
   align-items: center;
@@ -243,6 +248,7 @@ html, body {
   border-radius: var(--radius-md);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-card);
+  overflow: visible;
 }
 
 .chart-card.full-width {
@@ -258,9 +264,17 @@ html, body {
   border-bottom: 1px solid var(--pbi-gray-lighter);
 }
 
+.chart-hint {
+  font-size: var(--font-size-xs);
+  font-weight: 400;
+  color: var(--pbi-primary);
+  font-style: italic;
+}
+
 .chart-container {
   position: relative;
   height: 280px;
+  overflow: visible;
 }
 
 .chart-container.small {
@@ -268,7 +282,8 @@ html, body {
 }
 
 .chart-container.large {
-  height: 400px;
+  height: auto;
+  min-height: 400px;
 }
 
 /* ========== Data Tables ========== */
