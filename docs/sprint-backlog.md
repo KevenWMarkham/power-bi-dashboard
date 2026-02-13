@@ -97,6 +97,21 @@
 
 ---
 
+## Unscheduled Backlog
+
+| ID | User Story | Acceptance Criteria | Owner | Est. Hours | Status |
+|----|------------|---------------------|-------|------------|--------|
+| US-042 | As the AI Governance team, I need to analyze ToyotaGPT user prompts and response context so that we understand what information Toyota employees are seeking from the custom GPT | ToyotaGPT prompt logs identified and accessible; prompt categorization taxonomy defined (8 categories); analysis of top prompt themes and intent patterns delivered; context mapping of what information users expect back vs. what the bot returns documented; gap analysis between user intent and bot response coverage completed; findings summarized in a report with recommendations for dashboard integration | DE / PM | 16 | To Do |
+| US-043 | As the AI Governance team, I need a Prompt Intelligence dashboard view (View 4) so that ToyotaGPT usage patterns are visible | View 4 built with 4 KPI cards (prompt volume, unique users, top category, satisfaction) and 6+ visuals (theme donut, volume trend, heatmap, themes table, gap analysis, complexity distribution); filters working; layout consistent with Views 1-3 | PBI | 32 | To Do |
+| US-044 | As the AI Governance team, I need cross-platform correlation between Enterprise AI and ToyotaGPT so that we can see holistic AI adoption patterns | Cross-filter from View 4 applies to Views 1/2; ToyotaGPT summary card added to View 1; global filters apply across all 4 views; no data leakage across RLS boundaries | PBI | 12 | To Do |
+| US-045 | As the AI Governance team, I need a response gap analysis so that we can identify where ToyotaGPT falls short of user needs | Gap analysis visual shows demand-coverage mismatches; top 10 unmet needs ranked by gap score; gap trend tracking over time; actionable recommendations for knowledge base improvement | PBI / PM | 12 | To Do |
+| US-046 | As the AI Governance team, I need use-case-based UAT covering all 4 views so that the dashboard meets business needs | 7 use cases (UC-01 through UC-07) executed with stakeholders; all acceptance criteria met; sign-off obtained from Acme and Toyota stakeholders | PM | 20 | To Do |
+| US-047 | As the AI Governance team, I need updated documentation and training covering View 4 so that users can self-serve | User guide updated with View 4 screenshots; data dictionary updated with ToyotaGPT fields; FAQ created; training sessions conducted for Governance team and Toyota stakeholders | PBI / PM | 12 | To Do |
+
+> **Context:** Items US-042 through US-047 originate from the D12 Post-MVP deliverable. US-042 was the initial ask to contextualize prompts from **ToyotaGPT**, a custom GPT deployment at Toyota. US-043 through US-047 are the implementation stories derived from that analysis, covering the full lifecycle from dashboard build through UAT and deployment. See `D12-sprint-plan.md` for the detailed sprint plan.
+
+---
+
 ## Backlog Summary
 
 | Phase | Weeks | User Stories | Total Est. Hours |
@@ -105,7 +120,8 @@
 | Data Pipeline & Core Build | 3-4 | 10 | 84 |
 | Dashboard Completion & Testing | 5-6 | 9 | 96 |
 | UAT & Deployment | 7-8 | 13 | 68 |
-| **Total** | **1-8** | **41** | **312** |
+| Unscheduled Backlog (D12) | TBD | 6 | 104 |
+| **Total** | **1-8+** | **47** | **416** |
 
 ---
 

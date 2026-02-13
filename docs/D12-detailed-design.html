@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D12 Detailed Design &mdash; Enterprise AI Adoption Dashboard</title>
+<style>
+  :root{--blue:#118DFF;--dark-blue:#12239E;--orange:#E66C37;--gray:#6B6B6B;--light-gray:#F3F4F6;--green:#2DA02D;--red:#D13438;--yellow:#E6A700;--white:#FFFFFF;--text:#1F2937;--border:#E5E7EB;--purple:#9C27B0;--teal:#00BCD4}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;color:var(--text);background:var(--light-gray);line-height:1.5}
+  .container{max-width:1280px;margin:0 auto;padding:0 24px}
+  header{background:linear-gradient(135deg,var(--dark-blue),var(--blue));color:#fff;padding:40px 0 32px}
+  header h1{font-size:28px;font-weight:600} header p{opacity:.85;margin-top:4px;font-size:15px}
+  .header-meta{display:flex;gap:24px;margin-top:20px;flex-wrap:wrap}
+  .header-meta div{background:rgba(255,255,255,.12);border-radius:8px;padding:12px 20px;min-width:130px}
+  .header-meta label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;opacity:.7;display:block}
+  .header-meta span{font-size:18px;font-weight:600}
+  .tabs{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;overflow-x:auto}
+  .tabs .container{display:flex;gap:0}
+  .tab-btn{padding:14px 18px;border:none;background:none;font-size:13px;font-weight:500;color:var(--gray);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
+  .tab-btn:hover{color:var(--blue)} .tab-btn.active{color:var(--dark-blue);border-bottom-color:var(--blue);font-weight:600}
+  .tab-content{display:none;padding:32px 0} .tab-content.active{display:block}
+  section{margin-bottom:32px}
+  h2{font-size:22px;color:var(--dark-blue);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--blue)}
+  h3{font-size:16px;color:var(--dark-blue);margin:20px 0 10px} h4{font-size:14px;color:var(--dark-blue);margin:16px 0 8px}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:24px}
+  .card{background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);border-left:4px solid var(--blue)}
+  .card.orange{border-left-color:var(--orange)} .card.green{border-left-color:var(--green)} .card.red{border-left-color:var(--red)} .card.purple{border-left-color:var(--purple)}
+  .card .label{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray)}
+  .card .value{font-size:28px;font-weight:700;color:var(--dark-blue);margin:4px 0}
+  .card .detail{font-size:13px;color:var(--gray)}
+  .table-wrap{background:var(--white);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow-x:auto;margin-bottom:20px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:var(--dark-blue);color:#fff;text-align:left;padding:10px 14px;font-weight:600;white-space:nowrap}
+  td{padding:9px 14px;border-bottom:1px solid var(--border)} tr:hover td{background:#F0F6FF} tr:last-child td{border-bottom:none}
+  .badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600}
+  .badge-new{background:#E0F2FE;color:#0369A1} .badge-d11{background:#F3F4F6;color:#6B6B6B} .badge-pii{background:#FEE2E2;color:#991B1B}
+  .collapsible{cursor:pointer;user-select:none} .collapsible::after{content:" +";font-weight:700;color:var(--blue)} .collapsible.open::after{content:" \u2212"}
+  .collapse-body{display:none} .collapse-body.open{display:block}
+  pre{background:#1E1E1E;color:#D4D4D4;padding:16px;border-radius:6px;overflow-x:auto;font-size:13px;line-height:1.6;margin:12px 0}
+  code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
+  .kw{color:#569CD6} .fn{color:#DCDCAA} .str{color:#CE9178} .cm{color:#6A9955} .num{color:#B5CEA8}
+  .swatch{display:inline-block;width:16px;height:16px;border-radius:3px;vertical-align:middle;margin-right:6px;border:1px solid rgba(0,0,0,.1)}
+  .note{background:#FFF7ED;border-left:4px solid var(--orange);padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;margin:12px 0}
+  .info{background:#F0F6FF;border-left:4px solid var(--blue);padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;margin:12px 0}
+  .wireframe{background:var(--white);border:2px solid var(--dark-blue);border-radius:8px;padding:16px;margin:16px 0}
+  .wf-row{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+  .wf-card{flex:1;min-width:140px;border:2px solid var(--blue);border-radius:6px;padding:12px;text-align:center;font-size:12px;background:#F0F6FF}
+  .wf-card .wf-val{font-size:20px;font-weight:700;color:var(--dark-blue)}
+  .wf-chart{flex:1;min-width:250px;border:2px dashed var(--gray);border-radius:6px;padding:16px;text-align:center;font-size:12px;background:var(--light-gray);min-height:100px;display:flex;align-items:center;justify-content:center}
+  .wf-full{width:100%;border:2px dashed var(--gray);border-radius:6px;padding:16px;text-align:center;font-size:12px;background:var(--light-gray);min-height:80px;margin-bottom:12px}
+  .flow-arrow{text-align:center;font-size:20px;color:var(--blue);margin:8px 0}
+  @media(max-width:768px){.header-meta{gap:12px}.card-grid{grid-template-columns:1fr}.tab-btn{padding:12px 12px;font-size:12px}.wf-row{flex-direction:column}}
+  @media print{.tabs{position:static}.tab-content{display:block!important;page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <h1>D12 Detailed Design Document</h1>
+    <p>Post-MVP Enhancement &amp; ToyotaGPT Prompt Intelligence &mdash; Acme Corporation</p>
+    <div class="header-meta">
+      <div><label>Version</label><span>1.0</span></div>
+      <div><label>Date</label><span>Feb 12, 2026</span></div>
+      <div><label>Status</label><span>Draft</span></div>
+      <div><label>Baseline</label><span>D11 MVP</span></div>
+      <div><label>New Tables</label><span>4</span></div>
+      <div><label>New DAX</label><span>9</span></div>
+    </div>
+  </div>
+</header>
+<div class="tabs">
+  <div class="container">
+    <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+    <button class="tab-btn" onclick="showTab('architecture')">Architecture</button>
+    <button class="tab-btn" onclick="showTab('datasources')">Data Sources</button>
+    <button class="tab-btn" onclick="showTab('datamodel')">Data Model</button>
+    <button class="tab-btn" onclick="showTab('etl')">ETL Pipeline</button>
+    <button class="tab-btn" onclick="showTab('classification')">Classification</button>
+    <button class="tab-btn" onclick="showTab('dax')">DAX Measures</button>
+    <button class="tab-btn" onclick="showTab('view4')">View 4 UI</button>
+    <button class="tab-btn" onclick="showTab('integration')">Integration</button>
+    <button class="tab-btn" onclick="showTab('gap')">Gap Analysis</button>
+    <button class="tab-btn" onclick="showTab('security')">Security</button>
+    <button class="tab-btn" onclick="showTab('perftest')">Perf &amp; Testing</button>
+    <button class="tab-btn" onclick="showTab('deploy')">Deployment</button>
+  </div>
+</div>
+<div class="container">
+
+
+<div id="overview" class="tab-content active">
+  <section>
+    <h2>1. Introduction</h2>
+    <p style="font-size:14px;margin-bottom:16px;">This document provides the detailed technical design for D12, the post-MVP enhancement of the Enterprise AI Adoption Dashboard. D12 extends the D11 MVP by integrating ToyotaGPT prompt telemetry, building a Prompt Intelligence dashboard view (View 4), and enabling cross-platform correlation between Enterprise AI and ToyotaGPT usage.</p>
+    <div class="card-grid">
+      <div class="card"><div class="label">Purpose</div><div class="detail" style="margin-top:8px;">Extend D11 MVP with ToyotaGPT prompt intelligence, classification pipeline, View 4 dashboard, and cross-platform analytics.</div></div>
+      <div class="card orange"><div class="label">D11 Baseline</div><div class="detail" style="margin-top:8px;">3 Views, 7 tables (star schema), 5 data sources, 10 DAX measures, 3 RLS roles, 13 business units.</div></div>
+      <div class="card green"><div class="label">D12 Additions</div><div class="detail" style="margin-top:8px;">+1 View, +4 tables, +3 data sources, +9 DAX measures, +1 RLS role, 8-category taxonomy.</div></div>
+    </div>
+  </section>
+  <section>
+    <h2>Scope</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Area</th><th>In Scope</th><th>Out of Scope</th></tr>
+      <tr><td>Data Sources</td><td>ToyotaGPT prompt logs, response logs, Toyota user mapping</td><td>Modification of ToyotaGPT behavior or prompts</td></tr>
+      <tr><td>Data Model</td><td>Extended star schema with prompt dimension and fact tables</td><td>Migration of historical D11 data model</td></tr>
+      <tr><td>Dashboard</td><td>View 4: Prompt Intelligence + cross-platform integration</td><td>Redesign of Views 1-3 (refinement only)</td></tr>
+      <tr><td>Analytics</td><td>Prompt classification, gap analysis, intent mapping</td><td>Real-time streaming analytics</td></tr>
+      <tr><td>Security</td><td>PII anonymization, RLS extension, Toyota role integration</td><td>Changes to Azure AD SSO configuration</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h2>Design Principles</h2>
+    <div class="card-grid">
+      <div class="card"><div class="label">Principle 1</div><div class="value" style="font-size:16px;">Anonymization by Default</div><div class="detail">No PII stored in analytics data model; prompts classified, never stored verbatim.</div></div>
+      <div class="card"><div class="label">Principle 2</div><div class="value" style="font-size:16px;">Additive Schema</div><div class="detail">New tables extend D11 star schema without modifying existing tables.</div></div>
+      <div class="card"><div class="label">Principle 3</div><div class="value" style="font-size:16px;">Consistent UX</div><div class="detail">View 4 follows same visual language, colors, and interaction patterns as Views 1-3.</div></div>
+      <div class="card"><div class="label">Principle 4</div><div class="value" style="font-size:16px;">Classification First</div><div class="detail">Pipeline validated to &gt;85% accuracy before View 4 goes live.</div></div>
+      <div class="card"><div class="label">Principle 5</div><div class="value" style="font-size:16px;">Performance Parity</div><div class="detail">All views (including View 4) load in &lt;5 seconds.</div></div>
+    </div>
+  </section>
+  <section>
+    <h2>D11 Baseline Reference</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Component</th><th>D11 Delivered</th></tr>
+      <tr><td>Dashboard Views</td><td>Executive Summary, BU Deep-Dive, Use Case Analysis</td></tr>
+      <tr><td>Star Schema</td><td>DimUser, DimBusinessUnit, DimTaskType, DimBusinessOutcome, DimDate, FactSession, FactDailyAdoption</td></tr>
+      <tr><td>Data Sources</td><td>AWS Bedrock, Workday HR, License Mgmt, Azure AD, Adoption Targets DB</td></tr>
+      <tr><td>DAX Measures (10)</td><td>Active Users, Adoption Rate, Session Count, Avg Sessions/User, Adoption vs Target, Engagement Tier, MoM Growth, Top Task Type, Outcome Distribution, Task Growth Rate</td></tr>
+      <tr><td>RLS Roles</td><td>Admin, BU Leader, Viewer</td></tr>
+      <tr><td>Reference Data</td><td>6 task types, 5 business outcomes, 4 engagement tiers, 5 features, 13 business units</td></tr>
+    </table></div>
+  </section>
+</div>
+
+
+<div id="architecture" class="tab-content">
+  <section>
+    <h2>2. System Architecture</h2>
+    <h3>High-Level Architecture</h3>
+    <div style="background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:20px;">
+      <div style="text-align:center;font-weight:600;color:var(--dark-blue);margin-bottom:12px;font-size:15px;">POWER BI SERVICE</div>
+      <div class="wf-row" style="justify-content:center;">
+        <div class="wf-card">View 1<br>Exec Summary</div>
+        <div class="wf-card">View 2<br>BU Deep-Dive</div>
+        <div class="wf-card">View 3<br>Use Case</div>
+        <div class="wf-card" style="border-color:var(--orange);background:#FFF7ED;">View 4: Prompt<br>Intelligence <span class="badge badge-new">NEW</span></div>
+      </div>
+      <div class="flow-arrow">&darr;</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;" class="arch-box highlight"><strong>TABULAR DATA MODEL</strong><br><br><strong>D11 Tables:</strong> DimUser, DimBusinessUnit, DimTaskType, DimBusinessOutcome, DimDate, FactSession, FactDailyAdoption<br><br><strong style="color:var(--orange);">D12 Tables (NEW):</strong> DimPromptCategory, DimToyotaDept, FactPrompt, FactPromptDaily</div>
+      </div>
+      <div class="flow-arrow">&darr;</div>
+      <div class="arch-box"><strong>DATA GATEWAY</strong> &mdash; Scheduled Refresh</div>
+      <div class="flow-arrow">&darr;</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;" class="arch-box"><strong>D11 Data Sources</strong><br>AWS Bedrock Logs, Workday HR, License Mgmt, Azure AD, Adoption Targets</div>
+        <div style="flex:1;min-width:200px;" class="arch-box new"><strong>Classification Layer (NEW)</strong><br>Keyword Matcher &rarr; LLM Classifier &rarr; 8-Category Taxonomy Output</div>
+        <div style="flex:1;min-width:200px;" class="arch-box new"><strong>D12 Data Sources (NEW)</strong><br>ToyotaGPT Prompt Logs, ToyotaGPT Response Logs, Toyota HR / SSO</div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2>Component Inventory</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Component</th><th>Technology</th><th>D11/D12</th><th>Description</th></tr>
+      <tr><td>Dashboard</td><td>Power BI Service</td><td><span class="badge badge-d11">D11</span></td><td>4-view dashboard with tabular model</td></tr>
+      <tr><td>Data Gateway</td><td>Power BI On-Premises Gateway</td><td><span class="badge badge-d11">D11</span></td><td>Manages scheduled refresh from all sources</td></tr>
+      <tr><td>Enterprise AI ETL</td><td>Power Query / Dataflows</td><td><span class="badge badge-d11">D11</span></td><td>Extracts from AWS Bedrock logs</td></tr>
+      <tr><td>HR ETL</td><td>Power Query / Dataflows</td><td><span class="badge badge-d11">D11</span></td><td>Extracts from Workday</td></tr>
+      <tr><td>ToyotaGPT ETL</td><td>Power Query / Dataflows</td><td><span class="badge badge-new">D12</span></td><td>Extracts from OpenAI Custom GPT analytics</td></tr>
+      <tr><td>Classification Pipeline</td><td>Python / Azure Function</td><td><span class="badge badge-new">D12</span></td><td>Keyword + LLM prompt classifier</td></tr>
+      <tr><td>Anonymization Layer</td><td>Power Query M / Python</td><td><span class="badge badge-new">D12</span></td><td>PII stripping before data model load</td></tr>
+      <tr><td>RLS Engine</td><td>Power BI Tabular Model</td><td><span class="badge badge-d11">D11</span></td><td>Extended with Toyota department roles</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h2>Integration Points</h2>
+    <div style="background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;">
+        <div class="arch-box new" style="flex:0 0 auto;">ToyotaGPT<br>(OpenAI)</div>
+        <div>&rarr; REST API / Export &rarr;</div>
+        <div class="arch-box new" style="flex:0 0 auto;">Classification<br>Pipeline</div>
+        <div>&rarr; Power Query &rarr;</div>
+        <div class="arch-box highlight" style="flex:0 0 auto;">Data Model</div>
+        <div>&larr; existing &larr;</div>
+        <div class="arch-box" style="flex:0 0 auto;">D11 Star<br>Schema</div>
+      </div>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:12px;font-size:13px;">
+        <div class="arch-box new" style="flex:0 0 auto;">Toyota HR/SSO</div>
+        <div>&rarr; API / CSV Export &rarr; Classification Pipeline</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<div id="datasources" class="tab-content">
+  <section>
+    <h2>3. Data Source Specifications</h2>
+    <h3 class="collapsible" onclick="toggle(this)">3.1 ToyotaGPT Prompt Logs</h3>
+    <div class="collapse-body">
+      <div class="table-wrap"><table>
+        <tr><th>Field</th><th>Type</th><th>Description</th><th>Nullable</th><th>PII</th></tr>
+        <tr><td><code>conversation_id</code></td><td>STRING</td><td>Unique conversation identifier</td><td>No</td><td>No</td></tr>
+        <tr><td><code>message_id</code></td><td>STRING</td><td>Unique message within conversation</td><td>No</td><td>No</td></tr>
+        <tr><td><code>timestamp</code></td><td>DATETIME</td><td>UTC timestamp of prompt submission</td><td>No</td><td>No</td></tr>
+        <tr><td><code>user_id</code></td><td>STRING</td><td>Toyota SSO / employee identifier</td><td>No</td><td><span class="badge badge-pii">Yes</span></td></tr>
+        <tr><td><code>prompt_text</code></td><td>STRING</td><td>Raw user prompt content</td><td>No</td><td><span class="badge badge-pii">Yes</span></td></tr>
+        <tr><td><code>prompt_token_count</code></td><td>INT</td><td>Token count of the prompt</td><td>No</td><td>No</td></tr>
+        <tr><td><code>model_version</code></td><td>STRING</td><td>GPT model version used</td><td>Yes</td><td>No</td></tr>
+        <tr><td><code>session_duration_sec</code></td><td>INT</td><td>Total conversation duration</td><td>Yes</td><td>No</td></tr>
+        <tr><td><code>is_follow_up</code></td><td>BOOLEAN</td><td>Whether prompt is a follow-up</td><td>No</td><td>No</td></tr>
+      </table></div>
+      <div class="info"><strong>Access:</strong> OpenAI Custom GPT Analytics API or scheduled CSV export &bull; <strong>Volume:</strong> ~2,000-5,000 prompts/day &bull; <strong>Retention:</strong> 12 months rolling &bull; <strong>Refresh:</strong> Daily 02:00 UTC</div>
+    </div>
+  </section>
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">3.2 ToyotaGPT Response Logs</h3>
+    <div class="collapse-body">
+      <div class="table-wrap"><table>
+        <tr><th>Field</th><th>Type</th><th>Description</th><th>Nullable</th><th>PII</th></tr>
+        <tr><td><code>message_id</code></td><td>STRING</td><td>Links to prompt message_id</td><td>No</td><td>No</td></tr>
+        <tr><td><code>response_token_count</code></td><td>INT</td><td>Token count of response</td><td>No</td><td>No</td></tr>
+        <tr><td><code>response_time_ms</code></td><td>INT</td><td>Time to generate response</td><td>No</td><td>No</td></tr>
+        <tr><td><code>thumbs_up</code></td><td>BOOLEAN</td><td>User gave positive feedback</td><td>Yes</td><td>No</td></tr>
+        <tr><td><code>thumbs_down</code></td><td>BOOLEAN</td><td>User gave negative feedback</td><td>Yes</td><td>No</td></tr>
+        <tr><td><code>user_rating</code></td><td>INT (1-5)</td><td>Explicit rating if provided</td><td>Yes</td><td>No</td></tr>
+        <tr><td><code>was_regenerated</code></td><td>BOOLEAN</td><td>User requested regeneration</td><td>No</td><td>No</td></tr>
+        <tr><td><code>error_flag</code></td><td>BOOLEAN</td><td>Response encountered an error</td><td>No</td><td>No</td></tr>
+      </table></div>
+      <div class="info"><strong>Access:</strong> Same as prompt logs (joined on message_id) &bull; <strong>Refresh:</strong> Daily 02:00 UTC</div>
+    </div>
+  </section>
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">3.3 Toyota HR / Department Mapping</h3>
+    <div class="collapse-body">
+      <div class="table-wrap"><table>
+        <tr><th>Field</th><th>Type</th><th>Description</th><th>Nullable</th><th>PII</th></tr>
+        <tr><td><code>user_id</code></td><td>STRING</td><td>Toyota employee identifier</td><td>No</td><td><span class="badge badge-pii">Yes</span></td></tr>
+        <tr><td><code>department_id</code></td><td>STRING</td><td>Toyota department code</td><td>No</td><td>No</td></tr>
+        <tr><td><code>department_name</code></td><td>STRING</td><td>Department display name</td><td>No</td><td>No</td></tr>
+        <tr><td><code>division</code></td><td>STRING</td><td>Higher-level division</td><td>No</td><td>No</td></tr>
+        <tr><td><code>location</code></td><td>STRING</td><td>Office / plant location</td><td>Yes</td><td>No</td></tr>
+        <tr><td><code>job_level</code></td><td>STRING</td><td>Job level (Manager, IC, Director)</td><td>Yes</td><td>No</td></tr>
+        <tr><td><code>hire_date</code></td><td>DATE</td><td>Employee hire date</td><td>Yes</td><td>No</td></tr>
+      </table></div>
+      <div class="info"><strong>Access:</strong> Toyota HR API or weekly CSV export &bull; <strong>Refresh:</strong> Weekly (Sunday 06:00 UTC)</div>
+    </div>
+  </section>
+  <section>
+    <h3>3.4 Field Mapping to Analytics Layer (Post-Anonymization)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Source Field</th><th>Analytics Field</th><th>Transformation</th></tr>
+      <tr><td><code>user_id</code></td><td><code>anonymized_user_hash</code></td><td>SHA-256 hash with rotating salt</td></tr>
+      <tr><td><code>prompt_text</code></td><td><em>not stored</em></td><td>Classified into category, intent, complexity only</td></tr>
+      <tr><td><code>prompt_token_count</code></td><td><code>prompt_token_count</code></td><td>Pass-through</td></tr>
+      <tr><td><code>timestamp</code></td><td><code>prompt_date</code>, <code>prompt_hour</code></td><td>Split into date key and hour</td></tr>
+      <tr><td><code>department_id</code></td><td><code>department_key</code></td><td>Foreign key to DimToyotaDept</td></tr>
+      <tr><td><code>thumbs_up/down</code></td><td><code>satisfaction_score</code></td><td>Computed: +1 / -1 / 0</td></tr>
+      <tr><td><code>user_rating</code></td><td><code>user_rating</code></td><td>Pass-through (nullable)</td></tr>
+    </table></div>
+  </section>
+</div>
+
+
+<div id="datamodel" class="tab-content">
+  <section>
+    <h2>4. Data Model Design</h2>
+    <h3>Extended Star Schema</h3>
+    <div style="background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:20px;">
+      <div style="text-align:center;margin-bottom:16px;">
+        <div style="display:inline-block;border:2px solid var(--blue);border-radius:8px;padding:12px 24px;background:#F0F6FF;font-weight:600;">DimDate <span class="badge badge-d11">D11</span></div>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+        <div style="border:2px solid var(--gray);border-radius:8px;padding:12px;text-align:center;min-width:140px;"><strong>FactSession</strong><br><span class="badge badge-d11">D11</span></div>
+        <div style="border:2px solid var(--orange);border-radius:8px;padding:12px;text-align:center;min-width:140px;background:#FFF7ED;"><strong>FactPrompt</strong><br><span class="badge badge-new">D12</span></div>
+        <div style="border:2px solid var(--orange);border-radius:8px;padding:12px;text-align:center;min-width:140px;background:#FFF7ED;"><strong>FactPromptDaily</strong><br><span class="badge badge-new">D12</span></div>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
+        <div style="border:2px solid var(--gray);border-radius:8px;padding:10px;text-align:center;min-width:120px;">DimUser <span class="badge badge-d11">D11</span></div>
+        <div style="border:2px solid var(--gray);border-radius:8px;padding:10px;text-align:center;min-width:120px;">DimBusinessUnit <span class="badge badge-d11">D11</span></div>
+        <div style="border:2px solid var(--orange);border-radius:8px;padding:10px;text-align:center;min-width:120px;background:#FFF7ED;">DimPromptCategory <span class="badge badge-new">D12</span></div>
+        <div style="border:2px solid var(--orange);border-radius:8px;padding:10px;text-align:center;min-width:120px;background:#FFF7ED;">DimToyotaDept <span class="badge badge-new">D12</span></div>
+      </div>
+      <div class="note" style="margin-top:16px;"><strong>Cross-platform bridge:</strong> <code>DimToyotaDept.MappedBUKey &rarr; DimBusinessUnit.BUKey</code> enables correlation between ToyotaGPT prompt patterns and Enterprise AI adoption by business unit.</div>
+    </div>
+  </section>
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">DimPromptCategory &mdash; 8-Category Taxonomy</h3>
+    <div class="collapse-body">
+      <div class="table-wrap"><table>
+        <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Description</th><th>Sample</th></tr>
+        <tr><td>CategoryKey</td><td>INT</td><td>No</td><td>Primary key</td><td>1</td></tr>
+        <tr><td>CategoryID</td><td>VARCHAR(50)</td><td>No</td><td>Unique slug</td><td>technical-support</td></tr>
+        <tr><td>CategoryName</td><td>VARCHAR(100)</td><td>No</td><td>Display label</td><td>Technical Support</td></tr>
+        <tr><td>CategoryGroup</td><td>VARCHAR(50)</td><td>No</td><td>Grouping</td><td>Category</td></tr>
+        <tr><td>Description</td><td>VARCHAR(500)</td><td>Yes</td><td>Human-readable</td><td>Troubleshooting, system issues</td></tr>
+        <tr><td>SortOrder</td><td>INT</td><td>No</td><td>Display order</td><td>1</td></tr>
+        <tr><td>IconID</td><td>VARCHAR(30)</td><td>Yes</td><td>Icon identifier</td><td>wrench</td></tr>
+        <tr><td>Color</td><td>VARCHAR(7)</td><td>Yes</td><td>Hex color</td><td>#118DFF</td></tr>
+      </table></div>
+      <h4>Seed Data &mdash; Categories (8 rows)</h4>
+      <div class="table-wrap"><table>
+        <tr><th>Key</th><th>ID</th><th>Name</th><th>Color</th></tr>
+        <tr><td>1</td><td>technical-support</td><td>Technical Support</td><td><span class="swatch" style="background:#118DFF;"></span>#118DFF</td></tr>
+        <tr><td>2</td><td>policy-lookup</td><td>Policy Lookup</td><td><span class="swatch" style="background:#12239E;"></span>#12239E</td></tr>
+        <tr><td>3</td><td>process-guidance</td><td>Process Guidance</td><td><span class="swatch" style="background:#E66C37;"></span>#E66C37</td></tr>
+        <tr><td>4</td><td>data-reporting</td><td>Data &amp; Reporting</td><td><span class="swatch" style="background:#4CAF50;"></span>#4CAF50</td></tr>
+        <tr><td>5</td><td>training-development</td><td>Training &amp; Development</td><td><span class="swatch" style="background:#FFC107;"></span>#FFC107</td></tr>
+        <tr><td>6</td><td>product-engineering</td><td>Product &amp; Engineering</td><td><span class="swatch" style="background:#9C27B0;"></span>#9C27B0</td></tr>
+        <tr><td>7</td><td>customer-dealer</td><td>Customer &amp; Dealer Support</td><td><span class="swatch" style="background:#00BCD4;"></span>#00BCD4</td></tr>
+        <tr><td>8</td><td>general-knowledge</td><td>General Knowledge</td><td><span class="swatch" style="background:#6B6B6B;"></span>#6B6B6B</td></tr>
+      </table></div>
+      <h4>Seed Data &mdash; Intent Types (3 rows)</h4>
+      <div class="table-wrap"><table>
+        <tr><th>Key</th><th>ID</th><th>Name</th></tr>
+        <tr><td>101</td><td>informational</td><td>Informational</td></tr>
+        <tr><td>102</td><td>transactional</td><td>Transactional</td></tr>
+        <tr><td>103</td><td>navigational</td><td>Navigational</td></tr>
+      </table></div>
+      <h4>Seed Data &mdash; Complexity Levels (3 rows)</h4>
+      <div class="table-wrap"><table>
+        <tr><th>Key</th><th>ID</th><th>Name</th></tr>
+        <tr><td>201</td><td>simple-lookup</td><td>Simple Lookup</td></tr>
+        <tr><td>202</td><td>multi-step</td><td>Multi-Step Reasoning</td></tr>
+        <tr><td>203</td><td>creative</td><td>Creative / Open-Ended</td></tr>
+      </table></div>
+    </div>
+  </section>
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">DimToyotaDept &mdash; Toyota Org Hierarchy</h3>
+    <div class="collapse-body">
+      <div class="table-wrap"><table>
+        <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Description</th><th>Sample</th></tr>
+        <tr><td>DeptKey</td><td>INT</td><td>No</td><td>Primary key</td><td>1</td></tr>
+        <tr><td>DeptID</td><td>VARCHAR(50)</td><td>No</td><td>Department code</td><td>dept-engineering</td></tr>
+        <tr><td>DeptName</td><td>VARCHAR(100)</td><td>No</td><td>Display name</td><td>Vehicle Engineering</td></tr>
+        <tr><td>Division</td><td>VARCHAR(100)</td><td>No</td><td>Parent division</td><td>R&amp;D</td></tr>
+        <tr><td>Location</td><td>VARCHAR(100)</td><td>Yes</td><td>Primary location</td><td>Plano, TX</td></tr>
+        <tr><td>HeadCount</td><td>INT</td><td>Yes</td><td>Department headcount</td><td>340</td></tr>
+        <tr><td>MappedBUKey</td><td>INT</td><td>Yes</td><td>FK to DimBusinessUnit</td><td>14</td></tr>
+      </table></div>
+      <div class="note"><strong>MappedBUKey</strong> enables cross-platform correlation by linking Toyota departments to Acme business units where a logical mapping exists.</div>
+    </div>
+  </section>
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">FactPrompt &mdash; Prompt-Level Fact Table</h3>
+    <div class="collapse-body">
+      <div class="table-wrap"><table>
+        <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Description</th><th>Sample</th></tr>
+        <tr><td>PromptID</td><td>BIGINT</td><td>No</td><td>Primary key</td><td>10042587</td></tr>
+        <tr><td>DateKey</td><td>INT</td><td>No</td><td>FK to DimDate</td><td>20260401</td></tr>
+        <tr><td>CategoryKey</td><td>INT</td><td>No</td><td>FK to DimPromptCategory</td><td>3</td></tr>
+        <tr><td>DeptKey</td><td>INT</td><td>No</td><td>FK to DimToyotaDept</td><td>7</td></tr>
+        <tr><td>PromptHour</td><td>TINYINT</td><td>No</td><td>Hour of day (0-23)</td><td>14</td></tr>
+        <tr><td>AnonymizedUserHash</td><td>VARCHAR(64)</td><td>No</td><td>SHA-256 hashed user</td><td>a3f2b8...</td></tr>
+        <tr><td>TokenCount</td><td>INT</td><td>No</td><td>Prompt token count</td><td>128</td></tr>
+        <tr><td>SatisfactionScore</td><td>TINYINT</td><td>Yes</td><td>-1, 0, +1</td><td>1</td></tr>
+        <tr><td>UserRating</td><td>TINYINT</td><td>Yes</td><td>1-5 rating</td><td>4</td></tr>
+        <tr><td>IntentType</td><td>TINYINT</td><td>No</td><td>1=Info, 2=Transact, 3=Nav</td><td>1</td></tr>
+        <tr><td>ComplexityLevel</td><td>TINYINT</td><td>No</td><td>1=Simple, 2=Multi, 3=Creative</td><td>2</td></tr>
+        <tr><td>IsFollowUp</td><td>BIT</td><td>No</td><td>Follow-up in conversation</td><td>0</td></tr>
+        <tr><td>WasRegenerated</td><td>BIT</td><td>No</td><td>User requested regen</td><td>0</td></tr>
+        <tr><td>ResponseTimeMs</td><td>INT</td><td>Yes</td><td>Response generation time</td><td>2340</td></tr>
+        <tr><td>ConversationLength</td><td>TINYINT</td><td>Yes</td><td>Total messages in convo</td><td>4</td></tr>
+      </table></div>
+      <div class="info"><strong>Volume:</strong> ~1.5M rows/year &bull; <strong>Partition:</strong> Monthly by DateKey &bull; <strong>Indexes:</strong> Clustered on DateKey, non-clustered on CategoryKey, DeptKey</div>
+    </div>
+  </section>
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">FactPromptDaily &mdash; Pre-Aggregated Rollup</h3>
+    <div class="collapse-body">
+      <div class="table-wrap"><table>
+        <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Description</th><th>Sample</th></tr>
+        <tr><td>DateKey</td><td>INT</td><td>No</td><td>PK + FK to DimDate</td><td>20260401</td></tr>
+        <tr><td>CategoryKey</td><td>INT</td><td>No</td><td>PK + FK to DimPromptCategory</td><td>3</td></tr>
+        <tr><td>DeptKey</td><td>INT</td><td>No</td><td>PK + FK to DimToyotaDept</td><td>7</td></tr>
+        <tr><td>PromptCount</td><td>INT</td><td>No</td><td>Total prompts</td><td>142</td></tr>
+        <tr><td>UniqueUsers</td><td>INT</td><td>No</td><td>Distinct user hashes</td><td>87</td></tr>
+        <tr><td>AvgSatisfaction</td><td>DECIMAL(3,2)</td><td>Yes</td><td>Mean satisfaction (-1 to +1)</td><td>0.62</td></tr>
+        <tr><td>ThumbsUpCount</td><td>INT</td><td>No</td><td>Positive feedback count</td><td>94</td></tr>
+        <tr><td>ThumbsDownCount</td><td>INT</td><td>No</td><td>Negative feedback count</td><td>12</td></tr>
+        <tr><td>AvgTokenCount</td><td>DECIMAL(8,1)</td><td>No</td><td>Mean prompt tokens</td><td>98.4</td></tr>
+        <tr><td>AvgComplexity</td><td>DECIMAL(3,2)</td><td>No</td><td>Mean complexity (1-3)</td><td>1.73</td></tr>
+        <tr><td>FollowUpPct</td><td>DECIMAL(5,2)</td><td>No</td><td>% follow-up prompts</td><td>32.40</td></tr>
+        <tr><td>AvgResponseTimeMs</td><td>INT</td><td>Yes</td><td>Mean response time</td><td>1870</td></tr>
+        <tr><td>RegeneratedPct</td><td>DECIMAL(5,2)</td><td>No</td><td>% regenerated</td><td>8.20</td></tr>
+      </table></div>
+      <div class="info"><strong>Volume:</strong> ~70K rows/year (365 x 8 x ~25) &bull; <strong>Composite PK:</strong> (DateKey, CategoryKey, DeptKey)</div>
+    </div>
+  </section>
+  <section>
+    <h3>Relationships</h3>
+    <div class="table-wrap"><table>
+      <tr><th>From</th><th>Column</th><th>To</th><th>Column</th><th>Card.</th><th>D11/D12</th></tr>
+      <tr><td>FactSession</td><td>DateKey</td><td>DimDate</td><td>DateKey</td><td>M:1</td><td><span class="badge badge-d11">D11</span></td></tr>
+      <tr><td>FactSession</td><td>UserKey</td><td>DimUser</td><td>UserKey</td><td>M:1</td><td><span class="badge badge-d11">D11</span></td></tr>
+      <tr><td>FactSession</td><td>TaskTypeKey</td><td>DimTaskType</td><td>TaskTypeKey</td><td>M:1</td><td><span class="badge badge-d11">D11</span></td></tr>
+      <tr><td>FactSession</td><td>OutcomeKey</td><td>DimBusinessOutcome</td><td>OutcomeKey</td><td>M:1</td><td><span class="badge badge-d11">D11</span></td></tr>
+      <tr><td>DimUser</td><td>BUKey</td><td>DimBusinessUnit</td><td>BUKey</td><td>M:1</td><td><span class="badge badge-d11">D11</span></td></tr>
+      <tr style="background:#FFF7ED;"><td><strong>FactPrompt</strong></td><td>DateKey</td><td>DimDate</td><td>DateKey</td><td>M:1</td><td><span class="badge badge-new">D12</span></td></tr>
+      <tr style="background:#FFF7ED;"><td><strong>FactPrompt</strong></td><td>CategoryKey</td><td>DimPromptCategory</td><td>CategoryKey</td><td>M:1</td><td><span class="badge badge-new">D12</span></td></tr>
+      <tr style="background:#FFF7ED;"><td><strong>FactPrompt</strong></td><td>DeptKey</td><td>DimToyotaDept</td><td>DeptKey</td><td>M:1</td><td><span class="badge badge-new">D12</span></td></tr>
+      <tr style="background:#FFF7ED;"><td><strong>FactPromptDaily</strong></td><td>DateKey</td><td>DimDate</td><td>DateKey</td><td>M:1</td><td><span class="badge badge-new">D12</span></td></tr>
+      <tr style="background:#FFF7ED;"><td><strong>FactPromptDaily</strong></td><td>CategoryKey</td><td>DimPromptCategory</td><td>CategoryKey</td><td>M:1</td><td><span class="badge badge-new">D12</span></td></tr>
+      <tr style="background:#FFF7ED;"><td><strong>FactPromptDaily</strong></td><td>DeptKey</td><td>DimToyotaDept</td><td>DeptKey</td><td>M:1</td><td><span class="badge badge-new">D12</span></td></tr>
+      <tr style="background:#FFF7ED;"><td><strong>DimToyotaDept</strong></td><td>MappedBUKey</td><td>DimBusinessUnit</td><td>BUKey</td><td>M:1</td><td><span class="badge badge-new">D12</span></td></tr>
+    </table></div>
+  </section>
+</div>
+
+<div id="etl" class="tab-content">
+  <section>
+    <h2>5. ETL Pipeline Design</h2>
+    <h3>Pipeline Architecture (Daily 02:00 UTC)</h3>
+    <div style="background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);">
+      <div class="arch-box new"><strong>STAGE 1: Extract</strong><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"><div style="flex:1;min-width:150px;background:#FFF7ED;padding:8px;border-radius:4px;font-size:12px;">ToyotaGPT API Prompt Export</div><div style="flex:1;min-width:150px;background:#FFF7ED;padding:8px;border-radius:4px;font-size:12px;">Response/Feedback Log Export</div><div style="flex:1;min-width:150px;background:#FFF7ED;padding:8px;border-radius:4px;font-size:12px;">Toyota HR Export (weekly)</div></div></div>
+      <div class="flow-arrow">&darr;</div>
+      <div class="arch-box" style="border-color:var(--red);"><strong>STAGE 2: Anonymize</strong><br>&bull; Hash user_id with SHA-256 + rotating daily salt<br>&bull; Strip prompt_text (do NOT store raw prompts)<br>&bull; Retain only metadata + classification output</div>
+      <div class="flow-arrow">&darr;</div>
+      <div class="arch-box" style="border-color:var(--purple);"><strong>STAGE 3: Classify</strong><br>&bull; Step 1: Keyword Matcher (fast, rule-based)<br>&bull; Step 2: LLM Classifier (GPT-4o-mini, batch, for ambiguous)<br>&bull; Output: category, intent, complexity per prompt</div>
+      <div class="flow-arrow">&darr;</div>
+      <div class="arch-box highlight"><strong>STAGE 4: Transform &amp; Load</strong><br>&bull; Join prompt + response on message_id &bull; Compute satisfaction_score<br>&bull; Lookup DeptKey and CategoryKey &bull; Generate DateKey<br>&bull; Insert into FactPrompt (incremental) &bull; Rebuild FactPromptDaily for affected dates</div>
+      <div class="flow-arrow">&darr;</div>
+      <div class="arch-box" style="border-color:var(--green);"><strong>STAGE 5: Validate</strong><br>&bull; Row count check &bull; PII scan (regex for email, phone, SSN)<br>&bull; Classification coverage check &bull; Referential integrity check &bull; Trigger alert on failure</div>
+    </div>
+  </section>
+  <section>
+    <h3>Incremental Refresh Strategy</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Table</th><th>Strategy</th><th>Key Column</th><th>Lookback</th><th>Partition</th></tr>
+      <tr><td>FactPrompt</td><td>Incremental append</td><td>DateKey</td><td>3 days</td><td>Monthly</td></tr>
+      <tr><td>FactPromptDaily</td><td>Full rebuild for affected dates</td><td>DateKey</td><td>3 days</td><td>None (small)</td></tr>
+      <tr><td>DimPromptCategory</td><td>Full refresh</td><td>N/A</td><td>N/A</td><td>None (&lt;20 rows)</td></tr>
+      <tr><td>DimToyotaDept</td><td>Full refresh (weekly)</td><td>N/A</td><td>N/A</td><td>None (&lt;100 rows)</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>Error Handling</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Error Type</th><th>Detection</th><th>Action</th><th>Alert</th></tr>
+      <tr><td>Source unavailable</td><td>Connection timeout after 3 retries</td><td>Skip run, retry next cycle</td><td>Email to PM + DE</td></tr>
+      <tr><td>PII detected in output</td><td>Regex scan post-classification</td><td>Quarantine batch, halt load</td><td>Immediate alert to PM + Legal</td></tr>
+      <tr><td>Classification failure (&gt;15%)</td><td>Coverage check</td><td>Load with general-knowledge fallback</td><td>Email to DE</td></tr>
+      <tr><td>Row count mismatch (&gt;10%)</td><td>Count check</td><td>Log warning, proceed</td><td>Email to DE</td></tr>
+      <tr><td>FK violation</td><td>Referential integrity check</td><td>Reject orphan rows, log</td><td>Email to DE</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Power Query M &mdash; Pseudocode</h3>
+    <div class="collapse-body">
+      <pre><code><span class="cm">// ToyotaGPT Prompt Extract</span>
+<span class="kw">let</span>
+    Source = Json.Document(Web.Contents(TOYOTAGPT_API_ENDPOINT, [
+        Headers = [Authorization = <span class="str">"Bearer "</span> &amp; API_KEY],
+        Query = [start_date = LastRefreshDate, end_date = Today]
+    ])),
+    Prompts = Table.FromRecords(Source[prompts]),
+
+    <span class="cm">// STAGE 2: Anonymize</span>
+    AnonymizeUser = Table.TransformColumns(Prompts, {
+        {<span class="str">"user_id"</span>, <span class="kw">each</span> HashSHA256(_ &amp; DAILY_SALT)}
+    }),
+    RemoveRawPrompt = Table.RemoveColumns(AnonymizeUser, {<span class="str">"prompt_text"</span>}),
+
+    <span class="cm">// STAGE 3: Classification results joined</span>
+    ClassificationResults = GetClassificationResults(LastRefreshDate),
+    Joined = Table.NestedJoin(RemoveRawPrompt, <span class="str">"message_id"</span>,
+        ClassificationResults, <span class="str">"message_id"</span>, <span class="str">"Classification"</span>),
+    Expanded = Table.ExpandTableColumn(Joined, <span class="str">"Classification"</span>,
+        {<span class="str">"category_id"</span>, <span class="str">"intent_type"</span>, <span class="str">"complexity_level"</span>}),
+
+    <span class="cm">// STAGE 4: Transform</span>
+    AddDateKey = Table.AddColumn(Expanded, <span class="str">"DateKey"</span>,
+        <span class="kw">each</span> Number.From(Date.ToText([timestamp], <span class="str">"yyyyMMdd"</span>))),
+
+    <span class="cm">// Compute satisfaction</span>
+    AddSatisfaction = Table.AddColumn(LookupDept, <span class="str">"SatisfactionScore"</span>, <span class="kw">each</span>
+        <span class="kw">if</span> [thumbs_up] = <span class="kw">true</span> <span class="kw">then</span> <span class="num">1</span>
+        <span class="kw">else if</span> [thumbs_down] = <span class="kw">true</span> <span class="kw">then</span> <span class="num">-1</span>
+        <span class="kw">else</span> <span class="num">0</span>
+    )
+<span class="kw">in</span>
+    FinalColumns</code></pre>
+    </div>
+  </section>
+</div>
+
+
+<div id="classification" class="tab-content">
+  <section>
+    <h2>6. Prompt Classification Pipeline</h2>
+    <h3>Two-Stage Architecture</h3>
+    <div style="background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);">
+      <div class="arch-box"><strong>Raw Prompt Text Input</strong></div>
+      <div class="flow-arrow">&darr;</div>
+      <div class="arch-box highlight"><strong>STAGE 1: Keyword Matcher</strong> &mdash; ~70% classified here (fast, deterministic)<br>Score = (primary matches &times; 3) + (secondary matches &times; 1) - (exclusion matches &times; 5)<br>Assign if score &ge; 3; otherwise route to Stage 2</div>
+      <div class="flow-arrow">&darr;</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div class="arch-box" style="flex:1;border-color:var(--green);text-align:center;"><strong>Classified</strong><br>~70%</div>
+        <div class="arch-box" style="flex:1;border-color:var(--yellow);text-align:center;"><strong>Ambiguous</strong><br>~20%</div>
+        <div class="arch-box" style="flex:1;border-color:var(--red);text-align:center;"><strong>Unmatched</strong><br>~10%</div>
+      </div>
+      <div class="flow-arrow">&darr; (ambiguous + unmatched)</div>
+      <div class="arch-box new"><strong>STAGE 2: LLM Classifier</strong> &mdash; GPT-4o-mini (batch mode, 50 prompts/call)<br>Cost: ~$0.15/1000 prompts &bull; Daily cost at 5K prompts: ~$0.23 for ~1,500 routed prompts</div>
+      <div class="flow-arrow">&darr;</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div class="arch-box" style="flex:3;border-color:var(--green);text-align:center;"><strong>Total Classified: ~98%</strong></div>
+        <div class="arch-box" style="flex:1;border-color:var(--gray);text-align:center;"><strong>Unclassified: ~2%</strong><br>&rarr; "General Knowledge"</div>
+      </div>
+      <div class="flow-arrow">&darr;</div>
+      <div class="arch-box highlight"><strong>OUTPUT:</strong> category + intent + complexity per prompt</div>
+    </div>
+  </section>
+  <section>
+    <h3>Keyword Matcher Rules</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Category</th><th>Primary Keywords</th><th>Secondary Keywords</th><th>Exclusions</th></tr>
+      <tr><td><span class="swatch" style="background:#118DFF;"></span>Technical Support</td><td>error, fix, reset, troubleshoot, not working, broken, issue, bug</td><td>VPN, password, login, install, update, crash</td><td>policy, purchase</td></tr>
+      <tr><td><span class="swatch" style="background:#12239E;"></span>Policy Lookup</td><td>policy, regulation, compliance, rule, guideline, allowed, permitted</td><td>PTO, vacation, expense, travel, handbook</td><td>code generation, programming</td></tr>
+      <tr><td><span class="swatch" style="background:#E66C37;"></span>Process Guidance</td><td>steps to, how do I, procedure, process, workflow, checklist, SOP</td><td>submit, request, approve, onboard, purchase order</td><td>troubleshoot, error</td></tr>
+      <tr><td><span class="swatch" style="background:#4CAF50;"></span>Data &amp; Reporting</td><td>report, data, numbers, metrics, dashboard, spreadsheet, analysis</td><td>Q1-Q4, YTD, revenue, sales figures, inventory</td><td>&mdash;</td></tr>
+      <tr><td><span class="swatch" style="background:#FFC107;"></span>Training &amp; Dev</td><td>training, course, certification, learn, skills, development</td><td>workshop, webinar, onboarding, career, mentor</td><td>&mdash;</td></tr>
+      <tr><td><span class="swatch" style="background:#9C27B0;"></span>Product &amp; Eng</td><td>vehicle, spec, engineering, torque, capacity, model year, assembly</td><td>Tacoma, Camry, RAV4, paint code, part number</td><td>&mdash;</td></tr>
+      <tr><td><span class="swatch" style="background:#00BCD4;"></span>Customer &amp; Dealer</td><td>dealer, customer, warranty, incentive, rebate, financing</td><td>MSRP, lease, service plan, recall</td><td>&mdash;</td></tr>
+      <tr><td><span class="swatch" style="background:#6B6B6B;"></span>General Knowledge</td><td><em>(fallback)</em></td><td>draft, write, summarize, brainstorm, translate, email</td><td>&mdash;</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">LLM Classifier Prompt Template</h3>
+    <div class="collapse-body">
+      <pre><code>You are a prompt classifier for a Toyota internal AI assistant called ToyotaGPT.
+Classify each user prompt into exactly ONE category, ONE intent type, and ONE complexity level.
+
+<span class="kw">CATEGORIES</span> (pick one):
+1. Technical Support - Troubleshooting, system issues, how-to for IT systems
+2. Policy Lookup - Company policies, compliance, HR policies
+3. Process Guidance - SOPs, workflows, step-by-step procedures
+4. Data &amp; Reporting - Data requests, report generation, metrics
+5. Training &amp; Development - Learning resources, certifications, skills
+6. Product &amp; Engineering - Vehicle specs, engineering standards, R&amp;D
+7. Customer &amp; Dealer Support - Dealer inquiries, customer-facing content
+8. General Knowledge - Brainstorming, writing assistance, broad questions
+
+<span class="kw">INTENT TYPE</span> (pick one):
+- Informational: User wants to learn or understand something
+- Transactional: User wants to complete a task or action
+- Navigational: User wants to find a specific resource or document
+
+<span class="kw">COMPLEXITY</span> (pick one):
+- Simple Lookup: Single fact or direct answer
+- Multi-Step Reasoning: Requires synthesizing multiple pieces of information
+- Creative: Open-ended, generative, or requires original content
+
+Respond as JSON array:
+[{<span class="str">"id"</span>: 1, <span class="str">"category"</span>: <span class="str">"..."</span>, <span class="str">"intent"</span>: <span class="str">"..."</span>, <span class="str">"complexity"</span>: <span class="str">"..."</span>}, ...]
+
+PROMPTS TO CLASSIFY:
+{prompt_batch}</code></pre>
+    </div>
+  </section>
+  <section>
+    <h3>Classification Quality Monitoring</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Metric</th><th>Target</th><th>Measurement</th><th>Action if Below</th></tr>
+      <tr><td>Overall accuracy</td><td>&gt;85%</td><td>Weekly manual review of 100 random prompts</td><td>Retune keywords, update LLM prompt</td></tr>
+      <tr><td>Stage 1 coverage</td><td>&gt;65%</td><td>% classified by keyword matcher</td><td>Expand keyword lists</td></tr>
+      <tr><td>Stage 2 accuracy</td><td>&gt;90%</td><td>Manual review of LLM outputs</td><td>Adjust prompt template, add few-shot examples</td></tr>
+      <tr><td>Uncategorized rate</td><td>&lt;3%</td><td>% falling to General Knowledge default</td><td>Investigate new themes, add categories</td></tr>
+      <tr><td>Category distribution skew</td><td>No single &gt;40%</td><td>Daily distribution check</td><td>Review misclassification patterns</td></tr>
+    </table></div>
+  </section>
+</div>
+
+
+<div id="dax" class="tab-content">
+  <section>
+    <h2>7. DAX Measures Specification</h2>
+    <p style="font-size:14px;margin-bottom:20px;">9 new DAX measures (M11&ndash;M19) extending the 10 D11 baseline measures.</p>
+
+    <h3>M11: Total Prompt Volume</h3>
+    <pre><code><span class="fn">Total Prompt Volume</span> =
+<span class="kw">CALCULATE</span>(
+    <span class="kw">SUM</span>(FactPromptDaily[PromptCount]),
+    <span class="kw">USERELATIONSHIP</span>(FactPromptDaily[DateKey], DimDate[DateKey])
+)</code></pre>
+    <div class="info"><strong>Used in:</strong> View 4 KPI card, trend chart &bull; <strong>Filters:</strong> Date range, Department, Category</div>
+
+    <h3>M12: Unique ToyotaGPT Users</h3>
+    <pre><code><span class="fn">Unique ToyotaGPT Users</span> =
+<span class="kw">CALCULATE</span>(
+    <span class="kw">SUM</span>(FactPromptDaily[UniqueUsers]),
+    <span class="kw">USERELATIONSHIP</span>(FactPromptDaily[DateKey], DimDate[DateKey])
+)
+
+<span class="cm">// For exact count (slower):</span>
+<span class="fn">Unique ToyotaGPT Users (Exact)</span> =
+<span class="kw">DISTINCTCOUNT</span>(FactPrompt[AnonymizedUserHash])</code></pre>
+
+    <h3>M13: Top Prompt Category</h3>
+    <pre><code><span class="fn">Top Prompt Category</span> =
+<span class="kw">VAR</span> TopCat =
+    <span class="kw">TOPN</span>(<span class="num">1</span>,
+        <span class="kw">SUMMARIZE</span>(
+            FactPromptDaily,
+            DimPromptCategory[CategoryName],
+            <span class="str">"TotalPrompts"</span>, <span class="kw">SUM</span>(FactPromptDaily[PromptCount])
+        ),
+        [TotalPrompts], <span class="kw">DESC</span>
+    )
+<span class="kw">RETURN</span>
+    <span class="kw">MAXX</span>(TopCat, DimPromptCategory[CategoryName])</code></pre>
+
+    <h3>M14: Avg Response Satisfaction</h3>
+    <pre><code><span class="fn">Avg Response Satisfaction</span> =
+<span class="kw">VAR</span> TotalUp = <span class="kw">SUM</span>(FactPromptDaily[ThumbsUpCount])
+<span class="kw">VAR</span> TotalDown = <span class="kw">SUM</span>(FactPromptDaily[ThumbsDownCount])
+<span class="kw">VAR</span> TotalFeedback = TotalUp + TotalDown
+<span class="kw">RETURN</span>
+    <span class="kw">IF</span>(
+        TotalFeedback &gt; <span class="num">0</span>,
+        <span class="kw">DIVIDE</span>(TotalUp - TotalDown, TotalFeedback),
+        <span class="kw">BLANK</span>()
+    )</code></pre>
+    <div class="info"><strong>Range:</strong> -1.00 to +1.00 &bull; <strong>Display:</strong> % with color scale (red &lt; 0, yellow 0-0.5, green &gt; 0.5)</div>
+
+    <h3>M15: Prompt Volume MoM Growth</h3>
+    <pre><code><span class="fn">Prompt Volume MoM Growth</span> =
+<span class="kw">VAR</span> CurrentMonth = [Total Prompt Volume]
+<span class="kw">VAR</span> PriorMonth =
+    <span class="kw">CALCULATE</span>(
+        [Total Prompt Volume],
+        <span class="kw">DATEADD</span>(DimDate[Date], <span class="num">-1</span>, <span class="kw">MONTH</span>)
+    )
+<span class="kw">RETURN</span>
+    <span class="kw">IF</span>(PriorMonth &gt; <span class="num">0</span>, <span class="kw">DIVIDE</span>(CurrentMonth - PriorMonth, PriorMonth), <span class="kw">BLANK</span>())</code></pre>
+
+    <h3>M16: Category Distribution %</h3>
+    <pre><code><span class="fn">Category Distribution %</span> =
+<span class="kw">DIVIDE</span>(
+    [Total Prompt Volume],
+    <span class="kw">CALCULATE</span>([Total Prompt Volume], <span class="kw">ALL</span>(DimPromptCategory))
+)</code></pre>
+
+    <h3>M17: Response Gap Score</h3>
+    <pre><code><span class="fn">Response Gap Score</span> =
+<span class="kw">VAR</span> Demand = [Total Prompt Volume]
+<span class="kw">VAR</span> Satisfaction = [Avg Response Satisfaction]
+<span class="kw">VAR</span> NormalizedDemand =
+    <span class="kw">DIVIDE</span>(
+        Demand,
+        <span class="kw">CALCULATE</span>([Total Prompt Volume], <span class="kw">ALL</span>(DimPromptCategory)),
+        <span class="num">0</span>
+    )
+<span class="kw">RETURN</span>
+    <span class="kw">IF</span>(
+        <span class="kw">NOT</span> <span class="kw">ISBLANK</span>(Satisfaction),
+        NormalizedDemand * (<span class="num">1</span> - Satisfaction),
+        NormalizedDemand
+    )</code></pre>
+    <div class="info"><strong>Logic:</strong> High gap = high demand + low satisfaction. Categories with high volume but negative satisfaction score highest.</div>
+
+    <h3>M18: Prompt Complexity Distribution</h3>
+    <pre><code><span class="fn">Simple Lookup %</span> =
+<span class="kw">DIVIDE</span>(
+    <span class="kw">CALCULATE</span>(<span class="kw">SUM</span>(FactPromptDaily[PromptCount]), FactPromptDaily[AvgComplexity] &lt; <span class="num">1.5</span>),
+    [Total Prompt Volume]
+)
+
+<span class="fn">Multi-Step %</span> =
+<span class="kw">DIVIDE</span>(
+    <span class="kw">CALCULATE</span>(<span class="kw">SUM</span>(FactPromptDaily[PromptCount]),
+        FactPromptDaily[AvgComplexity] &gt;= <span class="num">1.5</span> &amp;&amp; FactPromptDaily[AvgComplexity] &lt; <span class="num">2.5</span>),
+    [Total Prompt Volume]
+)
+
+<span class="fn">Creative %</span> =
+<span class="kw">DIVIDE</span>(
+    <span class="kw">CALCULATE</span>(<span class="kw">SUM</span>(FactPromptDaily[PromptCount]), FactPromptDaily[AvgComplexity] &gt;= <span class="num">2.5</span>),
+    [Total Prompt Volume]
+)</code></pre>
+
+    <h3>M19: Cross-Platform Active Rate</h3>
+    <pre><code><span class="fn">Cross-Platform Active Rate</span> =
+<span class="kw">VAR</span> ToyotaDepts = <span class="kw">VALUES</span>(DimToyotaDept[MappedBUKey])
+<span class="kw">VAR</span> EnterpriseAIUsers =
+    <span class="kw">CALCULATE</span>(
+        [Active Users],
+        <span class="kw">TREATAS</span>(ToyotaDepts, DimBusinessUnit[BUKey])
+    )
+<span class="kw">VAR</span> TotalLicensed =
+    <span class="kw">CALCULATE</span>(
+        <span class="kw">SUM</span>(DimBusinessUnit[LicensedUsers]),
+        <span class="kw">TREATAS</span>(ToyotaDepts, DimBusinessUnit[BUKey])
+    )
+<span class="kw">RETURN</span>
+    <span class="kw">DIVIDE</span>(EnterpriseAIUsers, TotalLicensed)</code></pre>
+    <div class="note"><strong>Cross-platform:</strong> This measure bridges D12 ToyotaGPT data with D11 Enterprise AI data via the DimToyotaDept.MappedBUKey inactive relationship, activated using TREATAS.</div>
+  </section>
+</div>
+
+
+<div id="view4" class="tab-content">
+  <section>
+    <h2>8. View 4: Prompt Intelligence &mdash; UI Design</h2>
+    <h3>Layout Wireframe</h3>
+    <div class="wireframe">
+      <div style="background:var(--dark-blue);color:#fff;padding:8px 16px;border-radius:4px;margin-bottom:16px;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;">
+        <div>[View 1] [View 2] [View 3] [<strong>View 4: Prompt Intelligence</strong>]</div>
+        <div>[Filters &#9660;]</div>
+      </div>
+      <div class="wf-row">
+        <div class="wf-card"><div style="font-size:10px;color:var(--gray);">TOTAL PROMPTS</div><div class="wf-val">142,830</div><div style="color:var(--green);font-size:11px;">&#9650; 12.3% MoM</div></div>
+        <div class="wf-card"><div style="font-size:10px;color:var(--gray);">UNIQUE USERS</div><div class="wf-val">3,247</div><div style="color:var(--green);font-size:11px;">&#9650; 8.1% MoM</div></div>
+        <div class="wf-card"><div style="font-size:10px;color:var(--gray);">TOP CATEGORY</div><div class="wf-val" style="font-size:16px;">Technical Support</div></div>
+        <div class="wf-card"><div style="font-size:10px;color:var(--gray);">SATISFACTION</div><div class="wf-val">+0.68</div><div style="font-size:11px;">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9601;&#9601;</div></div>
+      </div>
+      <div class="wf-row">
+        <div class="wf-chart"><strong>PROMPT THEME DISTRIBUTION</strong><br>(Donut Chart &mdash; 8 categories)</div>
+        <div class="wf-chart"><strong>PROMPT VOLUME TREND</strong><br>(Line Chart with daily/weekly/monthly toggle)</div>
+      </div>
+      <div class="wf-row">
+        <div class="wf-chart"><strong>INTENT &times; DEPARTMENT HEATMAP</strong><br>(8 categories &times; ~25 departments intensity matrix)</div>
+        <div class="wf-chart"><strong>RESPONSE GAP ANALYSIS</strong><br>(Clustered bar: Demand vs Gap per category)</div>
+      </div>
+      <div class="wf-full"><strong>TOP PROMPT THEMES TABLE</strong><br>Category | Volume | Trend | Satisfaction | Gap Score<br>(sortable, click row &rarr; drill-through)</div>
+      <div class="wf-full"><strong>PROMPT COMPLEXITY DISTRIBUTION</strong><br>Simple Lookup &#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; 62% | Multi-Step &#9608;&#9608;&#9608;&#9608; 28% | Creative &#9608;&#9608; 10%</div>
+    </div>
+  </section>
+  <section>
+    <h3>Visual Specifications</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Visual</th><th>Type</th><th>Data Source</th><th>Measures</th><th>Interactions</th></tr>
+      <tr><td>KPI: Total Prompts</td><td>Card</td><td>FactPromptDaily</td><td>M11, M15</td><td>All filters</td></tr>
+      <tr><td>KPI: Unique Users</td><td>Card</td><td>FactPromptDaily</td><td>M12</td><td>All filters</td></tr>
+      <tr><td>KPI: Top Category</td><td>Card</td><td>FactPromptDaily</td><td>M13</td><td>Date + dept</td></tr>
+      <tr><td>KPI: Satisfaction</td><td>Card + gauge</td><td>FactPromptDaily</td><td>M14</td><td>All filters; color-coded</td></tr>
+      <tr><td>Theme Donut</td><td>Donut</td><td>FactPromptDaily</td><td>M16</td><td>Click &rarr; cross-filter</td></tr>
+      <tr><td>Volume Trend</td><td>Line</td><td>FactPromptDaily</td><td>M11</td><td>Daily/weekly/monthly toggle</td></tr>
+      <tr><td>Dept Heatmap</td><td>Matrix</td><td>FactPromptDaily</td><td>M11 (intensity)</td><td>Click cell &rarr; drill-through</td></tr>
+      <tr><td>Gap Analysis</td><td>Clustered bar</td><td>FactPromptDaily</td><td>M17, M16</td><td>Sort by gap desc</td></tr>
+      <tr><td>Themes Table</td><td>Table</td><td>FactPromptDaily</td><td>M11, M15, M14, M17</td><td>Sortable; click &rarr; drill</td></tr>
+      <tr><td>Complexity Dist</td><td>Stacked bar</td><td>FactPromptDaily</td><td>M18</td><td>Dept + date filters</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>Color Palette</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Element</th><th>Color</th><th>Hex</th></tr>
+      <tr><td><span class="swatch" style="background:#118DFF;"></span>Technical Support</td><td>Blue</td><td>#118DFF</td></tr>
+      <tr><td><span class="swatch" style="background:#12239E;"></span>Policy Lookup</td><td>Dark Blue</td><td>#12239E</td></tr>
+      <tr><td><span class="swatch" style="background:#E66C37;"></span>Process Guidance</td><td>Orange</td><td>#E66C37</td></tr>
+      <tr><td><span class="swatch" style="background:#4CAF50;"></span>Data &amp; Reporting</td><td>Green</td><td>#4CAF50</td></tr>
+      <tr><td><span class="swatch" style="background:#FFC107;"></span>Training &amp; Dev</td><td>Yellow</td><td>#FFC107</td></tr>
+      <tr><td><span class="swatch" style="background:#9C27B0;"></span>Product &amp; Eng</td><td>Purple</td><td>#9C27B0</td></tr>
+      <tr><td><span class="swatch" style="background:#00BCD4;"></span>Customer &amp; Dealer</td><td>Teal</td><td>#00BCD4</td></tr>
+      <tr><td><span class="swatch" style="background:#6B6B6B;"></span>General Knowledge</td><td>Gray</td><td>#6B6B6B</td></tr>
+      <tr><td><span class="swatch" style="background:#4CAF50;"></span>Satisfaction Positive</td><td>Green</td><td>#4CAF50</td></tr>
+      <tr><td><span class="swatch" style="background:#F44336;"></span>Satisfaction Negative</td><td>Red</td><td>#F44336</td></tr>
+      <tr><td><span class="swatch" style="background:#E66C37;"></span>Gap Warning</td><td>Orange</td><td>#E66C37</td></tr>
+      <tr><td><span class="swatch" style="background:#D13438;"></span>Gap Critical</td><td>Red</td><td>#D13438</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>Filter Bar</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Filter</th><th>Type</th><th>Default</th><th>Scope</th></tr>
+      <tr><td>Date Range</td><td>Date picker</td><td>Last 30 days</td><td>Global (all 4 views)</td></tr>
+      <tr><td>Department</td><td>Multi-select</td><td>All</td><td>V4 + cross-filter to V1/V2</td></tr>
+      <tr><td>Prompt Category</td><td>Multi-select</td><td>All</td><td>V4 only</td></tr>
+      <tr><td>Complexity</td><td>Single-select</td><td>All</td><td>V4 only</td></tr>
+      <tr><td>Intent Type</td><td>Single-select</td><td>All</td><td>V4 only</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>Drill-Through Design</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Source Visual</th><th>Action</th><th>Target</th><th>Filter Passed</th></tr>
+      <tr><td>Theme Donut (click)</td><td>Cross-filter</td><td>All View 4 visuals</td><td>CategoryKey</td></tr>
+      <tr><td>Dept Heatmap (click cell)</td><td>Drill-through</td><td>Detail page</td><td>CategoryKey + DeptKey</td></tr>
+      <tr><td>Themes Table (click row)</td><td>Drill-through</td><td>Category detail</td><td>CategoryKey</td></tr>
+      <tr><td>View 1 BU bar (click)</td><td>Navigate</td><td>View 2</td><td>BUKey</td></tr>
+      <tr><td>View 4 Dept filter</td><td>Cross-filter</td><td>View 1/2 via MappedBUKey</td><td>BUKey</td></tr>
+    </table></div>
+  </section>
+</div>
+
+
+<div id="integration" class="tab-content">
+  <section>
+    <h2>9. Cross-Platform Integration Design</h2>
+    <h3>Bridge Relationship</h3>
+    <div class="info" style="font-size:15px;"><code>DimToyotaDept.MappedBUKey</code> &mdash; M:1 &mdash; <code>DimBusinessUnit.BUKey</code><br><br>This inactive relationship is activated via <code>TREATAS</code> in cross-platform DAX measures, avoiding ambiguity with the primary D11 relationship chain.</div>
+  </section>
+  <section>
+    <h3>Department-to-BU Mapping</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Toyota Department</th><th>Division</th><th>Mapped Acme BU</th><th>Rationale</th></tr>
+      <tr><td>Vehicle Engineering</td><td>R&amp;D</td><td>Research &amp; Development</td><td>Direct functional equivalent</td></tr>
+      <tr><td>Software Engineering</td><td>R&amp;D</td><td>Information Technology</td><td>Technical function alignment</td></tr>
+      <tr><td>Manufacturing Ops</td><td>Production</td><td>OEM Assembly Plants</td><td>Production function</td></tr>
+      <tr><td>Supply Chain</td><td>Production</td><td>Logistics</td><td>Logistics function</td></tr>
+      <tr><td>Parts Operations</td><td>After-Sales</td><td>Parts &amp; Service</td><td>Direct equivalent</td></tr>
+      <tr><td>Dealer Relations</td><td>Sales</td><td>Dealer Network</td><td>Dealer function</td></tr>
+      <tr><td>Financial Products</td><td>Finance</td><td>Financial Services</td><td>Financial function</td></tr>
+      <tr><td>Connected Vehicle</td><td>Technology</td><td>Connected Services</td><td>Technology function</td></tr>
+      <tr><td>Corporate Finance</td><td>Corporate</td><td>Finance</td><td>Direct equivalent</td></tr>
+      <tr><td>HR &amp; Admin</td><td>Corporate</td><td>Human Resources</td><td>Direct equivalent</td></tr>
+      <tr><td>Legal &amp; Compliance</td><td>Corporate</td><td>Legal</td><td>Direct equivalent</td></tr>
+      <tr><td>Marketing &amp; Comms</td><td>Corporate</td><td>Marketing</td><td>Direct equivalent</td></tr>
+      <tr><td>Sales Operations</td><td>Commercial</td><td>Sales</td><td>Direct equivalent</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>View 1 Enhancement: ToyotaGPT Summary Card</h3>
+    <div style="display:inline-block;border:2px solid var(--orange);border-radius:8px;padding:16px 24px;background:#FFF7ED;text-align:center;margin:8px 0;">
+      <div style="font-size:12px;color:var(--gray);text-transform:uppercase;">ToyotaGPT Activity</div>
+      <div style="font-size:24px;font-weight:700;color:var(--dark-blue);">142,830 prompts</div>
+      <div style="color:var(--green);font-size:13px;">&#9650; 12.3% MoM</div>
+      <div style="font-size:13px;color:var(--gray);">3,247 users</div>
+    </div>
+    <pre><code><span class="fn">ToyotaGPT Summary Prompts</span> =
+<span class="kw">CALCULATE</span>(
+    [Total Prompt Volume],
+    <span class="kw">ALL</span>(DimPromptCategory),
+    <span class="kw">ALL</span>(DimToyotaDept)
+)</code></pre>
+    <div class="info">This card links to View 4 via drill-through.</div>
+  </section>
+  <section>
+    <h3>Global Filter Synchronization</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Filter</th><th>View 1</th><th>View 2</th><th>View 3</th><th>View 4</th></tr>
+      <tr><td>Date Range</td><td>DimDate</td><td>DimDate</td><td>DimDate</td><td>DimDate</td></tr>
+      <tr><td>Business Unit</td><td>DimBusinessUnit</td><td>DimBusinessUnit</td><td>(inherited)</td><td>DimToyotaDept via MappedBUKey</td></tr>
+      <tr><td>Department</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>DimToyotaDept (primary)</td></tr>
+      <tr><td>Task Type</td><td>DimTaskType</td><td>DimTaskType</td><td>DimTaskType</td><td>&mdash;</td></tr>
+      <tr><td>Prompt Category</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>DimPromptCategory</td></tr>
+    </table></div>
+  </section>
+</div>
+
+<div id="gap" class="tab-content">
+  <section>
+    <h2>10. Gap Analysis Engine</h2>
+    <h3>Gap Score Calculation</h3>
+    <div style="background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:16px;">
+      <div style="font-size:16px;font-weight:600;color:var(--dark-blue);margin-bottom:12px;font-family:Consolas,monospace;">Gap Score = Normalized Demand &times; (1 - Satisfaction)</div>
+      <div style="font-size:13px;color:var(--gray);">
+        <strong>Normalized Demand</strong> = Category Volume / Total Volume<br>
+        <strong>Satisfaction</strong> = (ThumbsUp - ThumbsDown) / (ThumbsUp + ThumbsDown) &nbsp;&nbsp; range: [-1, +1]
+      </div>
+    </div>
+    <div class="table-wrap"><table>
+      <tr><th>Scenario</th><th>Demand</th><th>Satisfaction</th><th>Gap Score</th><th>Interpretation</th></tr>
+      <tr><td>High traffic, low satisfaction</td><td>0.30</td><td>-0.20</td><td style="color:var(--red);font-weight:700;">0.36</td><td>Critical gap &mdash; many users, poor experience</td></tr>
+      <tr><td>High traffic, high satisfaction</td><td>0.30</td><td>+0.80</td><td style="color:var(--green);">0.06</td><td>Well-served &mdash; no action needed</td></tr>
+      <tr><td>Low traffic, low satisfaction</td><td>0.05</td><td>-0.40</td><td>0.07</td><td>Niche gap &mdash; monitor</td></tr>
+      <tr><td>Low traffic, high satisfaction</td><td>0.05</td><td>+0.90</td><td style="color:var(--green);">0.005</td><td>Well-served niche</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>Top 10 Unmet Needs (DAX)</h3>
+    <pre><code><span class="fn">Top 10 Unmet Needs</span> =
+<span class="kw">TOPN</span>(
+    <span class="num">10</span>,
+    <span class="kw">ADDCOLUMNS</span>(
+        <span class="kw">SUMMARIZE</span>(FactPromptDaily, DimPromptCategory[CategoryName]),
+        <span class="str">"GapScore"</span>, [Response Gap Score],
+        <span class="str">"Volume"</span>, [Total Prompt Volume],
+        <span class="str">"Satisfaction"</span>, [Avg Response Satisfaction]
+    ),
+    [GapScore], <span class="kw">DESC</span>
+)</code></pre>
+  </section>
+  <section>
+    <h3>Gap Trend Tracking (DAX)</h3>
+    <pre><code><span class="fn">Gap Score Prior Month</span> =
+<span class="kw">CALCULATE</span>(
+    [Response Gap Score],
+    <span class="kw">DATEADD</span>(DimDate[Date], <span class="num">-1</span>, <span class="kw">MONTH</span>)
+)
+
+<span class="fn">Gap Trend</span> =
+<span class="kw">VAR</span> Current = [Response Gap Score]
+<span class="kw">VAR</span> Prior = [Gap Score Prior Month]
+<span class="kw">RETURN</span>
+    <span class="kw">SWITCH</span>(
+        <span class="kw">TRUE</span>(),
+        Current &lt; Prior * <span class="num">0.9</span>, <span class="str">"Improving"</span>,
+        Current &gt; Prior * <span class="num">1.1</span>, <span class="str">"Worsening"</span>,
+        <span class="str">"Stable"</span>
+    )</code></pre>
+  </section>
+  <section>
+    <h3>Recommendation Generation Rules</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Condition</th><th>Recommendation</th></tr>
+      <tr><td style="color:var(--red);font-weight:600;">Gap &gt; 0.30 AND Satisfaction &lt; 0</td><td><strong>CRITICAL:</strong> {Category} has high demand with negative satisfaction. Immediate knowledge base expansion recommended.</td></tr>
+      <tr><td style="color:var(--orange);font-weight:600;">Gap &gt; 0.20 AND Satisfaction &lt; 0.3</td><td><strong>HIGH:</strong> {Category} shows significant unmet need. Review ToyotaGPT knowledge base coverage.</td></tr>
+      <tr><td>Gap &gt; 0.10 AND Trend = "Worsening"</td><td><strong>WATCH:</strong> {Category} gap is increasing. Investigate recent changes in user behavior.</td></tr>
+      <tr><td>Regenerated% &gt; 15% for category</td><td><strong>QUALITY:</strong> {Category} has high regeneration rate. Response quality may need improvement.</td></tr>
+    </table></div>
+  </section>
+</div>
+
+
+<div id="security" class="tab-content">
+  <section>
+    <h2>11. Security &amp; Privacy Design</h2>
+    <h3>PII Anonymization Flow</h3>
+    <div style="background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:stretch;">
+        <div class="arch-box" style="flex:1;min-width:180px;border-color:var(--red);"><strong>Raw Data</strong><br><br>user_id<br>prompt_text<br>department_id</div>
+        <div style="display:flex;align-items:center;font-size:24px;color:var(--blue);">&rarr;</div>
+        <div class="arch-box" style="flex:1.5;min-width:220px;border-color:var(--orange);background:#FFF7ED;"><strong>Anonymization Layer</strong><br><br>SHA-256(user_id + daily_salt)<br>CLASSIFY &rarr; drop text<br>lookup dept_key</div>
+        <div style="display:flex;align-items:center;font-size:24px;color:var(--blue);">&rarr;</div>
+        <div class="arch-box" style="flex:1;min-width:180px;border-color:var(--green);"><strong>Analytics Layer</strong><br><br>anonymized_hash<br>category_key, intent, complexity<br>dept_key (FK)</div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h3>Data NEVER Stored in Analytics</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Data Element</th><th>Reason</th><th>Alternative Stored</th></tr>
+      <tr><td>Raw prompt text</td><td>PII risk, confidential content</td><td>Category classification only</td></tr>
+      <tr><td>User name</td><td>PII</td><td>Anonymized hash</td></tr>
+      <tr><td>Email address</td><td>PII</td><td>Not stored at all</td></tr>
+      <tr><td>Employee ID (raw)</td><td>PII</td><td>SHA-256 hash</td></tr>
+      <tr><td>Response text</td><td>Confidential content</td><td>Satisfaction score, token count only</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>PII Detection Validation (Post-ETL Regex Scan)</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Pattern</th><th>Regex</th><th>Action</th></tr>
+      <tr><td>Email</td><td><code>[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}</code></td><td>Quarantine row</td></tr>
+      <tr><td>Phone (US)</td><td><code>\b\d{3}[-.]?\d{3}[-.]?\d{4}\b</code></td><td>Quarantine row</td></tr>
+      <tr><td>SSN</td><td><code>\b\d{3}-\d{2}-\d{4}\b</code></td><td>Quarantine row, alert</td></tr>
+      <tr><td>Toyota employee ID</td><td><code>\bT\d{6,8}\b</code></td><td>Hash if unhashed, alert</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>RLS Extension for D12</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Role</th><th>D11 Access</th><th>D12 Access</th></tr>
+      <tr><td>Admin</td><td>All BUs, all data</td><td>All departments, all prompt data</td></tr>
+      <tr><td>BU Leader</td><td>Own BU only</td><td>Mapped Toyota department(s) only</td></tr>
+      <tr><td>Viewer</td><td>Read-only, all BUs</td><td>Read-only, all departments</td></tr>
+      <tr style="background:#FFF7ED;"><td><strong>Toyota Dept Manager (NEW)</strong></td><td>No D11 access</td><td>Own department only</td></tr>
+    </table></div>
+    <h4>RLS Filter Expression (Toyota Dept Manager)</h4>
+    <pre><code>[DeptKey] = <span class="kw">LOOKUPVALUE</span>(
+    DimToyotaDept[DeptKey],
+    DimToyotaDept[DeptID],
+    <span class="kw">USERPRINCIPALNAME</span>()
+)</code></pre>
+    <div class="note">Exact implementation depends on how Toyota department assignments are managed in Azure AD. If provisioned via groups, the RLS filter uses <code>USERNAME()</code> mapped through a security table.</div>
+  </section>
+</div>
+
+
+<div id="perftest" class="tab-content">
+  <section>
+    <h2>12. Performance Design</h2>
+    <h3>Performance Budget</h3>
+    <div class="table-wrap"><table>
+      <tr><th>View</th><th>Target Load</th><th>Target Refresh</th><th>Strategy</th></tr>
+      <tr><td>View 1 (Executive)</td><td>&lt;3s</td><td>&lt;2s</td><td>FactDailyAdoption aggregation</td></tr>
+      <tr><td>View 2 (BU)</td><td>&lt;4s</td><td>&lt;2s</td><td>Pre-filtered by RLS</td></tr>
+      <tr><td>View 3 (Use Case)</td><td>&lt;4s</td><td>&lt;2s</td><td>Heatmap uses FactDailyAdoption</td></tr>
+      <tr><td>View 4 (Prompt)</td><td>&lt;5s</td><td>&lt;3s</td><td>FactPromptDaily aggregation; limit heatmap cells</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>Optimization Strategies</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Strategy</th><th>Target Table</th><th>Description</th></tr>
+      <tr><td>Pre-aggregation</td><td>FactPromptDaily</td><td>All View 4 visuals use daily rollup, not row-level FactPrompt</td></tr>
+      <tr><td>Partition pruning</td><td>FactPrompt</td><td>Monthly partitions; queries only scan relevant months</td></tr>
+      <tr><td>Star join optimization</td><td>All facts</td><td>All M:1 to small dimensions; enables Vertipaq optimization</td></tr>
+      <tr><td>Avoid DISTINCTCOUNT</td><td>FactPrompt</td><td>Use pre-computed UniqueUsers from FactPromptDaily</td></tr>
+      <tr><td>Limit heatmap cardinality</td><td>View 4 heatmap</td><td>Max 8 categories &times; 25 departments = 200 cells</td></tr>
+      <tr><td>Measure-based formatting</td><td>Gap Analysis</td><td>Use measure-based conditional formatting, not row-level rules</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>Data Volume Projections</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Table</th><th>Year 1 Rows</th><th>Year 2 Rows</th><th>Row Size</th><th>Year 1 Size</th></tr>
+      <tr><td>FactPrompt</td><td>1,500,000</td><td>3,000,000</td><td>~120 bytes</td><td>~180 MB</td></tr>
+      <tr><td>FactPromptDaily</td><td>73,000</td><td>146,000</td><td>~80 bytes</td><td>~6 MB</td></tr>
+      <tr><td>DimPromptCategory</td><td>14</td><td>14</td><td>~200 bytes</td><td>&lt;1 KB</td></tr>
+      <tr><td>DimToyotaDept</td><td>~30</td><td>~35</td><td>~150 bytes</td><td>&lt;5 KB</td></tr>
+    </table></div>
+    <div class="info"><strong>Vertipaq compression:</strong> Actual in-memory size significantly smaller. Estimated model size increase from D12: ~30-50 MB.</div>
+  </section>
+  <section>
+    <h2>13. Testing Strategy</h2>
+    <h3>Test Levels</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Level</th><th>Scope</th><th>Owner</th><th>Sprint</th></tr>
+      <tr><td>Unit Testing</td><td>Individual DAX measures against known data</td><td>PBI Lead</td><td>Sprint 6</td></tr>
+      <tr><td>Pipeline Testing</td><td>ETL end-to-end with test data</td><td>DE</td><td>Sprint 6</td></tr>
+      <tr><td>Classification Testing</td><td>Accuracy of keyword + LLM classifier</td><td>DE</td><td>Sprint 6</td></tr>
+      <tr><td>Integration Testing</td><td>View 4 visuals with live data, cross-filtering</td><td>QA</td><td>Sprint 8</td></tr>
+      <tr><td>Security Testing</td><td>RLS, PII validation, anonymization</td><td>QA</td><td>Sprint 8</td></tr>
+      <tr><td>Performance Testing</td><td>Load times, refresh times, concurrent users</td><td>QA/PBI</td><td>Sprint 7-8</td></tr>
+      <tr><td>UAT</td><td>Use-case-based acceptance (UC-01 to UC-07)</td><td>PM</td><td>Sprint 8</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>Classification Test Cases</h3>
+    <div class="table-wrap"><table>
+      <tr><th>ID</th><th>Input</th><th>Expected Output</th><th>Pass Criteria</th></tr>
+      <tr><td>CL-01</td><td>"How do I reset my VPN password?"</td><td>Technical Support, Transactional, Simple</td><td>Exact match</td></tr>
+      <tr><td>CL-02</td><td>"What is our PTO policy for 2026?"</td><td>Policy Lookup, Informational, Simple</td><td>Exact match</td></tr>
+      <tr><td>CL-03</td><td>"Help me with the new system"</td><td>Routed to LLM Stage 2</td><td>Category assigned</td></tr>
+      <tr><td>CL-04</td><td>"Towing capacity for 2026 Tacoma TRD Pro"</td><td>Product &amp; Engineering</td><td>Exact match</td></tr>
+      <tr><td>CL-05</td><td>"Draft an email about the new travel policy"</td><td>General Knowledge OR Policy Lookup</td><td>Either accepted</td></tr>
+      <tr><td>CL-06</td><td>"John Smith's SSN is 123-45-6789"</td><td>PII detected &rarr; quarantine</td><td>Row quarantined, alert</td></tr>
+      <tr><td>CL-07</td><td>100 random production prompts</td><td>Manually labeled vs auto-classified</td><td>&gt;85% agreement</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>DAX Measure Test Cases</h3>
+    <div class="table-wrap"><table>
+      <tr><th>ID</th><th>Measure</th><th>Test Data</th><th>Expected</th></tr>
+      <tr><td>DX-01</td><td>Total Prompt Volume</td><td>100 rows, PromptCount=10 each</td><td>1,000</td></tr>
+      <tr><td>DX-02</td><td>Avg Response Satisfaction</td><td>ThumbsUp=80, ThumbsDown=20</td><td>+0.60</td></tr>
+      <tr><td>DX-03</td><td>Response Gap Score</td><td>Demand=30%, Satisfaction=-0.20</td><td>0.36</td></tr>
+      <tr><td>DX-04</td><td>MoM Growth</td><td>Current=500, Prior=400</td><td>+25%</td></tr>
+      <tr><td>DX-05</td><td>Cross-Platform Active Rate</td><td>100 licensed, 60 active</td><td>60%</td></tr>
+    </table></div>
+  </section>
+</div>
+
+
+<div id="deploy" class="tab-content">
+  <section>
+    <h2>14. Deployment Design</h2>
+    <h3>Deployment Sequence</h3>
+    <div style="background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);">
+      <ol style="font-size:13px;line-height:2.2;padding-left:20px;">
+        <li>Deploy DimPromptCategory (seed data) <span class="badge badge-new" style="margin-left:8px;">Sprint 6</span></li>
+        <li>Deploy DimToyotaDept (initial load) <span class="badge badge-new" style="margin-left:8px;">Sprint 6</span></li>
+        <li>Deploy FactPrompt table (empty) <span class="badge badge-new" style="margin-left:8px;">Sprint 6</span></li>
+        <li>Deploy FactPromptDaily table (empty) <span class="badge badge-new" style="margin-left:8px;">Sprint 6</span></li>
+        <li>Enable ETL pipeline (data begins flowing) <span class="badge badge-new" style="margin-left:8px;">Sprint 6</span></li>
+        <li>Deploy DAX measures <span class="badge badge-new" style="margin-left:8px;">Sprint 6</span></li>
+        <li>Deploy View 4 page + visuals <span class="badge badge-new" style="margin-left:8px;">Sprint 7</span></li>
+        <li>Deploy cross-platform integration <span class="badge badge-new" style="margin-left:8px;">Sprint 7</span></li>
+        <li>Deploy View 1 ToyotaGPT summary card <span class="badge badge-new" style="margin-left:8px;">Sprint 7</span></li>
+        <li>Deploy updated RLS rules <span class="badge badge-new" style="margin-left:8px;">Sprint 8</span></li>
+        <li>Production smoke test <span class="badge badge-new" style="margin-left:8px;">Sprint 8</span></li>
+        <li>UAT sign-off <span class="badge badge-new" style="margin-left:8px;">Sprint 8</span></li>
+        <li>Final production deployment <span class="badge badge-new" style="margin-left:8px;">Sprint 8</span></li>
+      </ol>
+    </div>
+  </section>
+  <section>
+    <h3>Rollback Plan</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Component</th><th>Rollback Action</th><th>Impact</th></tr>
+      <tr><td>View 4 tab</td><td>Remove tab from navigation; hide page</td><td>Views 1-3 unaffected</td></tr>
+      <tr><td>Cross-platform card on View 1</td><td>Remove card visual</td><td>View 1 returns to D11 layout</td></tr>
+      <tr><td>New DAX measures</td><td>Delete measures</td><td>No impact on D11 measures</td></tr>
+      <tr><td>New tables</td><td>Remove from model</td><td>No impact on D11 tables</td></tr>
+      <tr><td>ETL pipeline</td><td>Disable ToyotaGPT refresh</td><td>D11 refresh continues</td></tr>
+      <tr><td>RLS rules</td><td>Revert to D11 roles</td><td>Toyota users lose access</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>Feature Flags</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Flag</th><th>Purpose</th><th>Default</th></tr>
+      <tr><td><code>ENABLE_VIEW4</code></td><td>Show/hide View 4 tab in navigation</td><td><code>false</code> until Sprint 7 complete</td></tr>
+      <tr><td><code>ENABLE_CROSS_PLATFORM</code></td><td>Show/hide ToyotaGPT summary on View 1</td><td><code>false</code> until Sprint 7 complete</td></tr>
+      <tr><td><code>ENABLE_TOYOTA_RLS</code></td><td>Activate Toyota Dept Manager RLS role</td><td><code>false</code> until Sprint 8 UAT</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h2>15. Appendices</h2>
+    <h3>Appendix A: Glossary</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Term</th><th>Definition</th></tr>
+      <tr><td>ToyotaGPT</td><td>A custom GPT deployment at Toyota on OpenAI's platform, used internally for information retrieval and task assistance</td></tr>
+      <tr><td>Prompt</td><td>A user's text input to ToyotaGPT</td></tr>
+      <tr><td>Taxonomy</td><td>The 8-category classification system for organizing prompt themes</td></tr>
+      <tr><td>Gap Score</td><td>A computed metric indicating where user demand exceeds ToyotaGPT's ability to provide satisfactory answers</td></tr>
+      <tr><td>PII</td><td>Personally Identifiable Information &mdash; data that can identify an individual</td></tr>
+      <tr><td>RLS</td><td>Row-Level Security &mdash; Power BI feature restricting data visibility by user role</td></tr>
+      <tr><td>Cross-platform correlation</td><td>Linking ToyotaGPT usage patterns with Enterprise AI adoption via DimToyotaDept-to-DimBusinessUnit bridge</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>Appendix B: Document Cross-References</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Document</th><th>Path</th><th>Relationship</th></tr>
+      <tr><td>D12 Sprint Plan</td><td><code>docs/D12-sprint-plan.md</code></td><td>Sprint schedule, tasks, milestones</td></tr>
+      <tr><td>D11 Sprint Plan</td><td><code>docs/D11-sprint-plan.md</code></td><td>MVP baseline reference</td></tr>
+      <tr><td>Requirements</td><td><code>docs/requirements.md</code></td><td>Functional and non-functional requirements</td></tr>
+      <tr><td>Sprint Backlog</td><td><code>docs/sprint-backlog.md</code></td><td>User stories US-042 through US-047</td></tr>
+      <tr><td>Project Backlog</td><td><code>docs/project-backlog.md</code></td><td>Epics and full task breakdown</td></tr>
+      <tr><td>Data Dictionary</td><td><code>docs/data-dictionary.md</code></td><td>Field-level data definitions</td></tr>
+      <tr><td>Prototype Design</td><td><code>docs/plans/2026-01-22-prototype-design.md</code></td><td>View layouts, data structures</td></tr>
+      <tr><td>Sprint Plan Summary</td><td><code>docs/sprint-plan-summary.html</code></td><td>Interactive HTML summary</td></tr>
+    </table></div>
+  </section>
+  <section>
+    <h3>Appendix C: Open Questions</h3>
+    <div class="table-wrap"><table>
+      <tr><th>#</th><th>Question</th><th>Owner</th><th>Status</th></tr>
+      <tr><td>1</td><td>What is the exact API endpoint / export mechanism for ToyotaGPT prompt logs?</td><td>Toyota AI Platform Team</td><td>Pending &mdash; Sprint 5</td></tr>
+      <tr><td>2</td><td>Does Toyota have an existing logging layer, or do we need to instrument one?</td><td>Toyota AI Platform Team</td><td>Pending &mdash; Sprint 5</td></tr>
+      <tr><td>3</td><td>What is the Toyota organizational hierarchy depth (dept / division / group)?</td><td>Toyota HR</td><td>Pending &mdash; Sprint 5</td></tr>
+      <tr><td>4</td><td>Are there existing Toyota dept-to-Acme BU mappings, or do we define them?</td><td>PM</td><td>Pending &mdash; Sprint 5</td></tr>
+      <tr><td>5</td><td>What is the Toyota data retention policy for prompt logs?</td><td>Toyota Legal</td><td>Pending &mdash; Sprint 5</td></tr>
+      <tr><td>6</td><td>Can we use the OpenAI API for batch classification, or need Azure-hosted model?</td><td>DE</td><td>Pending &mdash; Sprint 6</td></tr>
+      <tr><td>7</td><td>What Azure AD groups will Toyota Dept Managers be provisioned under for RLS?</td><td>Toyota IT / Identity</td><td>Pending &mdash; Sprint 7</td></tr>
+    </table></div>
+  </section>
+</div>
+
+
+</div><!-- /container -->
+
+<footer style="text-align:center;padding:32px 0;color:#6B6B6B;font-size:12px;border-top:1px solid #E5E7EB;margin-top:40px;background:#fff;">
+  D12 Detailed Design Document &mdash; Enterprise AI Adoption Dashboard &middot; Acme Corporation &middot; Version 1.0 &middot; Feb 12, 2026
+</footer>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+function toggle(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+</script>
+</body>
+</html>

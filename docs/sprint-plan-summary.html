@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprint Plan Summary — Enterprise AI Adoption Dashboard</title>
+<style>
+  :root {
+    --blue: #118DFF;
+    --dark-blue: #12239E;
+    --orange: #E66C37;
+    --gray: #6B6B6B;
+    --light-gray: #F3F4F6;
+    --green: #2DA02D;
+    --red: #D13438;
+    --yellow: #E6A700;
+    --white: #FFFFFF;
+    --text: #1F2937;
+    --border: #E5E7EB;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var(--text); background: var(--light-gray); line-height: 1.5; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header { background: linear-gradient(135deg, var(--dark-blue), var(--blue)); color: var(--white); padding: 40px 0 32px; }
+  header h1 { font-size: 28px; font-weight: 600; }
+  header p { opacity: 0.85; margin-top: 4px; font-size: 15px; }
+  .header-meta { display: flex; gap: 32px; margin-top: 20px; flex-wrap: wrap; }
+  .header-meta div { background: rgba(255,255,255,0.12); border-radius: 8px; padding: 12px 20px; min-width: 160px; }
+  .header-meta label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7; display: block; }
+  .header-meta span { font-size: 18px; font-weight: 600; }
+
+  /* Tabs */
+  .tabs { background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+  .tabs .container { display: flex; gap: 0; }
+  .tab-btn { padding: 14px 24px; border: none; background: none; font-size: 14px; font-weight: 500; color: var(--gray); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
+  .tab-btn:hover { color: var(--blue); }
+  .tab-btn.active { color: var(--dark-blue); border-bottom-color: var(--blue); font-weight: 600; }
+
+  /* Sections */
+  .tab-content { display: none; padding: 32px 0; }
+  .tab-content.active { display: block; }
+  section { margin-bottom: 32px; }
+  h2 { font-size: 22px; color: var(--dark-blue); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--blue); }
+  h3 { font-size: 16px; color: var(--dark-blue); margin: 20px 0 10px; }
+
+  /* Cards */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card { background: var(--white); border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 4px solid var(--blue); }
+  .card.orange { border-left-color: var(--orange); }
+  .card.green { border-left-color: var(--green); }
+  .card.red { border-left-color: var(--red); }
+  .card .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); }
+  .card .value { font-size: 28px; font-weight: 700; color: var(--dark-blue); margin: 4px 0; }
+  .card .detail { font-size: 13px; color: var(--gray); }
+
+  /* Tables */
+  .table-wrap { background: var(--white); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow-x: auto; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--dark-blue); color: var(--white); text-align: left; padding: 10px 14px; font-weight: 600; white-space: nowrap; }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: #F0F6FF; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Status badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-todo { background: #FEF3C7; color: #92400E; }
+  .badge-done { background: #D1FAE5; color: #065F46; }
+  .badge-risk-high { background: #FEE2E2; color: #991B1B; }
+  .badge-risk-med { background: #FEF3C7; color: #92400E; }
+  .badge-risk-low { background: #D1FAE5; color: #065F46; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 28px; margin: 20px 0; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 3px; background: var(--blue); border-radius: 2px; }
+  .tl-item { position: relative; margin-bottom: 24px; }
+  .tl-item::before { content: ''; position: absolute; left: -24px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--blue); border: 3px solid var(--white); box-shadow: 0 0 0 2px var(--blue); }
+  .tl-item.orange::before { background: var(--orange); box-shadow: 0 0 0 2px var(--orange); }
+  .tl-item h4 { font-size: 15px; color: var(--dark-blue); }
+  .tl-item .tl-date { font-size: 12px; color: var(--gray); }
+  .tl-item p { font-size: 13px; margin-top: 4px; }
+
+  /* Collapsible */
+  .collapsible { cursor: pointer; user-select: none; }
+  .collapsible::after { content: ' +'; font-weight: 700; color: var(--blue); }
+  .collapsible.open::after { content: ' −'; }
+  .collapse-body { display: none; }
+  .collapse-body.open { display: block; }
+
+  /* Bar chart (CSS-only) */
+  .bar-row { display: flex; align-items: center; margin-bottom: 6px; }
+  .bar-label { width: 130px; font-size: 12px; font-weight: 500; flex-shrink: 0; }
+  .bar-track { flex: 1; background: var(--light-gray); border-radius: 4px; height: 22px; position: relative; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 11px; font-weight: 600; color: var(--white); transition: width 0.6s ease; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header-meta { gap: 12px; }
+    .header-meta div { min-width: 140px; padding: 10px 14px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .tab-btn { padding: 12px 14px; font-size: 13px; }
+  }
+  @media print {
+    .tabs { position: static; }
+    .tab-content { display: block !important; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <h1>Enterprise AI Adoption Dashboard</h1>
+    <p>Sprint Plan Summary &mdash; Acme Corporation &middot; CTO / AI Governance Team</p>
+    <div class="header-meta">
+      <div><label>Total Duration</label><span>16 Weeks</span></div>
+      <div><label>Total Sprints</label><span>8</span></div>
+      <div><label>Total Hours</label><span>488</span></div>
+      <div><label>User Stories</label><span>47</span></div>
+      <div><label>Dashboard Views</label><span>4</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="container">
+    <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+    <button class="tab-btn" onclick="showTab('d11')">D11 &mdash; MVP</button>
+    <button class="tab-btn" onclick="showTab('d12')">D12 &mdash; Post-MVP</button>
+    <button class="tab-btn" onclick="showTab('backlog')">Sprint Backlog</button>
+    <button class="tab-btn" onclick="showTab('uat')">UAT &amp; Use Cases</button>
+    <button class="tab-btn" onclick="showTab('risks')">Risks &amp; Resources</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ===================== OVERVIEW TAB ===================== -->
+<div id="overview" class="tab-content active">
+
+  <!-- KPI Cards -->
+  <section>
+    <h2>Program at a Glance</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="label">D11 &mdash; MVP</div>
+        <div class="value">200 hrs</div>
+        <div class="detail">3 Sprints &middot; 5 Weeks &middot; Feb 3 &ndash; Mar 10, 2026</div>
+      </div>
+      <div class="card orange">
+        <div class="label">D12 &mdash; Post-MVP</div>
+        <div class="value">288 hrs</div>
+        <div class="detail">4 Sprints &middot; 8 Weeks &middot; Mar 16 &ndash; May 8, 2026</div>
+      </div>
+      <div class="card green">
+        <div class="label">Data Sources</div>
+        <div class="value">8</div>
+        <div class="detail">5 Acme systems (D11) + 3 ToyotaGPT sources (D12)</div>
+      </div>
+      <div class="card">
+        <div class="label">Defined Metrics</div>
+        <div class="value">18</div>
+        <div class="detail">10 adoption metrics (D11) + 8 prompt analytics (D12)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Combined Timeline -->
+  <section>
+    <h2>Program Timeline</h2>
+    <div class="timeline">
+      <div class="tl-item"><h4>Sprint 1 &mdash; Discovery &amp; Data Engineering</h4><div class="tl-date">Feb 3 &ndash; Feb 14, 2026 &middot; D11</div><p>Requirements, 5 data sources, star schema, prototype review. <strong>60 hrs</strong></p></div>
+      <div class="tl-item"><h4>Sprint 2 &mdash; Core Build &amp; Views 1-2</h4><div class="tl-date">Feb 17 &ndash; Feb 28, 2026 &middot; D11</div><p>ETL pipeline, 10 DAX measures, RLS, Executive Summary &amp; BU Deep-Dive views. <strong>88 hrs</strong></p></div>
+      <div class="tl-item"><h4>Sprint 3 &mdash; Completion, Testing &amp; Deployment</h4><div class="tl-date">Mar 3 &ndash; Mar 10, 2026 &middot; D11</div><p>View 3, QA testing, UAT, production deployment, training. <strong>56 hrs</strong></p></div>
+      <div class="tl-item"><h4 style="color:var(--gray);font-style:italic;">Gap Week</h4><div class="tl-date">Mar 11 &ndash; Mar 15 &middot; Buffer</div><p>Transition period between D11 delivery and D12 start.</p></div>
+      <div class="tl-item orange"><h4>Sprint 5 &mdash; ToyotaGPT Discovery &amp; Data Assessment</h4><div class="tl-date">Mar 16 &ndash; Mar 27, 2026 &middot; D12</div><p>Stakeholder alignment, data source assessment, taxonomy design, data model extension. <strong>68 hrs</strong></p></div>
+      <div class="tl-item orange"><h4>Sprint 6 &mdash; ToyotaGPT Data Pipeline &amp; Analytics</h4><div class="tl-date">Mar 30 &ndash; Apr 10, 2026 &middot; D12</div><p>ETL with anonymization, prompt classification, 8 DAX measures, D11 refinements. <strong>72 hrs</strong></p></div>
+      <div class="tl-item orange"><h4>Sprint 7 &mdash; View 4 Build &amp; Integration</h4><div class="tl-date">Apr 13 &ndash; Apr 24, 2026 &middot; D12</div><p>Prompt Intelligence view, cross-platform correlation, gap analysis, UX review. <strong>76 hrs</strong></p></div>
+      <div class="tl-item orange"><h4>Sprint 8 &mdash; Testing, UAT &amp; Deployment</h4><div class="tl-date">Apr 27 &ndash; May 8, 2026 &middot; D12</div><p>QA testing, 7 use-case UAT sessions, production deployment, documentation. <strong>82 hrs</strong></p></div>
+    </div>
+  </section>
+
+  <!-- Hours by Sprint bar chart -->
+  <section>
+    <h2>Hours by Sprint</h2>
+    <div style="background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+      <div class="bar-row"><div class="bar-label">Sprint 1</div><div class="bar-track"><div class="bar-fill" style="width:68%;background:var(--blue);">60 hrs</div></div></div>
+      <div class="bar-row"><div class="bar-label">Sprint 2</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue);">88 hrs</div></div></div>
+      <div class="bar-row"><div class="bar-label">Sprint 3</div><div class="bar-track"><div class="bar-fill" style="width:64%;background:var(--blue);">56 hrs</div></div></div>
+      <div class="bar-row"><div class="bar-label">Sprint 5</div><div class="bar-track"><div class="bar-fill" style="width:77%;background:var(--orange);">68 hrs</div></div></div>
+      <div class="bar-row"><div class="bar-label">Sprint 6</div><div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--orange);">72 hrs</div></div></div>
+      <div class="bar-row"><div class="bar-label">Sprint 7</div><div class="bar-track"><div class="bar-fill" style="width:86%;background:var(--orange);">76 hrs</div></div></div>
+      <div class="bar-row"><div class="bar-label">Sprint 8</div><div class="bar-track"><div class="bar-fill" style="width:93%;background:var(--orange);">82 hrs</div></div></div>
+    </div>
+  </section>
+
+  <!-- Milestones Combined -->
+  <section>
+    <h2>Key Milestones</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Milestone</th><th>Date</th><th>Deliverable</th><th>Criteria</th></tr>
+        <tr><td>M1: Requirements Complete</td><td>Feb 14</td><td>D11</td><td>10 metrics defined, 5 sources identified, sign-off</td></tr>
+        <tr><td>M2: Data Pipeline Live</td><td>Feb 21</td><td>D11</td><td>All ETL operational, daily refresh working</td></tr>
+        <tr><td>M3: Views 1 &amp; 2 Complete</td><td>Feb 28</td><td>D11</td><td>Executive &amp; BU views ready for testing</td></tr>
+        <tr><td>M4: All MVP Views Complete</td><td>Mar 5</td><td>D11</td><td>View 3 complete, all functionality working</td></tr>
+        <tr><td>M5: MVP UAT Sign-off</td><td>Mar 9</td><td>D11</td><td>Governance team approval</td></tr>
+        <tr><td>M6: MVP Production Deployment</td><td>Mar 10</td><td>D11</td><td>Dashboard live, users trained</td></tr>
+        <tr style="background:#FFF7ED;"><td>M7: ToyotaGPT Data Access Secured</td><td>Mar 27</td><td>D12</td><td>Data sharing agreement signed; prompt logs accessible</td></tr>
+        <tr style="background:#FFF7ED;"><td>M8: Taxonomy Approved</td><td>Mar 27</td><td>D12</td><td>8-category taxonomy validated by stakeholders</td></tr>
+        <tr style="background:#FFF7ED;"><td>M9: ToyotaGPT Pipeline Operational</td><td>Apr 10</td><td>D12</td><td>ETL running daily; classification pipeline active</td></tr>
+        <tr style="background:#FFF7ED;"><td>M10: View 4 Complete</td><td>Apr 24</td><td>D12</td><td>Prompt Intelligence built; cross-platform integration working</td></tr>
+        <tr style="background:#FFF7ED;"><td>M11: D12 UAT Sign-Off</td><td>May 6</td><td>D12</td><td>All 7 use cases passed; stakeholder approval</td></tr>
+        <tr style="background:#FFF7ED;"><td>M12: D12 Production Deployment</td><td>May 8</td><td>D12</td><td>Updated dashboard live; documentation &amp; training complete</td></tr>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== D11 TAB ===================== -->
+<div id="d11" class="tab-content">
+  <section>
+    <h2>D11 &mdash; Measurement &amp; Adoption Scorecard MVP</h2>
+    <div class="card-grid">
+      <div class="card"><div class="label">Duration</div><div class="value">5 Weeks</div><div class="detail">Feb 3 &ndash; Mar 10, 2026</div></div>
+      <div class="card"><div class="label">Total Hours</div><div class="value">200</div><div class="detail">3 Sprints &middot; 26 Tasks</div></div>
+      <div class="card green"><div class="label">Dashboard Views</div><div class="value">3</div><div class="detail">Executive Summary, BU Deep-Dive, Use Case Analysis</div></div>
+      <div class="card orange"><div class="label">Data Sources</div><div class="value">5</div><div class="detail">AWS Bedrock, Workday, License Mgmt, Azure AD, Targets DB</div></div>
+    </div>
+  </section>
+
+  <!-- Sprint 1 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Sprint 1: Discovery &amp; Data Engineering (Feb 3 &ndash; Feb 14) &mdash; 60 hrs</h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>ID</th><th>Task</th><th>Owner</th><th>Hrs</th><th>Status</th></tr>
+          <tr><td>S1-001</td><td>Kickoff meeting with AI Governance team</td><td>PM</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S1-002</td><td>Define 10 adoption metrics with stakeholders</td><td>PM</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S1-003</td><td>Document reporting structure by function/tool</td><td>PM</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S1-004</td><td>Identify 5 Acme data source systems</td><td>DE</td><td>8</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S1-005</td><td>Obtain data access for all source systems</td><td>DE</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S1-006</td><td>Review/update HTML prototype with stakeholders</td><td>UX</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S1-007</td><td>Data profiling for all 5 source systems</td><td>DE</td><td>8</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S1-008</td><td>Document data quality findings</td><td>DE</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S1-009</td><td>Design star schema (Dims + Facts)</td><td>DE</td><td>8</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S1-010</td><td>Create dimension tables</td><td>DE</td><td>8</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S1-011</td><td>Requirements sign-off from Governance team</td><td>PM</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S1-012</td><td>Finalize metric definitions document</td><td>PM</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sprint 2 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Sprint 2: Core Build &amp; Views 1-2 (Feb 17 &ndash; Feb 28) &mdash; 88 hrs</h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>ID</th><th>Task</th><th>Owner</th><th>Hrs</th><th>Status</th></tr>
+          <tr><td>S2-001</td><td>Build ETL for Enterprise AI telemetry data</td><td>DE</td><td>8</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-002</td><td>Build ETL for HR/employee mapping</td><td>DE</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-003</td><td>Build ETL for remaining 3 data sources</td><td>DE</td><td>8</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-004</td><td>Configure daily scheduled refresh</td><td>DE</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-005</td><td>Create core DAX measures (10 metrics)</td><td>PBI</td><td>8</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-006</td><td>Create engagement tier measures</td><td>PBI</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-007</td><td>Create target comparison measures</td><td>PBI</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-008</td><td>Implement Row-Level Security</td><td>PBI</td><td>6</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-009</td><td>Build View 1: Executive Summary</td><td>PBI</td><td>16</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-010</td><td>Build View 2: Business Unit Deep-Dive</td><td>PBI</td><td>16</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-011</td><td>Configure drill-through navigation</td><td>PBI</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-012</td><td>Add global filters (date, BU)</td><td>PBI</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S2-013</td><td>Internal demo &amp; feedback</td><td>PM</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sprint 3 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Sprint 3: Completion, Testing &amp; Deployment (Mar 3 &ndash; Mar 10) &mdash; 56 hrs</h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>ID</th><th>Task</th><th>Owner</th><th>Hrs</th><th>Status</th></tr>
+          <tr><td>S3-001</td><td>Build View 3: Use Case Analysis</td><td>PBI</td><td>16</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-002</td><td>Add export functionality (CSV)</td><td>PBI</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-003</td><td>Performance optimization</td><td>PBI</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-004</td><td>Execute functional test cases</td><td>QA</td><td>8</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-005</td><td>Execute data validation tests</td><td>QA</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-006</td><td>Create user documentation</td><td>PBI</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-007</td><td>Conduct UAT with Governance team</td><td>PM</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-008</td><td>Fix critical UAT defects</td><td>PBI</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-009</td><td>UAT sign-off</td><td>PM</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-010</td><td>Deploy to production workspace</td><td>PBI</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-011</td><td>Configure production refresh</td><td>PBI</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-012</td><td>Provision user access</td><td>PM</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-013</td><td>Conduct training session</td><td>PBI</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>S3-014</td><td>Final documentation handoff</td><td>PM</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- D11 Metrics -->
+  <section>
+    <h2>10 Defined Metrics (D11)</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>#</th><th>Metric</th><th>Description</th><th>Views</th></tr>
+        <tr><td>1</td><td>Total Active Users</td><td>Users with 1+ sessions in period</td><td>V1, V2</td></tr>
+        <tr><td>2</td><td>Adoption Rate</td><td>Active users / Licensed users</td><td>V1, V2</td></tr>
+        <tr><td>3</td><td>Total Sessions</td><td>Count of all sessions</td><td>V1, V2</td></tr>
+        <tr><td>4</td><td>Avg Sessions per User</td><td>Sessions / Active users</td><td>V1, V2</td></tr>
+        <tr><td>5</td><td>Adoption vs Target</td><td>Current rate vs target rate</td><td>V1, V2</td></tr>
+        <tr><td>6</td><td>Engagement Tier Distribution</td><td>Power User / Regular / Tried / Inactive</td><td>V2</td></tr>
+        <tr><td>7</td><td>Month-over-Month Growth</td><td>% change from previous month</td><td>V1</td></tr>
+        <tr><td>8</td><td>Top Task Type</td><td>Most used task category</td><td>V2, V3</td></tr>
+        <tr><td>9</td><td>Business Outcome Distribution</td><td>Sessions by outcome category</td><td>V1, V3</td></tr>
+        <tr><td>10</td><td>Task Type Growth Rate</td><td>Fastest growing use case</td><td>V3</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- D11 Data Sources -->
+  <section>
+    <h2>5 Acme Data Sources (D11)</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>#</th><th>System</th><th>Data</th><th>Refresh</th><th>Priority</th></tr>
+        <tr><td>1</td><td>Enterprise AI Telemetry (AWS Bedrock)</td><td>Session logs, queries, responses</td><td>Daily</td><td>P1</td></tr>
+        <tr><td>2</td><td>HR System (Workday)</td><td>Employee data, business unit mapping</td><td>Daily</td><td>P1</td></tr>
+        <tr><td>3</td><td>License Management</td><td>Licensed users by tool/function</td><td>Weekly</td><td>P2</td></tr>
+        <tr><td>4</td><td>Azure AD</td><td>User authentication, login data</td><td>Daily</td><td>P2</td></tr>
+        <tr><td>5</td><td>Adoption Targets DB</td><td>Target rates by BU/function</td><td>Monthly</td><td>P3</td></tr>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== D12 TAB ===================== -->
+<div id="d12" class="tab-content">
+  <section>
+    <h2>D12 &mdash; Post-MVP Enhancement &amp; ToyotaGPT Prompt Intelligence</h2>
+    <div class="card-grid">
+      <div class="card orange"><div class="label">Duration</div><div class="value">8 Weeks</div><div class="detail">Mar 16 &ndash; May 8, 2026</div></div>
+      <div class="card orange"><div class="label">Total Hours</div><div class="value">288</div><div class="detail">4 Sprints &middot; 21 Tasks &middot; 98 Subtasks</div></div>
+      <div class="card green"><div class="label">New View</div><div class="value">View 4</div><div class="detail">Prompt Intelligence &mdash; ToyotaGPT Analytics</div></div>
+      <div class="card"><div class="label">New Data Sources</div><div class="value">3</div><div class="detail">Prompt Logs, Response Logs, Toyota User Mapping</div></div>
+    </div>
+  </section>
+
+  <!-- D12 Objectives -->
+  <section>
+    <h2>D12 Objectives</h2>
+    <div style="background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+      <ol style="padding-left:20px;font-size:14px;line-height:2;">
+        <li>Integrate ToyotaGPT prompt telemetry as a new data source</li>
+        <li>Build prompt categorization taxonomy and intent classification pipeline</li>
+        <li>Deliver View 4: Prompt Intelligence dashboard view</li>
+        <li>Conduct gap analysis between user intent and ToyotaGPT response coverage</li>
+        <li>Enable cross-platform correlation between Enterprise AI and ToyotaGPT usage</li>
+        <li>Harden and refine D11 MVP based on post-launch feedback</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Sprint 5 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Sprint 5: ToyotaGPT Discovery &amp; Data Assessment (Mar 16 &ndash; Mar 27) &mdash; 68 hrs</h3>
+    <div class="collapse-body">
+      <p style="font-size:13px;color:var(--gray);margin-bottom:12px;"><strong>Team:</strong> PM, Data Engineer, UX Designer</p>
+
+      <h3 style="margin-top:0;">Task 5.1: Stakeholder Alignment (PM &middot; 12 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>5.1.1</td><td>Kickoff meeting with Toyota AI Platform Team</td><td>2</td></tr>
+        <tr><td>5.1.2</td><td>Document ToyotaGPT deployment architecture</td><td>4</td></tr>
+        <tr><td>5.1.3</td><td>Identify data owners and access request process</td><td>2</td></tr>
+        <tr><td>5.1.4</td><td>Define data privacy/anonymization requirements with Legal</td><td>2</td></tr>
+        <tr><td>5.1.5</td><td>Obtain data sharing agreement sign-off</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 5.2: Data Source Assessment (DE &middot; 20 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>5.2.1</td><td>Identify prompt log location and access method</td><td>4</td></tr>
+        <tr><td>5.2.2</td><td>Document available data fields from prompt logs</td><td>4</td></tr>
+        <tr><td>5.2.3</td><td>Identify response/feedback log data</td><td>4</td></tr>
+        <tr><td>5.2.4</td><td>Assess data quality: completeness, consistency, volume</td><td>4</td></tr>
+        <tr><td>5.2.5</td><td>Document refresh capabilities and latency constraints</td><td>2</td></tr>
+        <tr><td>5.2.6</td><td>Create sample data extract for taxonomy prototyping</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 5.3: Prompt Categorization Taxonomy Design (PM/UX &middot; 16 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>5.3.1</td><td>Analyze sample prompts for recurring themes</td><td>4</td></tr>
+        <tr><td>5.3.2</td><td>Draft 8-category taxonomy</td><td>4</td></tr>
+        <tr><td>5.3.3</td><td>Define intent classification levels</td><td>2</td></tr>
+        <tr><td>5.3.4</td><td>Define prompt complexity levels</td><td>2</td></tr>
+        <tr><td>5.3.5</td><td>Validate taxonomy with stakeholders</td><td>2</td></tr>
+        <tr><td>5.3.6</td><td>Finalize taxonomy with examples and rules</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 5.4: Data Model Extension Design (DE &middot; 12 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>5.4.1</td><td>Design DimPromptCategory dimension table</td><td>2</td></tr>
+        <tr><td>5.4.2</td><td>Design DimToyotaDepartment dimension table</td><td>2</td></tr>
+        <tr><td>5.4.3</td><td>Design FactPrompt fact table</td><td>4</td></tr>
+        <tr><td>5.4.4</td><td>Design FactPromptDaily aggregation table</td><td>2</td></tr>
+        <tr><td>5.4.5</td><td>Update star schema ERD</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 5.5: D11 Post-Launch Feedback (PM &middot; 8 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>5.5.1</td><td>Collect feedback from AI Governance team on Views 1-3</td><td>2</td></tr>
+        <tr><td>5.5.2</td><td>Collect feedback from BU Leaders</td><td>2</td></tr>
+        <tr><td>5.5.3</td><td>Prioritize enhancement requests and bug fixes</td><td>2</td></tr>
+        <tr><td>5.5.4</td><td>Document deferred items for D12 scope</td><td>2</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- Sprint 6 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Sprint 6: ToyotaGPT Data Pipeline &amp; Prompt Analytics (Mar 30 &ndash; Apr 10) &mdash; 72 hrs</h3>
+    <div class="collapse-body">
+      <p style="font-size:13px;color:var(--gray);margin-bottom:12px;"><strong>Team:</strong> Data Engineer, Power BI Lead, PM</p>
+
+      <h3 style="margin-top:0;">Task 6.1: Data Pipeline Development (DE &middot; 28 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>6.1.1</td><td>Set up connection to ToyotaGPT prompt log source</td><td>4</td></tr>
+        <tr><td>6.1.2</td><td>Build ETL for prompt data with PII anonymization</td><td>8</td></tr>
+        <tr><td>6.1.3</td><td>Build ETL for response/feedback data</td><td>4</td></tr>
+        <tr><td>6.1.4</td><td>Set up Toyota HR/department mapping connection</td><td>4</td></tr>
+        <tr><td>6.1.5</td><td>Implement prompt auto-classification pipeline</td><td>4</td></tr>
+        <tr><td>6.1.6</td><td>Configure incremental daily refresh</td><td>2</td></tr>
+        <tr><td>6.1.7</td><td>Test pipeline end-to-end</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 6.2: New Dimension &amp; Fact Tables (DE &middot; 12 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>6.2.1</td><td>Create DimPromptCategory table</td><td>2</td></tr>
+        <tr><td>6.2.2</td><td>Create DimToyotaDepartment table</td><td>2</td></tr>
+        <tr><td>6.2.3</td><td>Create FactPrompt table</td><td>4</td></tr>
+        <tr><td>6.2.4</td><td>Create FactPromptDaily aggregation table</td><td>2</td></tr>
+        <tr><td>6.2.5</td><td>Validate relationships and referential integrity</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 6.3: Prompt Analytics DAX Measures (PBI &middot; 20 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>6.3.1</td><td>Total Prompt Volume measure</td><td>2</td></tr>
+        <tr><td>6.3.2</td><td>Unique ToyotaGPT Users measure</td><td>2</td></tr>
+        <tr><td>6.3.3</td><td>Top Prompt Category measure</td><td>2</td></tr>
+        <tr><td>6.3.4</td><td>Avg Response Satisfaction measure</td><td>2</td></tr>
+        <tr><td>6.3.5</td><td>Prompt Volume MoM Growth measure</td><td>2</td></tr>
+        <tr><td>6.3.6</td><td>Category Distribution % measure</td><td>2</td></tr>
+        <tr><td>6.3.7</td><td>Response Gap Score measure</td><td>4</td></tr>
+        <tr><td>6.3.8</td><td>Prompt Complexity Distribution measure</td><td>2</td></tr>
+        <tr><td>6.3.9</td><td>Document all measures in dax-measures.md</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 6.4: D11 MVP Refinements (PBI &middot; 12 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>6.4.1</td><td>Fix critical/high D11 bugs</td><td>4</td></tr>
+        <tr><td>6.4.2</td><td>Implement approved enhancements for Views 1-3</td><td>4</td></tr>
+        <tr><td>6.4.3</td><td>Optimize slow DAX measures</td><td>2</td></tr>
+        <tr><td>6.4.4</td><td>Update RLS rules if needed</td><td>2</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- Sprint 7 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Sprint 7: View 4 Build &amp; Cross-Platform Integration (Apr 13 &ndash; Apr 24) &mdash; 76 hrs</h3>
+    <div class="collapse-body">
+      <p style="font-size:13px;color:var(--gray);margin-bottom:12px;"><strong>Team:</strong> Power BI Lead, UX Designer, PM</p>
+
+      <h3 style="margin-top:0;">Task 7.1: View 4 &mdash; Prompt Intelligence Build (PBI &middot; 32 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>7.1.1</td><td>Create View 4 page layout and navigation</td><td>2</td></tr>
+        <tr><td>7.1.2</td><td>KPI card: Total Prompt Volume</td><td>2</td></tr>
+        <tr><td>7.1.3</td><td>KPI card: Unique ToyotaGPT Users</td><td>2</td></tr>
+        <tr><td>7.1.4</td><td>KPI card: Top Prompt Category</td><td>2</td></tr>
+        <tr><td>7.1.5</td><td>KPI card: Avg Response Satisfaction</td><td>2</td></tr>
+        <tr><td>7.1.6</td><td>Prompt Theme Distribution donut chart</td><td>4</td></tr>
+        <tr><td>7.1.7</td><td>Prompt Volume Trend line chart</td><td>4</td></tr>
+        <tr><td>7.1.8</td><td>Intent Category x Department Heatmap</td><td>4</td></tr>
+        <tr><td>7.1.9</td><td>Top Prompt Themes Table</td><td>4</td></tr>
+        <tr><td>7.1.10</td><td>Response Gap Analysis visual</td><td>4</td></tr>
+        <tr><td>7.1.11</td><td>Prompt Complexity Distribution chart</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 7.2: Cross-Platform Integration (PBI &middot; 12 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>7.2.1</td><td>Drill-through from prompt theme to detail</td><td>2</td></tr>
+        <tr><td>7.2.2</td><td>Cross-filter linking V4 to V1/V2</td><td>4</td></tr>
+        <tr><td>7.2.3</td><td>ToyotaGPT summary card on View 1</td><td>2</td></tr>
+        <tr><td>7.2.4</td><td>Global filters across all 4 views</td><td>2</td></tr>
+        <tr><td>7.2.5</td><td>Cross-platform data integrity test</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 7.3: Gap Analysis Report (PBI/PM &middot; 12 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>7.3.1</td><td>Gap analysis visual: demand vs coverage</td><td>4</td></tr>
+        <tr><td>7.3.2</td><td>Top 10 Unmet Needs ranked list</td><td>2</td></tr>
+        <tr><td>7.3.3</td><td>Gap trend tracking over time</td><td>2</td></tr>
+        <tr><td>7.3.4</td><td>Recommendations for knowledge base improvements</td><td>4</td></tr>
+      </table></div>
+
+      <h3>Task 7.4: UX Review &amp; Accessibility (UX &middot; 12 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>7.4.1</td><td>Visual consistency review across all views</td><td>2</td></tr>
+        <tr><td>7.4.2</td><td>WCAG 2.1 AA color contrast validation</td><td>2</td></tr>
+        <tr><td>7.4.3</td><td>Tooltip content and formatting review</td><td>2</td></tr>
+        <tr><td>7.4.4</td><td>Filter interaction and cross-filtering test</td><td>2</td></tr>
+        <tr><td>7.4.5</td><td>Keyboard navigation and screen reader check</td><td>2</td></tr>
+        <tr><td>7.4.6</td><td>Implement priority UX changes</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 7.5: Performance Optimization (PBI &middot; 8 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>7.5.1</td><td>Run Performance Analyzer on View 4</td><td>2</td></tr>
+        <tr><td>7.5.2</td><td>Optimize slow prompt analytics queries</td><td>2</td></tr>
+        <tr><td>7.5.3</td><td>Configure aggregations if needed</td><td>2</td></tr>
+        <tr><td>7.5.4</td><td>Validate &lt;5 sec load time all views</td><td>2</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- Sprint 8 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Sprint 8: Testing, UAT &amp; Production Deployment (Apr 27 &ndash; May 8) &mdash; 82 hrs</h3>
+    <div class="collapse-body">
+      <p style="font-size:13px;color:var(--gray);margin-bottom:12px;"><strong>Team:</strong> QA Analyst, PM, Power BI Lead</p>
+
+      <h3 style="margin-top:0;">Task 8.1: Test Case Development (QA &middot; 12 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>8.1.1</td><td>Test cases for View 4 (KPIs, visuals, filters)</td><td>4</td></tr>
+        <tr><td>8.1.2</td><td>Test cases for cross-platform filtering</td><td>2</td></tr>
+        <tr><td>8.1.3</td><td>Test cases for data accuracy and classification</td><td>2</td></tr>
+        <tr><td>8.1.4</td><td>Test cases for prompt anonymization</td><td>2</td></tr>
+        <tr><td>8.1.5</td><td>Test cases for RLS with ToyotaGPT data</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 8.2: Functional &amp; Data Validation (QA &middot; 16 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>8.2.1</td><td>Execute View 4 KPI card tests</td><td>2</td></tr>
+        <tr><td>8.2.2</td><td>Execute View 4 visual and filter tests</td><td>4</td></tr>
+        <tr><td>8.2.3</td><td>Execute cross-platform navigation tests</td><td>2</td></tr>
+        <tr><td>8.2.4</td><td>Validate prompt classification accuracy</td><td>2</td></tr>
+        <tr><td>8.2.5</td><td>Validate prompt anonymization (no PII)</td><td>2</td></tr>
+        <tr><td>8.2.6</td><td>Validate RLS across roles</td><td>2</td></tr>
+        <tr><td>8.2.7</td><td>Document defects and verify fixes</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 8.3: Use-Case-Based UAT (PM &middot; 20 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>8.3.1</td><td>Prepare UAT environment</td><td>2</td></tr>
+        <tr><td>8.3.2</td><td>Create UAT scripts for 7 use cases</td><td>4</td></tr>
+        <tr><td>8.3.3</td><td>UC-01: Executive Reviews AI Adoption</td><td>2</td></tr>
+        <tr><td>8.3.4</td><td>UC-02: BU Leader Analyzes Unit Adoption</td><td>2</td></tr>
+        <tr><td>8.3.5</td><td>UC-03: Governance Analyzes Use Cases</td><td>2</td></tr>
+        <tr><td>8.3.6</td><td>UC-04: Governance Reviews Prompt Themes</td><td>2</td></tr>
+        <tr><td>8.3.7</td><td>UC-05: Governance Identifies Coverage Gaps</td><td>2</td></tr>
+        <tr><td>8.3.8</td><td>UC-06: Analyst Correlates Patterns</td><td>1</td></tr>
+        <tr><td>8.3.9</td><td>UC-07: Manager Reviews Dept Activity</td><td>1</td></tr>
+        <tr><td>8.3.10</td><td>Document feedback and implement fixes</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 8.4: UAT Sign-Off (PM/PBI &middot; 8 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>8.4.1</td><td>Fix critical/high UAT defects</td><td>4</td></tr>
+        <tr><td>8.4.2</td><td>Re-verification session</td><td>2</td></tr>
+        <tr><td>8.4.3</td><td>Obtain UAT sign-off</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 8.5: Production Deployment (PBI &middot; 8 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>8.5.1</td><td>Deploy 4-view dashboard to production</td><td>2</td></tr>
+        <tr><td>8.5.2</td><td>Configure ToyotaGPT production refresh</td><td>1</td></tr>
+        <tr><td>8.5.3</td><td>Verify all data connections</td><td>1</td></tr>
+        <tr><td>8.5.4</td><td>Update RLS for ToyotaGPT access</td><td>1</td></tr>
+        <tr><td>8.5.5</td><td>Provision Toyota stakeholder access</td><td>1</td></tr>
+        <tr><td>8.5.6</td><td>Production smoke test</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 8.6: Documentation &amp; Training (PBI/PM &middot; 12 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>8.6.1</td><td>Update user guide with View 4</td><td>2</td></tr>
+        <tr><td>8.6.2</td><td>Update data dictionary with ToyotaGPT fields</td><td>2</td></tr>
+        <tr><td>8.6.3</td><td>Create ToyotaGPT FAQ section</td><td>2</td></tr>
+        <tr><td>8.6.4</td><td>Training for AI Governance team</td><td>2</td></tr>
+        <tr><td>8.6.5</td><td>Training for Toyota stakeholders</td><td>2</td></tr>
+        <tr><td>8.6.6</td><td>Update technical docs for support</td><td>2</td></tr>
+      </table></div>
+
+      <h3>Task 8.7: Project Closeout (PM &middot; 6 hrs)</h3>
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>Subtask</th><th>Hrs</th></tr>
+        <tr><td>8.7.1</td><td>Conduct D12 retrospective</td><td>2</td></tr>
+        <tr><td>8.7.2</td><td>Document lessons learned</td><td>2</td></tr>
+        <tr><td>8.7.3</td><td>Obtain final D12 sign-off</td><td>2</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- Prompt Taxonomy -->
+  <section>
+    <h2>ToyotaGPT Prompt Categorization Taxonomy</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Category</th><th>Description</th><th>Example Prompts</th></tr>
+        <tr><td>Technical Support</td><td>Troubleshooting, system issues, how-to</td><td>"How do I reset my VPN?", "Error code 5021 fix"</td></tr>
+        <tr><td>Policy Lookup</td><td>Company policies, compliance, HR</td><td>"What is the PTO policy?", "Travel expense limits"</td></tr>
+        <tr><td>Process Guidance</td><td>SOPs, workflows, procedures</td><td>"Steps to submit a purchase order"</td></tr>
+        <tr><td>Data &amp; Reporting</td><td>Data requests, report generation</td><td>"Q4 sales numbers by region"</td></tr>
+        <tr><td>Training &amp; Development</td><td>Learning, certification, skills</td><td>"Available leadership courses"</td></tr>
+        <tr><td>Product &amp; Engineering</td><td>Vehicle specs, standards, R&amp;D</td><td>"Towing capacity for 2026 Tacoma"</td></tr>
+        <tr><td>Customer &amp; Dealer</td><td>Dealer inquiries, customer content</td><td>"Dealer incentive programs"</td></tr>
+        <tr><td>General Knowledge</td><td>Brainstorming, writing, broad questions</td><td>"Draft an email to...", "Summarize this document"</td></tr>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== BACKLOG TAB ===================== -->
+<div id="backlog" class="tab-content">
+  <section>
+    <h2>Sprint Backlog &mdash; All User Stories (US-001 to US-047)</h2>
+    <div class="card-grid">
+      <div class="card"><div class="label">Phase 1: Discovery</div><div class="value">9</div><div class="detail">US-001 to US-009 &middot; 64 hrs</div></div>
+      <div class="card"><div class="label">Phase 2: Core Build</div><div class="value">10</div><div class="detail">US-010 to US-019 &middot; 84 hrs</div></div>
+      <div class="card"><div class="label">Phase 3: Completion</div><div class="value">9</div><div class="detail">US-020 to US-028 &middot; 96 hrs</div></div>
+      <div class="card"><div class="label">Phase 4: UAT &amp; Deploy</div><div class="value">13</div><div class="detail">US-029 to US-041 &middot; 68 hrs</div></div>
+    </div>
+  </section>
+
+  <!-- D11 Stories -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Phase 1: Discovery &amp; Data Engineering (US-001 &ndash; US-009)</h3>
+    <div class="collapse-body">
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>User Story</th><th>Owner</th><th>Hrs</th></tr>
+        <tr><td>US-001</td><td>Kickoff meeting for project alignment</td><td>PM</td><td>4</td></tr>
+        <tr><td>US-002</td><td>Identify Enterprise AI telemetry data sources</td><td>DE</td><td>8</td></tr>
+        <tr><td>US-003</td><td>Assess data quality from Enterprise AI logs</td><td>DE</td><td>8</td></tr>
+        <tr><td>US-004</td><td>Identify HR/employee data source</td><td>DE</td><td>4</td></tr>
+        <tr><td>US-005</td><td>Review HTML prototype with stakeholders</td><td>UX</td><td>8</td></tr>
+        <tr><td>US-006</td><td>Document adoption targets by business unit</td><td>PM</td><td>4</td></tr>
+        <tr><td>US-007</td><td>Requirements sign-off</td><td>PM</td><td>4</td></tr>
+        <tr><td>US-008</td><td>Design star schema for data model</td><td>DE</td><td>16</td></tr>
+        <tr><td>US-009</td><td>Create dimension tables</td><td>DE</td><td>8</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Phase 2: Data Pipeline &amp; Core Build (US-010 &ndash; US-019)</h3>
+    <div class="collapse-body">
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>User Story</th><th>Owner</th><th>Hrs</th></tr>
+        <tr><td>US-010</td><td>Build ETL for Enterprise AI session data</td><td>DE</td><td>16</td></tr>
+        <tr><td>US-011</td><td>Build ETL for user/business unit mapping</td><td>DE</td><td>8</td></tr>
+        <tr><td>US-012</td><td>Configure daily scheduled refresh</td><td>DE</td><td>4</td></tr>
+        <tr><td>US-013</td><td>Create core DAX measures</td><td>PBI</td><td>8</td></tr>
+        <tr><td>US-014</td><td>Create engagement tier measures</td><td>PBI</td><td>4</td></tr>
+        <tr><td>US-015</td><td>Create target comparison measures</td><td>PBI</td><td>4</td></tr>
+        <tr><td>US-016</td><td>Create period-over-period measures</td><td>PBI</td><td>4</td></tr>
+        <tr><td>US-017</td><td>Implement Row-Level Security</td><td>PBI</td><td>8</td></tr>
+        <tr><td>US-018</td><td>Build View 1: Executive Summary</td><td>PBI</td><td>24</td></tr>
+        <tr><td>US-019</td><td>Configure drill-through from View 1</td><td>PBI</td><td>4</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Phase 3: Dashboard Completion &amp; Testing (US-020 &ndash; US-028)</h3>
+    <div class="collapse-body">
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>User Story</th><th>Owner</th><th>Hrs</th></tr>
+        <tr><td>US-020</td><td>Build View 2: Business Unit Deep-Dive</td><td>PBI</td><td>24</td></tr>
+        <tr><td>US-021</td><td>Build View 3: Use Case Analysis</td><td>PBI</td><td>24</td></tr>
+        <tr><td>US-022</td><td>Add global filters (date range, BU)</td><td>PBI</td><td>4</td></tr>
+        <tr><td>US-023</td><td>Add export functionality (CSV)</td><td>PBI</td><td>4</td></tr>
+        <tr><td>US-024</td><td>Conduct design review for consistency</td><td>UX</td><td>8</td></tr>
+        <tr><td>US-025</td><td>Validate accessibility (WCAG)</td><td>UX</td><td>4</td></tr>
+        <tr><td>US-026</td><td>Create test cases</td><td>QA</td><td>8</td></tr>
+        <tr><td>US-027</td><td>Execute functional tests</td><td>QA</td><td>12</td></tr>
+        <tr><td>US-028</td><td>Optimize performance (&lt;5s load)</td><td>PBI</td><td>8</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">Phase 4: UAT &amp; Deployment (US-029 &ndash; US-041)</h3>
+    <div class="collapse-body">
+      <div class="table-wrap"><table>
+        <tr><th>ID</th><th>User Story</th><th>Owner</th><th>Hrs</th></tr>
+        <tr><td>US-029</td><td>Validate data accuracy vs source systems</td><td>QA</td><td>8</td></tr>
+        <tr><td>US-030</td><td>Test RLS across business units</td><td>QA</td><td>4</td></tr>
+        <tr><td>US-031</td><td>Prepare UAT environment</td><td>PM</td><td>4</td></tr>
+        <tr><td>US-032</td><td>Conduct UAT sessions</td><td>PM</td><td>8</td></tr>
+        <tr><td>US-033</td><td>Fix UAT defects</td><td>PBI</td><td>12</td></tr>
+        <tr><td>US-034</td><td>Obtain UAT sign-off</td><td>PM</td><td>2</td></tr>
+        <tr><td>US-035</td><td>Deploy to production</td><td>PBI</td><td>4</td></tr>
+        <tr><td>US-036</td><td>Configure production refresh</td><td>PBI</td><td>2</td></tr>
+        <tr><td>US-037</td><td>Provision user access</td><td>PM</td><td>4</td></tr>
+        <tr><td>US-038</td><td>Create user documentation</td><td>PBI</td><td>8</td></tr>
+        <tr><td>US-039</td><td>Conduct training sessions</td><td>PBI</td><td>4</td></tr>
+        <tr><td>US-040</td><td>Knowledge transfer to support</td><td>PM</td><td>4</td></tr>
+        <tr><td>US-041</td><td>Project closeout and lessons learned</td><td>PM</td><td>4</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- D12 New Stories -->
+  <section>
+    <h2 style="border-bottom-color:var(--orange);">D12 New User Stories (US-042 &ndash; US-047)</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>ID</th><th>User Story</th><th>Owner</th><th>Hrs</th><th>Sprint</th></tr>
+        <tr><td>US-042</td><td>Analyze ToyotaGPT user prompts and response context</td><td>DE/PM</td><td>16</td><td>5-8</td></tr>
+        <tr><td>US-043</td><td>Build View 4: Prompt Intelligence dashboard</td><td>PBI</td><td>32</td><td>7</td></tr>
+        <tr><td>US-044</td><td>Cross-platform correlation (Enterprise AI + ToyotaGPT)</td><td>PBI</td><td>12</td><td>7</td></tr>
+        <tr><td>US-045</td><td>ToyotaGPT response gap analysis and recommendations</td><td>PBI/PM</td><td>12</td><td>7</td></tr>
+        <tr><td>US-046</td><td>Use-case-based UAT covering all 4 views</td><td>PM</td><td>20</td><td>8</td></tr>
+        <tr><td>US-047</td><td>Updated documentation and training for View 4</td><td>PBI/PM</td><td>12</td><td>8</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- Backlog Summary -->
+  <section>
+    <h2>Backlog Summary</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Phase</th><th>Stories</th><th>Hours</th><th>Deliverable</th></tr>
+        <tr><td>Discovery &amp; Data Engineering</td><td>9</td><td>64</td><td>D11</td></tr>
+        <tr><td>Data Pipeline &amp; Core Build</td><td>10</td><td>84</td><td>D11</td></tr>
+        <tr><td>Dashboard Completion &amp; Testing</td><td>9</td><td>96</td><td>D11</td></tr>
+        <tr><td>UAT &amp; Deployment</td><td>13</td><td>68</td><td>D11</td></tr>
+        <tr style="background:#FFF7ED;"><td>ToyotaGPT Integration (D12)</td><td>6</td><td>104</td><td>D12</td></tr>
+        <tr style="font-weight:700;background:var(--light-gray);"><td>Total</td><td>47</td><td>416</td><td></td></tr>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== UAT TAB ===================== -->
+<div id="uat" class="tab-content">
+  <section>
+    <h2>User Acceptance Test Plan &mdash; Use Case Matrix</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>UC</th><th>Use Case</th><th>View(s)</th><th>Actor</th><th>Key Validations</th></tr>
+        <tr><td>UC-01</td><td>Executive Reviews Enterprise AI Adoption</td><td>V1 &rarr; V2</td><td>CTO / Governance Lead</td><td>KPI accuracy, drill-through, data currency</td></tr>
+        <tr><td>UC-02</td><td>BU Leader Analyzes Unit Adoption</td><td>V2</td><td>BU Leader</td><td>RLS enforcement, funnel accuracy, CSV export</td></tr>
+        <tr><td>UC-03</td><td>Governance Team Analyzes Use Cases</td><td>V3</td><td>Governance Analyst</td><td>Multi-select filtering, heatmap, scenario ranking</td></tr>
+        <tr style="background:#FFF7ED;"><td>UC-04</td><td>Governance Reviews ToyotaGPT Prompt Themes</td><td>V4</td><td>Governance Analyst</td><td>Taxonomy classification, volume trends, drill-through</td></tr>
+        <tr style="background:#FFF7ED;"><td>UC-05</td><td>Governance Identifies Coverage Gaps</td><td>V4</td><td>Governance Lead</td><td>Gap analysis, top 10 unmet needs, recommendations</td></tr>
+        <tr style="background:#FFF7ED;"><td>UC-06</td><td>Analyst Correlates Prompt Patterns with Adoption</td><td>V1 + V4</td><td>Governance Analyst</td><td>Cross-filter accuracy, no data leakage, correlation</td></tr>
+        <tr style="background:#FFF7ED;"><td>UC-07</td><td>Manager Reviews Department Prompt Activity</td><td>V4</td><td>Dept Manager</td><td>Dept filter RLS, relevant prompt themes</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- Detailed acceptance per UC -->
+  <section>
+    <h2>Acceptance Criteria by Use Case</h2>
+
+    <h3>UC-01: Executive Reviews Enterprise AI Adoption</h3>
+    <div style="background:var(--white);border-radius:8px;padding:16px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);font-size:14px;">
+      <div><input type="checkbox"> All 4 KPI cards on View 1 display correct, current values</div>
+      <div><input type="checkbox"> Adoption trend line shows 12-month history with target overlay</div>
+      <div><input type="checkbox"> BU adoption bar chart sorted correctly with color-coded target status</div>
+      <div><input type="checkbox"> Clicking a BU bar drills through to View 2 filtered to that unit</div>
+      <div><input type="checkbox"> Clicking a use case drills through to View 3 filtered to that category</div>
+    </div>
+
+    <h3>UC-02: BU Leader Analyzes Unit Adoption</h3>
+    <div style="background:var(--white);border-radius:8px;padding:16px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);font-size:14px;">
+      <div><input type="checkbox"> RLS restricts BU Leader to only their unit's data</div>
+      <div><input type="checkbox"> Adoption funnel shows accurate stage counts</div>
+      <div><input type="checkbox"> User table is sortable by all columns</div>
+      <div><input type="checkbox"> CSV export contains correct, complete data</div>
+      <div><input type="checkbox"> KPI cards reflect selected BU only</div>
+    </div>
+
+    <h3>UC-03: Governance Team Analyzes Use Cases</h3>
+    <div style="background:var(--white);border-radius:8px;padding:16px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);font-size:14px;">
+      <div><input type="checkbox"> Multi-select task type filter correctly filters all visuals</div>
+      <div><input type="checkbox"> Heatmap intensity values match underlying data</div>
+      <div><input type="checkbox"> Top scenarios table ranks use cases correctly</div>
+      <div><input type="checkbox"> Business outcome donut drill-through works</div>
+    </div>
+
+    <h3 style="color:var(--orange);">UC-04: Governance Reviews ToyotaGPT Prompt Themes</h3>
+    <div style="background:#FFF7ED;border-radius:8px;padding:16px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);font-size:14px;">
+      <div><input type="checkbox"> Prompt volume KPI shows correct total for selected period</div>
+      <div><input type="checkbox"> Theme distribution donut matches 8-category taxonomy</div>
+      <div><input type="checkbox"> Prompt volume trend reflects actual daily/weekly/monthly data</div>
+      <div><input type="checkbox"> Top prompt themes table shows volume, trend, satisfaction</div>
+      <div><input type="checkbox"> Drill-through shows anonymized examples (no PII)</div>
+    </div>
+
+    <h3 style="color:var(--orange);">UC-05: Governance Identifies Coverage Gaps</h3>
+    <div style="background:#FFF7ED;border-radius:8px;padding:16px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);font-size:14px;">
+      <div><input type="checkbox"> Gap Analysis visual shows demand-coverage mismatches</div>
+      <div><input type="checkbox"> Top 10 unmet needs ranked by gap score</div>
+      <div><input type="checkbox"> Gap trend tracking shows improvement or regression</div>
+      <div><input type="checkbox"> Recommendations are actionable and category-linked</div>
+    </div>
+
+    <h3 style="color:var(--orange);">UC-06: Analyst Correlates Prompt Patterns with Adoption</h3>
+    <div style="background:#FFF7ED;border-radius:8px;padding:16px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);font-size:14px;">
+      <div><input type="checkbox"> Cross-filter from View 4 applies correctly to View 1/View 2</div>
+      <div><input type="checkbox"> High ToyotaGPT usage departments comparable to Enterprise AI adoption</div>
+      <div><input type="checkbox"> No data leakage across RLS boundaries</div>
+      <div><input type="checkbox"> ToyotaGPT summary card on View 1 updates with global filters</div>
+    </div>
+
+    <h3 style="color:var(--orange);">UC-07: Manager Reviews Department Prompt Activity</h3>
+    <div style="background:#FFF7ED;border-radius:8px;padding:16px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);font-size:14px;">
+      <div><input type="checkbox"> Department filter restricts to manager's department via RLS</div>
+      <div><input type="checkbox"> Prompt themes relevant to department's function</div>
+      <div><input type="checkbox"> Cannot see other departments' prompt data</div>
+      <div><input type="checkbox"> Time-of-day pattern reflects actual activity</div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== RISKS & RESOURCES TAB ===================== -->
+<div id="risks" class="tab-content">
+
+  <!-- Combined Resource Allocation -->
+  <section>
+    <h2>Resource Allocation &mdash; Full Program</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Role</th><th>S1</th><th>S2</th><th>S3</th><th style="background:var(--orange);">S5</th><th style="background:var(--orange);">S6</th><th style="background:var(--orange);">S7</th><th style="background:var(--orange);">S8</th><th>Total</th></tr>
+        <tr><td>Project Manager</td><td>16</td><td>2</td><td>9</td><td>20</td><td>0</td><td>0</td><td>34</td><td><strong>81</strong></td></tr>
+        <tr><td>Data Engineer</td><td>40</td><td>24</td><td>0</td><td>32</td><td>40</td><td>0</td><td>0</td><td><strong>136</strong></td></tr>
+        <tr><td>Power BI Lead</td><td>0</td><td>58</td><td>35</td><td>0</td><td>32</td><td>52</td><td>22</td><td><strong>199</strong></td></tr>
+        <tr><td>UX Designer</td><td>4</td><td>0</td><td>0</td><td>16</td><td>0</td><td>12</td><td>0</td><td><strong>32</strong></td></tr>
+        <tr><td>QA Analyst</td><td>0</td><td>0</td><td>12</td><td>0</td><td>0</td><td>0</td><td>28</td><td><strong>40</strong></td></tr>
+        <tr style="font-weight:700;background:var(--light-gray);"><td>Total</td><td>60</td><td>84</td><td>56</td><td>68</td><td>72</td><td>64</td><td>84</td><td><strong>488</strong></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- Resource distribution bars -->
+  <section>
+    <h2>Hours by Role</h2>
+    <div style="background:var(--white);border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+      <div class="bar-row"><div class="bar-label">Power BI Lead</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue);">199 hrs</div></div></div>
+      <div class="bar-row"><div class="bar-label">Data Engineer</div><div class="bar-track"><div class="bar-fill" style="width:68%;background:var(--dark-blue);">136 hrs</div></div></div>
+      <div class="bar-row"><div class="bar-label">Project Manager</div><div class="bar-track"><div class="bar-fill" style="width:41%;background:var(--orange);">81 hrs</div></div></div>
+      <div class="bar-row"><div class="bar-label">QA Analyst</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--green);">40 hrs</div></div></div>
+      <div class="bar-row"><div class="bar-label">UX Designer</div><div class="bar-track"><div class="bar-fill" style="width:16%;background:#8B5CF6;">32 hrs</div></div></div>
+    </div>
+  </section>
+
+  <!-- D11 Risks -->
+  <section>
+    <h2>Risk Register &mdash; D11</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Risk</th><th>Impact</th><th>Probability</th><th>Mitigation</th></tr>
+        <tr><td>Data source access delays</td><td><span class="badge badge-risk-high">High</span></td><td><span class="badge badge-risk-med">Medium</span></td><td>Start access requests Day 1, escalate early</td></tr>
+        <tr><td>Data quality issues</td><td><span class="badge badge-risk-high">High</span></td><td><span class="badge badge-risk-med">Medium</span></td><td>Profile data in Week 2, document workarounds</td></tr>
+        <tr><td>Compressed timeline (5 wks vs 8)</td><td><span class="badge badge-risk-high">High</span></td><td><span class="badge badge-risk-high">High</span></td><td>Parallel workstreams, daily standups, scope control</td></tr>
+        <tr><td>UAT stakeholder availability</td><td><span class="badge badge-risk-med">Medium</span></td><td><span class="badge badge-risk-med">Medium</span></td><td>Schedule UAT sessions by Feb 21</td></tr>
+        <tr><td>Performance issues</td><td><span class="badge badge-risk-med">Medium</span></td><td><span class="badge badge-risk-low">Low</span></td><td>Test with full data by Feb 28</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- D12 Risks -->
+  <section>
+    <h2>Risk Register &mdash; D12</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Risk</th><th>Impact</th><th>Probability</th><th>Mitigation</th></tr>
+        <tr><td>ToyotaGPT prompt log access delayed or restricted</td><td><span class="badge badge-risk-high">High</span></td><td><span class="badge badge-risk-med">Medium</span></td><td>Engage Toyota AI Platform Team in Sprint 5 Week 1; fallback to manual export</td></tr>
+        <tr><td>Prompt data contains PII complicating anonymization</td><td><span class="badge badge-risk-high">High</span></td><td><span class="badge badge-risk-med">Medium</span></td><td>Define anonymization rules with Legal before pipeline build</td></tr>
+        <tr><td>Auto-classification accuracy below 85%</td><td><span class="badge badge-risk-med">Medium</span></td><td><span class="badge badge-risk-med">Medium</span></td><td>Start with keyword matching; augment with LLM; manual review sample</td></tr>
+        <tr><td>OpenAI Custom GPT analytics API changes</td><td><span class="badge badge-risk-med">Medium</span></td><td><span class="badge badge-risk-low">Low</span></td><td>Document alternative extraction methods; build adapter layer</td></tr>
+        <tr><td>Toyota stakeholder availability for UAT</td><td><span class="badge badge-risk-med">Medium</span></td><td><span class="badge badge-risk-med">Medium</span></td><td>Schedule UAT sessions by Sprint 6; identify backup reviewers</td></tr>
+        <tr><td>Cross-platform data model complexity</td><td><span class="badge badge-risk-med">Medium</span></td><td><span class="badge badge-risk-low">Low</span></td><td>Design aggregation tables early; test with full volume in Sprint 7</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- Definition of Done -->
+  <section>
+    <h2>Definition of Done</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="label">D11 &mdash; MVP</div>
+        <div style="font-size:13px;margin-top:8px;line-height:1.8;">
+          <div><input type="checkbox"> 10 metrics defined with calculations</div>
+          <div><input type="checkbox"> 5 data sources integrated with refresh</div>
+          <div><input type="checkbox"> Reporting structure documented</div>
+          <div><input type="checkbox"> 3 Power BI views fully populated</div>
+          <div><input type="checkbox"> RLS implemented and tested</div>
+          <div><input type="checkbox"> User documentation complete</div>
+          <div><input type="checkbox"> UAT sign-off obtained</div>
+          <div><input type="checkbox"> Production deployment complete</div>
+          <div><input type="checkbox"> Training conducted</div>
+          <div><input type="checkbox"> Handoff documentation delivered</div>
+        </div>
+      </div>
+      <div class="card orange">
+        <div class="label">D12 &mdash; Post-MVP</div>
+        <div style="font-size:13px;margin-top:8px;line-height:1.8;">
+          <div><input type="checkbox"> ToyotaGPT data integrated with daily refresh</div>
+          <div><input type="checkbox"> 8-category taxonomy with &gt;85% accuracy</div>
+          <div><input type="checkbox"> Intent and complexity classification operational</div>
+          <div><input type="checkbox"> View 4: Prompt Intelligence fully built</div>
+          <div><input type="checkbox"> Gap analysis with top 10 unmet needs</div>
+          <div><input type="checkbox"> Cross-platform correlation functional</div>
+          <div><input type="checkbox"> All 7 use cases pass acceptance</div>
+          <div><input type="checkbox"> RLS enforced across all 4 views</div>
+          <div><input type="checkbox"> No PII in ToyotaGPT data model</div>
+          <div><input type="checkbox"> All views load in &lt;5 seconds</div>
+          <div><input type="checkbox"> Documentation updated for View 4</div>
+          <div><input type="checkbox"> Training conducted</div>
+          <div><input type="checkbox"> UAT sign-off obtained</div>
+          <div><input type="checkbox"> Production deployment complete</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+</div><!-- /container -->
+
+<!-- Footer -->
+<footer style="text-align:center;padding:32px 0;color:var(--gray);font-size:12px;border-top:1px solid var(--border);margin-top:40px;background:var(--white);">
+  Enterprise AI Adoption Dashboard &mdash; Sprint Plan Summary &middot; Acme Corporation &middot; Generated Feb 12, 2026
+</footer>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+function toggle(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+</script>
+</body>
+</html>
