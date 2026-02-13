@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D11 Detailed Sprint Plan &mdash; Enterprise AI Adoption Dashboard</title>
+<style>
+  :root {
+    --blue: #118DFF;
+    --dark-blue: #12239E;
+    --orange: #E66C37;
+    --gray: #6B6B6B;
+    --light-gray: #F3F4F6;
+    --green: #2DA02D;
+    --red: #D13438;
+    --yellow: #E6A700;
+    --white: #FFFFFF;
+    --text: #1F2937;
+    --border: #E5E7EB;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var(--text); background: var(--light-gray); line-height: 1.5; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header { background: linear-gradient(135deg, var(--dark-blue), var(--blue)); color: var(--white); padding: 40px 0 32px; }
+  header h1 { font-size: 28px; font-weight: 600; }
+  header p { opacity: 0.85; margin-top: 4px; font-size: 15px; }
+  .header-meta { display: flex; gap: 32px; margin-top: 20px; flex-wrap: wrap; }
+  .header-meta div { background: rgba(255,255,255,0.12); border-radius: 8px; padding: 12px 20px; min-width: 160px; }
+  .header-meta label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7; display: block; }
+  .header-meta span { font-size: 18px; font-weight: 600; }
+
+  /* Tabs */
+  .tabs { background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; overflow-x: auto; }
+  .tabs .container { display: flex; gap: 0; }
+  .tab-btn { padding: 14px 20px; border: none; background: none; font-size: 13px; font-weight: 500; color: var(--gray); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn:hover { color: var(--blue); }
+  .tab-btn.active { color: var(--dark-blue); border-bottom-color: var(--blue); font-weight: 600; }
+
+  /* Sections */
+  .tab-content { display: none; padding: 32px 0; }
+  .tab-content.active { display: block; }
+  section { margin-bottom: 32px; }
+  h2 { font-size: 22px; color: var(--dark-blue); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--blue); }
+  h3 { font-size: 16px; color: var(--dark-blue); margin: 20px 0 10px; }
+  h4 { font-size: 14px; color: var(--text); margin: 12px 0 6px; }
+
+  /* Cards */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card { background: var(--white); border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 4px solid var(--blue); }
+  .card.orange { border-left-color: var(--orange); }
+  .card.green { border-left-color: var(--green); }
+  .card.red { border-left-color: var(--red); }
+  .card .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); }
+  .card .value { font-size: 28px; font-weight: 700; color: var(--dark-blue); margin: 4px 0; }
+  .card .detail { font-size: 13px; color: var(--gray); }
+
+  /* Tables */
+  .table-wrap { background: var(--white); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow-x: auto; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--dark-blue); color: var(--white); text-align: left; padding: 10px 14px; font-weight: 600; white-space: nowrap; }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: #F0F6FF; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Status badges */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-todo { background: #FEF3C7; color: #92400E; }
+  .badge-done { background: #D1FAE5; color: #065F46; }
+  .badge-risk-high { background: #FEE2E2; color: #991B1B; }
+  .badge-risk-med { background: #FEF3C7; color: #92400E; }
+  .badge-risk-low { background: #D1FAE5; color: #065F46; }
+  .badge-p1 { background: #FEE2E2; color: #991B1B; }
+  .badge-p2 { background: #FEF3C7; color: #92400E; }
+  .badge-p3 { background: #D1FAE5; color: #065F46; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 28px; margin: 20px 0; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 3px; background: var(--blue); border-radius: 2px; }
+  .tl-item { position: relative; margin-bottom: 24px; }
+  .tl-item::before { content: ''; position: absolute; left: -24px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--blue); border: 3px solid var(--white); box-shadow: 0 0 0 2px var(--blue); }
+  .tl-item.orange::before { background: var(--orange); box-shadow: 0 0 0 2px var(--orange); }
+  .tl-item.green::before { background: var(--green); box-shadow: 0 0 0 2px var(--green); }
+  .tl-item h4 { font-size: 15px; color: var(--dark-blue); margin: 0; }
+  .tl-item .tl-date { font-size: 12px; color: var(--gray); }
+  .tl-item p { font-size: 13px; margin-top: 4px; }
+
+  /* Collapsible */
+  .collapsible { cursor: pointer; user-select: none; }
+  .collapsible::after { content: ' +'; font-weight: 700; color: var(--blue); }
+  .collapsible.open::after { content: ' \2212'; }
+  .collapse-body { display: none; }
+  .collapse-body.open { display: block; }
+
+  /* Bar chart (CSS-only) */
+  .bar-row { display: flex; align-items: center; margin-bottom: 6px; }
+  .bar-label { width: 140px; font-size: 12px; font-weight: 500; flex-shrink: 0; }
+  .bar-track { flex: 1; background: var(--light-gray); border-radius: 4px; height: 22px; position: relative; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 11px; font-weight: 600; color: var(--white); transition: width 0.6s ease; }
+
+  /* Objective list */
+  .obj-list { list-style: none; padding: 0; }
+  .obj-list li { padding: 10px 16px; margin-bottom: 8px; background: var(--white); border-radius: 6px; border-left: 4px solid var(--blue); font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+  .obj-list li:nth-child(2n) { border-left-color: var(--orange); }
+
+  /* Checklist */
+  .checklist { list-style: none; padding: 0; margin: 8px 0; }
+  .checklist li { padding: 6px 0 6px 28px; position: relative; font-size: 13px; }
+  .checklist li::before { content: '\2610'; position: absolute; left: 4px; font-size: 16px; color: var(--blue); }
+
+  /* Acceptance text */
+  .acceptance { background: #EFF6FF; border-left: 3px solid var(--blue); padding: 10px 16px; margin: 10px 0 16px; border-radius: 0 6px 6px 0; font-size: 13px; color: var(--dark-blue); }
+
+  /* Task header */
+  .task-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .task-owner { font-size: 12px; color: var(--gray); background: var(--light-gray); padding: 2px 12px; border-radius: 12px; }
+  .task-hours { font-size: 12px; color: var(--white); background: var(--blue); padding: 2px 12px; border-radius: 12px; font-weight: 600; }
+
+  /* Sprint summary cards */
+  .sprint-summary { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+  .sprint-card { flex: 1; min-width: 200px; background: var(--white); border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); text-align: center; }
+  .sprint-card .sprint-num { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); }
+  .sprint-card .sprint-hrs { font-size: 32px; font-weight: 700; color: var(--dark-blue); }
+  .sprint-card .sprint-label { font-size: 13px; color: var(--gray); }
+  .sprint-card.s1 { border-top: 4px solid var(--blue); }
+  .sprint-card.s2 { border-top: 4px solid var(--orange); }
+  .sprint-card.s3 { border-top: 4px solid var(--green); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header-meta { gap: 12px; }
+    .header-meta div { min-width: 140px; padding: 10px 14px; }
+    .tab-btn { padding: 12px 14px; font-size: 12px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <h1>D11 Detailed Sprint Plan</h1>
+    <p>Measurement &amp; Adoption Scorecard MVP &mdash; Enterprise AI Adoption Dashboard</p>
+    <div class="header-meta">
+      <div><label>Client</label><span>Acme Corp</span></div>
+      <div><label>Duration</label><span>5 Weeks</span></div>
+      <div><label>Total Hours</label><span>200</span></div>
+      <div><label>Tasks</label><span>14</span></div>
+      <div><label>Subtasks</label><span>72</span></div>
+      <div><label>Sprints</label><span>3</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="tabs">
+  <div class="container">
+    <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+    <button class="tab-btn" onclick="showTab('sprint1')">Sprint 1</button>
+    <button class="tab-btn" onclick="showTab('sprint2')">Sprint 2</button>
+    <button class="tab-btn" onclick="showTab('sprint3')">Sprint 3</button>
+    <button class="tab-btn" onclick="showTab('datamodel')">Data Model</button>
+    <button class="tab-btn" onclick="showTab('metrics')">Metrics</button>
+    <button class="tab-btn" onclick="showTab('uat')">UAT &amp; Use Cases</button>
+    <button class="tab-btn" onclick="showTab('resources')">Resources &amp; Risks</button>
+  </div>
+</nav>
+
+<main class="container">
+
+<!-- ========== TAB 1: OVERVIEW ========== -->
+<div id="overview" class="tab-content active">
+
+  <section>
+    <h2>D11 Objectives</h2>
+    <ul class="obj-list">
+      <li>Define 10 enterprise AI adoption metrics aligned with business goals</li>
+      <li>Integrate data from 5 Acme source systems into a unified star schema</li>
+      <li>Build 3 Power BI dashboard views (Executive Summary, BU Deep-Dive, Use Case Analysis)</li>
+      <li>Implement Row-Level Security for Admin, BU Leader, and Viewer roles</li>
+      <li>Deploy to production with automated daily refresh</li>
+      <li>Deliver user documentation and conduct training</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Deliverable Requirements</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Requirement</th><th>Description</th><th>Status</th></tr>
+        <tr><td>Scorecard Design</td><td>Fully designed AI adoption scorecard by tool and by function</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        <tr><td>10 Metrics</td><td>Up to 10 defined adoption metrics with DAX calculations</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        <tr><td>5 Data Sources</td><td>Data integrated from 5 Acme systems with automated refresh</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        <tr><td>Reporting Structure</td><td>Defined reporting hierarchy by business unit and function</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        <tr><td>3 Dashboard Views</td><td>Executive Summary, BU Deep-Dive, Use Case Analysis in Power BI</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        <tr><td>Row-Level Security</td><td>Admin, BU Leader, Viewer roles configured and tested</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        <tr><td>Documentation</td><td>User guide, data dictionary, and handoff documentation</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        <tr><td>Training</td><td>Training session conducted for AI Governance team and BU leaders</td><td><span class="badge badge-todo">To Do</span></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sprint Schedule Overview</h2>
+    <div class="sprint-summary">
+      <div class="sprint-card s1">
+        <div class="sprint-num">Sprint 1</div>
+        <div class="sprint-hrs">60</div>
+        <div class="sprint-label">hours &bull; Feb 3 &ndash; Feb 14</div>
+        <div style="margin-top:8px;font-size:13px;color:var(--gray)">Discovery, Data Engineering, Data Model</div>
+      </div>
+      <div class="sprint-card s2">
+        <div class="sprint-num">Sprint 2</div>
+        <div class="sprint-hrs">88</div>
+        <div class="sprint-label">hours &bull; Feb 17 &ndash; Feb 28</div>
+        <div style="margin-top:8px;font-size:13px;color:var(--gray)">Core Build, DAX, Views 1 &amp; 2, RLS</div>
+      </div>
+      <div class="sprint-card s3">
+        <div class="sprint-num">Sprint 3</div>
+        <div class="sprint-hrs">52</div>
+        <div class="sprint-label">hours &bull; Mar 3 &ndash; Mar 10</div>
+        <div style="margin-top:8px;font-size:13px;color:var(--gray)">View 3, Testing, UAT, Deployment</div>
+      </div>
+    </div>
+
+    <h3>Hours Distribution</h3>
+    <div class="bar-row"><div class="bar-label">Sprint 1</div><div class="bar-track"><div class="bar-fill" style="width:30%;background:var(--blue);">60 hrs</div></div></div>
+    <div class="bar-row"><div class="bar-label">Sprint 2</div><div class="bar-track"><div class="bar-fill" style="width:44%;background:var(--orange);">88 hrs</div></div></div>
+    <div class="bar-row"><div class="bar-label">Sprint 3</div><div class="bar-track"><div class="bar-fill" style="width:26%;background:var(--green);">52 hrs</div></div></div>
+  </section>
+
+  <section>
+    <h2>Key Milestones</h2>
+    <div class="timeline">
+      <div class="tl-item"><h4>M1: Requirements Complete</h4><span class="tl-date">Feb 14 &mdash; Sprint 1</span><p>10 metrics defined; 5 sources identified; prototype reviewed; sign-off obtained</p></div>
+      <div class="tl-item orange"><h4>M2: Data Pipeline Live</h4><span class="tl-date">Feb 21 &mdash; Sprint 2</span><p>All 5 ETL pipelines operational; daily refresh running; data flowing into star schema</p></div>
+      <div class="tl-item orange"><h4>M3: Views 1 &amp; 2 Complete</h4><span class="tl-date">Feb 28 &mdash; Sprint 2</span><p>Executive Summary and BU Deep-Dive ready for testing with live data</p></div>
+      <div class="tl-item green"><h4>M4: All Views Complete</h4><span class="tl-date">Mar 5 &mdash; Sprint 3</span><p>View 3 complete; all 3 views functional with drill-throughs and filters</p></div>
+      <div class="tl-item green"><h4>M5: UAT Sign-off</h4><span class="tl-date">Mar 9 &mdash; Sprint 3</span><p>3 use cases executed; AI Governance team approval documented</p></div>
+      <div class="tl-item green"><h4>M6: Production Deployment</h4><span class="tl-date">Mar 10 &mdash; Sprint 3</span><p>Dashboard live; users trained; documentation delivered</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Accelerated Timeline Adjustments</h2>
+    <div class="card-grid">
+      <div class="card"><div class="label">Parallel Workstreams</div><div class="detail" style="margin-top:8px">Data engineering and Power BI development run concurrently in Sprint 2</div></div>
+      <div class="card orange"><div class="label">Reduced UAT Window</div><div class="detail" style="margin-top:8px">UAT condensed to 2 days (Mar 8-9) vs. original 1 week</div></div>
+      <div class="card"><div class="label">Combined Testing</div><div class="detail" style="margin-top:8px">QA and UAT partially overlap in Sprint 3</div></div>
+      <div class="card orange"><div class="label">Docs in Parallel</div><div class="detail" style="margin-top:8px">User guide created alongside View 3 development</div></div>
+      <div class="card"><div class="label">Daily Standups</div><div class="detail" style="margin-top:8px">Required during Sprints 2 and 3 to manage dependencies</div></div>
+      <div class="card orange"><div class="label">No Buffer Sprint</div><div class="detail" style="margin-top:8px">All 3 sprints are back-to-back with no gap between them</div></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ========== TAB 2: SPRINT 1 ========== -->
+<div id="sprint1" class="tab-content">
+
+  <section>
+    <h2>Sprint 1: Discovery &amp; Data Engineering</h2>
+    <div class="card-grid">
+      <div class="card"><div class="label">Dates</div><div class="value" style="font-size:20px">Feb 3 &ndash; Feb 14</div><div class="detail">2 weeks</div></div>
+      <div class="card orange"><div class="label">Total Hours</div><div class="value">60</div><div class="detail">5 tasks &bull; 26 subtasks</div></div>
+      <div class="card green"><div class="label">Team</div><div class="value" style="font-size:16px">PM, DE, UX</div><div class="detail">Project Manager, Data Engineer, UX Designer</div></div>
+      <div class="card"><div class="label">Focus</div><div class="value" style="font-size:14px;line-height:1.4">Requirements, Data Sources, Star Schema, Prototype</div></div>
+    </div>
+  </section>
+
+  <!-- Task 1.1 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 1.1: Project Kickoff &amp; Requirements Gathering
+        <span><span class="task-owner">PM</span> <span class="task-hours">12 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>1.1.1</td><td>Conduct kickoff meeting with CTO sponsor and AI Governance team</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.1.2</td><td>Review project charter, RACI, and confirm delivery timeline</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.1.3</td><td>Define 10 adoption metrics with stakeholder input (workshops)</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.1.4</td><td>Document reporting structure by business unit and AI tool/function</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.1.5</td><td>Finalize metric definitions document with calculation logic</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: 10 metrics defined and documented; reporting structure agreed; kickoff minutes captured.</div>
+    </div>
+  </section>
+
+  <!-- Task 1.2 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 1.2: Data Source Identification &amp; Access
+        <span><span class="task-owner">DE</span> <span class="task-hours">12 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>1.2.1</td><td>Identify Enterprise AI telemetry data source (AWS Bedrock logs)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.2.2</td><td>Identify HR/employee data source (Workday) and business unit hierarchy</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.2.3</td><td>Identify License Management database and available fields</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.2.4</td><td>Identify Azure AD source for authentication/login data</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.2.5</td><td>Identify Adoption Targets DB for target rates by BU</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.2.6</td><td>Submit data access requests and obtain credentials for all 5 systems</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: All 5 data sources documented with connection details; access granted or in progress.</div>
+    </div>
+  </section>
+
+  <!-- Task 1.3 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 1.3: Data Profiling &amp; Quality Assessment
+        <span><span class="task-owner">DE</span> <span class="task-hours">12 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>1.3.1</td><td>Profile Enterprise AI telemetry: record counts, date ranges, completeness</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.3.2</td><td>Profile Workday HR data: employee records, BU mapping coverage, hierarchy depth</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.3.3</td><td>Profile License Management: licensed user counts by tool, refresh cadence</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.3.4</td><td>Profile Azure AD: login event coverage, user identifiers, timestamp granularity</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.3.5</td><td>Profile Adoption Targets: target rates by BU, date versioning, completeness</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.3.6</td><td>Document data quality findings: gaps, inconsistencies, workarounds needed</td><td>3</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: Data profiling report delivered; quality issues documented with severity ratings.</div>
+    </div>
+  </section>
+
+  <!-- Task 1.4 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 1.4: Prototype Review &amp; UX Validation
+        <span><span class="task-owner">UX</span> <span class="task-hours">8 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>1.4.1</td><td>Prepare HTML prototype for stakeholder review session</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.4.2</td><td>Conduct prototype walkthrough with AI Governance team</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.4.3</td><td>Document feedback: layout changes, visual priorities, filter needs</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.4.4</td><td>Prioritize changes and update prototype design notes</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: Prototype reviewed; feedback documented; priority changes identified for implementation.</div>
+    </div>
+  </section>
+
+  <!-- Task 1.5 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 1.5: Star Schema Design &amp; Dimension Tables
+        <span><span class="task-owner">DE</span> <span class="task-hours">16 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>1.5.1</td><td>Design DimUser table (UserKey, BUKey, OnboardDate, LastActive, Sessions, Tier)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.5.2</td><td>Design DimBusinessUnit table (BUKey, Name, Category, TotalEmp, Licensed, Target)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.5.3</td><td>Design DimTaskType table (TaskTypeKey, Name, Category, Description)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.5.4</td><td>Design DimBusinessOutcome table (OutcomeKey, Name, Category, Description)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.5.5</td><td>Design DimDate table (DateKey, Date, Year, Quarter, Month, Week, FiscalYear)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.5.6</td><td>Design FactSession table (SessionID, DateKey, UserKey, TaskTypeKey, OutcomeKey, Duration, QueryCount)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.5.7</td><td>Design FactDailyAdoption table (DateKey, BUKey, ActiveUsers, TotalSessions, AdoptionRate)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.5.8</td><td>Create ERD diagram documenting all relationships and cardinalities</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>1.5.9</td><td>Create all dimension tables with seed/reference data loaded</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: Star schema ERD approved; all dimension tables created with sample data.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card" style="border-left-color:var(--blue);background:#EFF6FF;">
+      <div class="label">Sprint 1 Milestone (M1)</div>
+      <div class="detail" style="margin-top:6px;font-size:14px;">Requirements signed off, prototype feedback incorporated, data model design complete.</div>
+      <div style="margin-top:8px;font-weight:600;color:var(--dark-blue);">Total: 60 hours</div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ========== TAB 3: SPRINT 2 ========== -->
+<div id="sprint2" class="tab-content">
+
+  <section>
+    <h2>Sprint 2: Core Build &mdash; ETL, DAX &amp; Views 1-2</h2>
+    <div class="card-grid">
+      <div class="card"><div class="label">Dates</div><div class="value" style="font-size:20px">Feb 17 &ndash; Feb 28</div><div class="detail">2 weeks</div></div>
+      <div class="card orange"><div class="label">Total Hours</div><div class="value">88</div><div class="detail">7 tasks &bull; 37 subtasks</div></div>
+      <div class="card green"><div class="label">Team</div><div class="value" style="font-size:16px">DE, PBI, PM</div><div class="detail">Data Engineer, Power BI Lead, Project Manager</div></div>
+      <div class="card"><div class="label">Focus</div><div class="value" style="font-size:14px;line-height:1.4">ETL Pipeline, DAX Measures, RLS, Views 1 &amp; 2</div></div>
+    </div>
+  </section>
+
+  <!-- Task 2.1 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 2.1: ETL Pipeline Development
+        <span><span class="task-owner">DE</span> <span class="task-hours">24 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>2.1.1</td><td>Build Power Query connection to AWS Bedrock telemetry (session logs)</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.1.2</td><td>Build Power Query connection to Workday HR API (employee + BU mapping)</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.1.3</td><td>Build Power Query connection to License Management database</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.1.4</td><td>Build Power Query connection to Azure AD (login/authentication events)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.1.5</td><td>Build Power Query connection to Adoption Targets DB</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.1.6</td><td>Implement data transformations: type casting, null handling, key generation</td><td>4</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.1.7</td><td>Configure incremental refresh for FactSession (daily append, 3-day lookback)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.1.8</td><td>Configure daily scheduled refresh (06:00 UTC) with failure alerting</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.1.9</td><td>Validate ETL end-to-end: row counts, FK integrity, data freshness</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: All 5 ETL pipelines operational; daily refresh running; failure alerts configured.</div>
+    </div>
+  </section>
+
+  <!-- Task 2.2 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 2.2: Core DAX Measures
+        <span><span class="task-owner">PBI</span> <span class="task-hours">16 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>2.2.1</td><td>M01: Total Active Users &mdash; DISTINCTCOUNT of users with 1+ sessions in period</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.2.2</td><td>M02: Adoption Rate &mdash; Active Users / Licensed Users as percentage</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.2.3</td><td>M03: Total Sessions &mdash; COUNT of all sessions in period</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.2.4</td><td>M04: Avg Sessions per User &mdash; Total Sessions / Active Users</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.2.5</td><td>M05: Adoption vs Target &mdash; Current adoption rate vs BU target with status</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.2.6</td><td>M06: Engagement Tier Distribution &mdash; Power User / Regular / Tried / Inactive</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.2.7</td><td>M07: Month-over-Month Growth &mdash; % change in active users vs prior month</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.2.8</td><td>M08: Top Task Type &mdash; task category with highest session count</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.2.9</td><td>M09: Business Outcome Distribution &mdash; session breakdown by outcome category</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.2.10</td><td>M10: Task Type Growth Rate &mdash; MoM growth for each task type</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.2.11</td><td>Document all measures in DAX measures reference (formula, filters, views used)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: All 10 DAX measures functional; documented with calculation logic and test results.</div>
+    </div>
+  </section>
+
+  <!-- Task 2.3 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 2.3: Row-Level Security
+        <span><span class="task-owner">PBI</span> <span class="task-hours">6 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>2.3.1</td><td>Define RLS roles: Admin (all data), BU Leader (own BU), Viewer (read-only, all)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.3.2</td><td>Create RLS filter expression for BU Leader role using DimBusinessUnit[BUKey]</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.3.3</td><td>Map Azure AD groups/users to RLS roles in Power BI Service</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.3.4</td><td>Test RLS with 3 test users (one per role) &mdash; verify data isolation</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: RLS roles configured; tested with 3 different user profiles; data isolation verified.</div>
+    </div>
+  </section>
+
+  <!-- Task 2.4 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 2.4: View 1 &mdash; Executive Summary
+        <span><span class="task-owner">PBI</span> <span class="task-hours">16 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>2.4.1</td><td>Create page layout with header, navigation tabs, and filter bar</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.4.2</td><td>KPI card: Total Active Users with % change vs prior period</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.4.3</td><td>KPI card: Adoption Rate as % with gauge visual</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.4.4</td><td>KPI card: Total Sessions with trend sparkline</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.4.5</td><td>KPI card: Avg Sessions/User/Month</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.4.6</td><td>12-month Adoption Trend line chart with target line overlay</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.4.7</td><td>Business Unit Adoption horizontal bar chart, sorted desc, color-coded vs target</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.4.8</td><td>Top Use Cases donut chart showing task type distribution</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.4.9</td><td>Business Outcome stacked bar breakdown</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.4.10</td><td>Configure drill-through: click BU bar &rarr; View 2 filtered to that unit</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.4.11</td><td>Configure drill-through: click task type &rarr; View 3 filtered to that category</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.4.12</td><td>Apply Power BI theme (colors, fonts, formatting) per UX specs</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: All 4 KPI cards, 3 visuals, and 2 drill-throughs working with live data.</div>
+    </div>
+  </section>
+
+  <!-- Task 2.5 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 2.5: View 2 &mdash; Business Unit Deep-Dive
+        <span><span class="task-owner">PBI</span> <span class="task-hours">20 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>2.5.1</td><td>Business Unit selector (single or multi-select slicer)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.2</td><td>KPI card: Unit Adoption Rate vs unit-specific target</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.3</td><td>KPI card: Active Users count with trend indicator (up/down arrow)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.4</td><td>KPI card: Avg Engagement (sessions per user per month for selected unit)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.5</td><td>KPI card: Top Task Type for selected unit</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.6</td><td>User Adoption Funnel (Licensed &rarr; Onboarded &rarr; Tried &rarr; Regular &rarr; Power User)</td><td>3</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.7</td><td>Monthly Active Users trend line with unit target overlay</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.8</td><td>Task Type Distribution bar chart for selected unit</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.9</td><td>Feature Usage chart (capabilities leveraged by unit)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.10</td><td>User Table: anonymized User ID, Last Active, Total Sessions, Primary Task Type, Engagement Tier</td><td>3</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.11</td><td>Make User Table sortable by all columns</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.12</td><td>Enable CSV export on User Table</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.5.13</td><td>Apply theme and validate visual alignment with View 1</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: BU selector, 4 KPIs, funnel, trend, charts, and sortable/exportable table all working.</div>
+    </div>
+  </section>
+
+  <!-- Task 2.6 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 2.6: Global Filters &amp; Navigation
+        <span><span class="task-owner">PBI</span> <span class="task-hours">4 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>2.6.1</td><td>Add global Date Range picker (start/end) affecting all views</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.6.2</td><td>Add global Business Unit multi-select filter</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.6.3</td><td>Configure filter sync across View 1, View 2, View 3</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.6.4</td><td>Add view navigation tabs (View 1 / View 2 / View 3)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: Date and BU filters apply across all views; navigation tabs work correctly.</div>
+    </div>
+  </section>
+
+  <!-- Task 2.7 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 2.7: Sprint 2 Demo &amp; Feedback
+        <span><span class="task-owner">PM</span> <span class="task-hours">2 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>2.7.1</td><td>Conduct internal demo of Views 1 &amp; 2 with stakeholders</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>2.7.2</td><td>Document feedback and prioritize changes for Sprint 3</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: Demo completed; feedback documented and prioritized.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card" style="border-left-color:var(--orange);background:#FFF7ED;">
+      <div class="label">Sprint 2 Milestones</div>
+      <div class="detail" style="margin-top:6px;font-size:14px;"><strong>M2:</strong> Data Pipeline Live (Feb 21) &mdash; All ETL operational, daily refresh working</div>
+      <div class="detail" style="margin-top:4px;font-size:14px;"><strong>M3:</strong> Views 1 &amp; 2 Complete (Feb 28) &mdash; Executive &amp; BU views ready for testing</div>
+      <div style="margin-top:8px;font-weight:600;color:var(--dark-blue);">Total: 88 hours</div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ========== TAB 4: SPRINT 3 ========== -->
+<div id="sprint3" class="tab-content">
+
+  <section>
+    <h2>Sprint 3: View 3, Testing, UAT &amp; Deployment</h2>
+    <div class="card-grid">
+      <div class="card"><div class="label">Dates</div><div class="value" style="font-size:20px">Mar 3 &ndash; Mar 10</div><div class="detail">1 week</div></div>
+      <div class="card orange"><div class="label">Total Hours</div><div class="value">52</div><div class="detail">7 tasks &bull; 36 subtasks</div></div>
+      <div class="card green"><div class="label">Team</div><div class="value" style="font-size:16px">PBI, QA, PM</div><div class="detail">Power BI Lead, QA Analyst, Project Manager</div></div>
+      <div class="card"><div class="label">Focus</div><div class="value" style="font-size:14px;line-height:1.4">Use Case Analysis, Testing, UAT, Deploy, Training</div></div>
+    </div>
+  </section>
+
+  <!-- Task 3.1 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 3.1: View 3 &mdash; Use Case Analysis
+        <span><span class="task-owner">PBI</span> <span class="task-hours">16 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>3.1.1</td><td>Task Type multi-select filter</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.1.2</td><td>Business Outcome multi-select filter</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.1.3</td><td>KPI card: Total Use Cases Tracked</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.1.4</td><td>KPI card: Most Popular Task (highest session count)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.1.5</td><td>KPI card: Fastest Growing Task (highest MoM growth)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.1.6</td><td>KPI card: Highest Engagement Task (longest avg session duration)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.1.7</td><td>Task Type &times; Business Unit Heatmap (intensity matrix)</td><td>3</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.1.8</td><td>Task Type Trend stacked area chart (12 months)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.1.9</td><td>Business Outcome Distribution donut with drill-through</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.1.10</td><td>Top Scenarios Table (ranked use cases with metrics: volume, growth, engagement)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.1.11</td><td>Feature Adoption by Task correlation view</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.1.12</td><td>Apply theme and validate consistency with Views 1 &amp; 2</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: All 4 KPIs, 2 filters, heatmap, trend chart, donut, and scenarios table working.</div>
+    </div>
+  </section>
+
+  <!-- Task 3.2 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 3.2: Export &amp; Performance
+        <span><span class="task-owner">PBI</span> <span class="task-hours">6 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>3.2.1</td><td>Enable CSV export on all data tables (Views 2 &amp; 3)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.2.2</td><td>Run Performance Analyzer on all 3 views</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.2.3</td><td>Identify and optimize slow DAX queries (target &lt; 3s visual refresh)</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.2.4</td><td>Validate all views load in &lt; 5 seconds with production data volume</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.2.5</td><td>Implement Sprint 2 demo feedback changes (priority items)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: Export working; all views load &lt; 5s; Performance Analyzer results documented.</div>
+    </div>
+  </section>
+
+  <!-- Task 3.3 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 3.3: QA Testing
+        <span><span class="task-owner">QA</span> <span class="task-hours">12 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>3.3.1</td><td>Create test cases for View 1: KPI accuracy, trend chart, bar chart, drill-throughs</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.3.2</td><td>Create test cases for View 2: BU selector, funnel, user table, export</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.3.3</td><td>Create test cases for View 3: heatmap, trend, scenarios table, filters</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.3.4</td><td>Create test cases for global filters, navigation, RLS</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.3.5</td><td>Execute View 1 functional tests</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.3.6</td><td>Execute View 2 functional tests</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.3.7</td><td>Execute View 3 functional tests</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.3.8</td><td>Execute data validation: KPI values vs source system spot-checks</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.3.9</td><td>Document all defects with severity, steps to reproduce, screenshots</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: All test cases executed; defects logged with severity; critical/high defects flagged.</div>
+    </div>
+  </section>
+
+  <!-- Task 3.4 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 3.4: UAT &amp; Sign-Off
+        <span><span class="task-owner">PM</span> <span class="task-hours">7 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>3.4.1</td><td>Prepare UAT environment with production-like data</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.4.2</td><td>Create UAT scripts for 3 use cases (UC-01, UC-02, UC-03)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.4.3</td><td>UC-01: Executive Reviews AI Adoption &mdash; walkthrough with CTO/Governance Lead</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.4.4</td><td>UC-02: BU Leader Analyzes Unit Adoption &mdash; walkthrough with BU Leader</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.4.5</td><td>UC-03: Governance Analyzes Use Cases &mdash; walkthrough with Governance Analyst</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.4.6</td><td>Document UAT feedback and acceptance decisions</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.4.7</td><td>Obtain formal UAT sign-off from AI Governance team</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: 3 use cases executed with stakeholders; sign-off document obtained.</div>
+    </div>
+  </section>
+
+  <!-- Task 3.5 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 3.5: Defect Resolution
+        <span><span class="task-owner">PBI</span> <span class="task-hours">4 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>3.5.1</td><td>Fix all critical severity defects from QA and UAT</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.5.2</td><td>Fix high severity defects from QA and UAT</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.5.3</td><td>Re-test fixed defects and confirm resolution</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: All critical/high defects resolved and re-verified.</div>
+    </div>
+  </section>
+
+  <!-- Task 3.6 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 3.6: Production Deployment
+        <span><span class="task-owner">PBI</span> <span class="task-hours">3 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>3.6.1</td><td>Publish dashboard to production Power BI workspace</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.6.2</td><td>Configure production scheduled refresh (daily 06:00 UTC)</td><td>0.5</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.6.3</td><td>Verify all data connections and gateway configuration</td><td>0.5</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.6.4</td><td>Production smoke test: all 3 views, filters, drill-throughs, RLS</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: Dashboard live in production; refresh running; smoke test passed.</div>
+    </div>
+  </section>
+
+  <!-- Task 3.7 -->
+  <section>
+    <h3 class="collapsible" onclick="toggle(this)">
+      <span class="task-header">
+        Task 3.7: Documentation, Training &amp; Handoff
+        <span><span class="task-owner">PBI / PM</span> <span class="task-hours">8 hrs</span></span>
+      </span>
+    </h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <tr><th>Subtask</th><th>Description</th><th>Hours</th><th>Status</th></tr>
+          <tr><td>3.7.1</td><td>Create user guide with screenshots of all 3 views, filter usage, export</td><td>2</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.7.2</td><td>Create data dictionary documenting all tables, columns, relationships</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.7.3</td><td>Document DAX measure reference (10 measures with formulas)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.7.4</td><td>Provision user access per access matrix (Governance team, BU leaders)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.7.5</td><td>Conduct training session for AI Governance team (demo + Q&amp;A)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.7.6</td><td>Conduct training session for BU Leaders (demo + Q&amp;A)</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+          <tr><td>3.7.7</td><td>Final handoff: technical documentation to support team</td><td>1</td><td><span class="badge badge-todo">To Do</span></td></tr>
+        </table>
+      </div>
+      <div class="acceptance">Acceptance: User guide delivered; training conducted; access provisioned; handoff complete.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card" style="border-left-color:var(--green);background:#ECFDF5;">
+      <div class="label">Sprint 3 Milestones</div>
+      <div class="detail" style="margin-top:6px;font-size:14px;"><strong>M4:</strong> All Views Complete (Mar 5) &mdash; View 3 complete, all functionality working</div>
+      <div class="detail" style="margin-top:4px;font-size:14px;"><strong>M5:</strong> UAT Sign-off (Mar 9) &mdash; Governance team approval</div>
+      <div class="detail" style="margin-top:4px;font-size:14px;"><strong>M6:</strong> Production Deployment (Mar 10) &mdash; Dashboard live, users trained</div>
+      <div style="margin-top:8px;font-weight:600;color:var(--dark-blue);">Total: 52 hours (+ 4 hrs buffer)</div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ========== TAB 5: DATA MODEL ========== -->
+<div id="datamodel" class="tab-content">
+
+  <section>
+    <h2>Star Schema &mdash; Data Model</h2>
+    <p style="margin-bottom:16px;font-size:14px;color:var(--gray)">5 dimension tables + 2 fact tables + 7 relationships</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>Table</th><th>Type</th><th>Key</th><th>Description</th></tr>
+        <tr><td><strong>DimUser</strong></td><td><span class="badge" style="background:#EFF6FF;color:var(--dark-blue)">Dimension</span></td><td>UserKey</td><td>Employee profile with BU assignment and engagement tier</td></tr>
+        <tr><td><strong>DimBusinessUnit</strong></td><td><span class="badge" style="background:#EFF6FF;color:var(--dark-blue)">Dimension</span></td><td>BUKey</td><td>13 business units with targets and headcounts</td></tr>
+        <tr><td><strong>DimTaskType</strong></td><td><span class="badge" style="background:#EFF6FF;color:var(--dark-blue)">Dimension</span></td><td>TaskTypeKey</td><td>6 AI task categories (Code Gen, Data Analysis, etc.)</td></tr>
+        <tr><td><strong>DimBusinessOutcome</strong></td><td><span class="badge" style="background:#EFF6FF;color:var(--dark-blue)">Dimension</span></td><td>OutcomeKey</td><td>5 business outcome classifications</td></tr>
+        <tr><td><strong>DimDate</strong></td><td><span class="badge" style="background:#EFF6FF;color:var(--dark-blue)">Dimension</span></td><td>DateKey</td><td>Calendar table with fiscal periods</td></tr>
+        <tr><td><strong>FactSession</strong></td><td><span class="badge" style="background:#FFF7ED;color:#9A3412">Fact</span></td><td>SessionID</td><td>One row per AI session (grain: session-level)</td></tr>
+        <tr><td><strong>FactDailyAdoption</strong></td><td><span class="badge" style="background:#FFF7ED;color:#9A3412">Fact</span></td><td>DateKey + BUKey</td><td>Pre-aggregated daily rollup by BU</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Relationships</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>From</th><th>Column</th><th>To</th><th>Column</th><th>Cardinality</th></tr>
+        <tr><td>FactSession</td><td>DateKey</td><td>DimDate</td><td>DateKey</td><td>M:1</td></tr>
+        <tr><td>FactSession</td><td>UserKey</td><td>DimUser</td><td>UserKey</td><td>M:1</td></tr>
+        <tr><td>FactSession</td><td>TaskTypeKey</td><td>DimTaskType</td><td>TaskTypeKey</td><td>M:1</td></tr>
+        <tr><td>FactSession</td><td>OutcomeKey</td><td>DimBusinessOutcome</td><td>OutcomeKey</td><td>M:1</td></tr>
+        <tr><td>DimUser</td><td>BUKey</td><td>DimBusinessUnit</td><td>BUKey</td><td>M:1</td></tr>
+        <tr><td>FactDailyAdoption</td><td>DateKey</td><td>DimDate</td><td>DateKey</td><td>M:1</td></tr>
+        <tr><td>FactDailyAdoption</td><td>BUKey</td><td>DimBusinessUnit</td><td>BUKey</td><td>M:1</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Dimension Table Details</h2>
+
+    <h3 class="collapsible" onclick="toggle(this)">DimUser</h3>
+    <div class="collapse-body">
+      <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">UserKey</div></div>
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">BUKey</div></div>
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">OnboardDate</div></div>
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">LastActive</div></div>
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">Sessions</div></div>
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">Tier</div></div>
+      </div>
+    </div>
+
+    <h3 class="collapsible" onclick="toggle(this)">DimBusinessUnit</h3>
+    <div class="collapse-body">
+      <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">BUKey</div></div>
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">Name</div></div>
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">Category</div></div>
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">TotalEmp</div></div>
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">Licensed</div></div>
+        <div class="card"><div class="label">Column</div><div class="detail" style="margin-top:4px;font-weight:600">Target</div></div>
+      </div>
+    </div>
+
+    <h3 class="collapsible" onclick="toggle(this)">Fact Tables</h3>
+    <div class="collapse-body">
+      <div class="card-grid">
+        <div class="card">
+          <div class="label">FactSession</div>
+          <div class="detail" style="margin-top:8px">SessionID, DateKey, UserKey, TaskTypeKey, OutcomeKey, Duration, QueryCount</div>
+          <div class="detail" style="margin-top:4px;color:var(--blue)">Grain: one row per AI session</div>
+        </div>
+        <div class="card orange">
+          <div class="label">FactDailyAdoption</div>
+          <div class="detail" style="margin-top:8px">DateKey, BUKey, ActiveUsers, TotalSessions, AdoptionRate</div>
+          <div class="detail" style="margin-top:4px;color:var(--orange)">Grain: one row per BU per day</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ========== TAB 6: METRICS ========== -->
+<div id="metrics" class="tab-content">
+
+  <section>
+    <h2>10 Defined Metrics</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>#</th><th>Metric</th><th>DAX Measure</th><th>Description</th><th>Views</th></tr>
+        <tr><td>1</td><td>Total Active Users</td><td><code>M01_ActiveUsers</code></td><td>DISTINCTCOUNT of users with 1+ sessions in period</td><td>V1, V2</td></tr>
+        <tr><td>2</td><td>Adoption Rate</td><td><code>M02_AdoptionRate</code></td><td>Active Users / Licensed Users</td><td>V1, V2</td></tr>
+        <tr><td>3</td><td>Total Sessions</td><td><code>M03_TotalSessions</code></td><td>COUNT of all sessions in period</td><td>V1, V2</td></tr>
+        <tr><td>4</td><td>Avg Sessions/User</td><td><code>M04_AvgSessionsPerUser</code></td><td>Total Sessions / Active Users</td><td>V1, V2</td></tr>
+        <tr><td>5</td><td>Adoption vs Target</td><td><code>M05_AdoptionVsTarget</code></td><td>Current rate vs BU target (Above / On-Track / Below)</td><td>V1, V2</td></tr>
+        <tr><td>6</td><td>Engagement Tier Dist.</td><td><code>M06_EngagementTier</code></td><td>Classify: Power User / Regular / Tried / Inactive</td><td>V2</td></tr>
+        <tr><td>7</td><td>MoM Growth</td><td><code>M07_MoMGrowth</code></td><td>% change in active users vs prior month</td><td>V1</td></tr>
+        <tr><td>8</td><td>Top Task Type</td><td><code>M08_TopTaskType</code></td><td>Task category with highest session count</td><td>V2, V3</td></tr>
+        <tr><td>9</td><td>Outcome Distribution</td><td><code>M09_OutcomeDist</code></td><td>Session breakdown by outcome category</td><td>V1, V3</td></tr>
+        <tr><td>10</td><td>Task Growth Rate</td><td><code>M10_TaskGrowthRate</code></td><td>MoM growth per task type; identify fastest growing</td><td>V3</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>5 Acme Data Sources</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>#</th><th>System</th><th>Data</th><th>Refresh</th><th>Priority</th><th>Access Method</th></tr>
+        <tr><td>1</td><td>Enterprise AI Telemetry (AWS Bedrock)</td><td>Session logs, queries, model usage</td><td>Daily</td><td><span class="badge badge-p1">P1</span></td><td>API / Log Store</td></tr>
+        <tr><td>2</td><td>HR System (Workday)</td><td>Employee data, BU hierarchy, onboarding dates</td><td>Daily</td><td><span class="badge badge-p1">P1</span></td><td>Workday API</td></tr>
+        <tr><td>3</td><td>License Management</td><td>Licensed users by tool and function</td><td>Weekly</td><td><span class="badge badge-p2">P2</span></td><td>Database query</td></tr>
+        <tr><td>4</td><td>Azure AD</td><td>User authentication, login events</td><td>Daily</td><td><span class="badge badge-p2">P2</span></td><td>MS Graph API</td></tr>
+        <tr><td>5</td><td>Adoption Targets DB</td><td>Target adoption rates by BU and function</td><td>Monthly</td><td><span class="badge badge-p3">P3</span></td><td>Database query</td></tr>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<!-- ========== TAB 7: UAT & USE CASES ========== -->
+<div id="uat" class="tab-content">
+
+  <section>
+    <h2>Use Cases for Acceptance Testing</h2>
+  </section>
+
+  <!-- UC-01 -->
+  <section>
+    <h3 class="collapsible open" onclick="toggle(this)">UC-01: Executive Reviews Enterprise AI Adoption</h3>
+    <div class="collapse-body open">
+      <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+        <div class="card"><div class="label">Actor</div><div class="detail" style="margin-top:4px;font-weight:600">CTO / AI Governance Lead</div></div>
+        <div class="card orange"><div class="label">Precondition</div><div class="detail" style="margin-top:4px">Dashboard loaded, user has Admin role</div></div>
+      </div>
+      <h4>Flow</h4>
+      <ol style="margin:8px 0 12px 20px;font-size:13px;line-height:1.8">
+        <li>User opens View 1 (Executive Summary)</li>
+        <li>Reviews 4 KPI cards (Active Users, Adoption Rate, Sessions, Avg Sessions/User)</li>
+        <li>Examines 12-month adoption trend line with target overlay</li>
+        <li>Identifies lowest-performing BU from the horizontal bar chart</li>
+        <li>Clicks on the BU bar to drill through to View 2</li>
+      </ol>
+      <div class="acceptance">Expected Result: All KPIs populated with current data; drill-through navigates correctly with BU filter applied.</div>
+      <h4>Acceptance Checklist</h4>
+      <ul class="checklist">
+        <li>All 4 KPI cards display correct, current values</li>
+        <li>Adoption trend shows 12-month history with target line</li>
+        <li>BU adoption bar chart sorted correctly with color-coded target status</li>
+        <li>Clicking a BU bar drills through to View 2 filtered to that unit</li>
+        <li>Clicking a use case drills through to View 3 filtered to that category</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- UC-02 -->
+  <section>
+    <h3 class="collapsible open" onclick="toggle(this)">UC-02: BU Leader Analyzes Unit Adoption</h3>
+    <div class="collapse-body open">
+      <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+        <div class="card"><div class="label">Actor</div><div class="detail" style="margin-top:4px;font-weight:600">Business Unit Leader</div></div>
+        <div class="card orange"><div class="label">Precondition</div><div class="detail" style="margin-top:4px">User has BU Leader role, RLS restricts to their unit</div></div>
+      </div>
+      <h4>Flow</h4>
+      <ol style="margin:8px 0 12px 20px;font-size:13px;line-height:1.8">
+        <li>User opens View 2 (Business Unit Deep-Dive)</li>
+        <li>Sees their unit's KPIs (adoption rate, active users, engagement, top task)</li>
+        <li>Reviews the adoption funnel (Licensed &rarr; Onboarded &rarr; Tried &rarr; Regular &rarr; Power User)</li>
+        <li>Examines the user table, sorts by "Last Active"</li>
+        <li>Exports user table to CSV</li>
+      </ol>
+      <div class="acceptance">Expected Result: Only their BU data visible; export contains correct data; funnel stages are accurate.</div>
+      <h4>Acceptance Checklist</h4>
+      <ul class="checklist">
+        <li>RLS restricts BU Leader to only their unit's data</li>
+        <li>Adoption funnel shows accurate stage counts</li>
+        <li>User table is sortable by all columns</li>
+        <li>CSV export contains correct, complete data</li>
+        <li>KPI cards reflect selected BU only</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- UC-03 -->
+  <section>
+    <h3 class="collapsible open" onclick="toggle(this)">UC-03: Governance Team Analyzes Use Cases</h3>
+    <div class="collapse-body open">
+      <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+        <div class="card"><div class="label">Actor</div><div class="detail" style="margin-top:4px;font-weight:600">AI Governance Analyst</div></div>
+        <div class="card orange"><div class="label">Precondition</div><div class="detail" style="margin-top:4px">Dashboard loaded, multi-select filters available</div></div>
+      </div>
+      <h4>Flow</h4>
+      <ol style="margin:8px 0 12px 20px;font-size:13px;line-height:1.8">
+        <li>User opens View 3 (Use Case Analysis)</li>
+        <li>Selects "Code Generation" and "Data Analysis" task types</li>
+        <li>Examines the Task Type &times; BU heatmap for intensity patterns</li>
+        <li>Reviews the top scenarios table for ranked use cases</li>
+      </ol>
+      <div class="acceptance">Expected Result: Heatmap filters correctly; scenarios table shows ranked use cases with metrics for selected types.</div>
+      <h4>Acceptance Checklist</h4>
+      <ul class="checklist">
+        <li>Multi-select task type filter correctly filters all visuals</li>
+        <li>Heatmap intensity values match underlying data</li>
+        <li>Top scenarios table ranks use cases correctly</li>
+        <li>Business outcome donut drill-through works</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Definition of Done &mdash; D11</h2>
+    <ul class="checklist">
+      <li>10 adoption metrics defined and documented with DAX calculations</li>
+      <li>5 Acme data sources integrated with automated daily refresh</li>
+      <li>Reporting structure documented by tool and business function</li>
+      <li>Star schema implemented (5 dimensions + 2 fact tables + 7 relationships)</li>
+      <li>1 Power BI dashboard with 3 fully populated views</li>
+      <li>Row-Level Security implemented and tested (Admin, BU Leader, Viewer)</li>
+      <li>Global filters (date range, business unit) working across all views</li>
+      <li>Drill-through navigation working between views</li>
+      <li>CSV export functional on data tables</li>
+      <li>All views load in &lt; 5 seconds</li>
+      <li>User documentation complete (user guide, data dictionary, DAX reference)</li>
+      <li>UAT sign-off obtained from AI Governance team</li>
+      <li>Production deployment complete with daily refresh configured</li>
+      <li>Training sessions conducted for Governance team and BU leaders</li>
+      <li>Handoff documentation delivered to support team</li>
+    </ul>
+  </section>
+
+</div>
+
+<!-- ========== TAB 8: RESOURCES & RISKS ========== -->
+<div id="resources" class="tab-content">
+
+  <section>
+    <h2>Resource Allocation</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Role</th><th>Sprint 1</th><th>Sprint 2</th><th>Sprint 3</th><th>Total</th></tr>
+        <tr><td><strong>Project Manager</strong></td><td>12 hrs</td><td>2 hrs</td><td>8 hrs</td><td><strong>22 hrs</strong></td></tr>
+        <tr><td><strong>Data Engineer</strong></td><td>40 hrs</td><td>24 hrs</td><td>0 hrs</td><td><strong>64 hrs</strong></td></tr>
+        <tr><td><strong>Power BI Lead</strong></td><td>0 hrs</td><td>62 hrs</td><td>29 hrs</td><td><strong>91 hrs</strong></td></tr>
+        <tr><td><strong>UX Designer</strong></td><td>8 hrs</td><td>0 hrs</td><td>0 hrs</td><td><strong>8 hrs</strong></td></tr>
+        <tr><td><strong>QA Analyst</strong></td><td>0 hrs</td><td>0 hrs</td><td>12 hrs</td><td><strong>12 hrs</strong></td></tr>
+        <tr style="background:#EFF6FF"><td><strong>Total</strong></td><td><strong>60 hrs</strong></td><td><strong>88 hrs</strong></td><td><strong>52 hrs</strong></td><td style="color:var(--dark-blue);font-size:16px"><strong>200 hrs</strong></td></tr>
+      </table>
+    </div>
+
+    <h3>Hours by Role</h3>
+    <div class="bar-row"><div class="bar-label">Power BI Lead</div><div class="bar-track"><div class="bar-fill" style="width:45.5%;background:var(--blue);">91 hrs</div></div></div>
+    <div class="bar-row"><div class="bar-label">Data Engineer</div><div class="bar-track"><div class="bar-fill" style="width:32%;background:var(--orange);">64 hrs</div></div></div>
+    <div class="bar-row"><div class="bar-label">Project Manager</div><div class="bar-track"><div class="bar-fill" style="width:11%;background:var(--green);">22 hrs</div></div></div>
+    <div class="bar-row"><div class="bar-label">QA Analyst</div><div class="bar-track"><div class="bar-fill" style="width:6%;background:var(--red);">12 hrs</div></div></div>
+    <div class="bar-row"><div class="bar-label">UX Designer</div><div class="bar-track"><div class="bar-fill" style="width:4%;background:var(--gray);">8 hrs</div></div></div>
+  </section>
+
+  <section>
+    <h2>Key Milestones</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>ID</th><th>Milestone</th><th>Date</th><th>Sprint</th><th>Success Criteria</th></tr>
+        <tr><td>M1</td><td>Requirements Complete</td><td>Feb 14</td><td>S1</td><td>10 metrics defined; 5 sources identified; prototype reviewed; sign-off obtained</td></tr>
+        <tr><td>M2</td><td>Data Pipeline Live</td><td>Feb 21</td><td>S2</td><td>All 5 ETL pipelines operational; daily refresh running; data flowing into star schema</td></tr>
+        <tr><td>M3</td><td>Views 1 &amp; 2 Complete</td><td>Feb 28</td><td>S2</td><td>Executive Summary and BU Deep-Dive ready for testing with live data</td></tr>
+        <tr><td>M4</td><td>All Views Complete</td><td>Mar 5</td><td>S3</td><td>View 3 complete; all 3 views functional with drill-throughs and filters</td></tr>
+        <tr><td>M5</td><td>UAT Sign-off</td><td>Mar 9</td><td>S3</td><td>3 use cases executed; AI Governance team approval documented</td></tr>
+        <tr><td>M6</td><td>Production Deployment</td><td>Mar 10</td><td>S3</td><td>Dashboard live; users trained; documentation delivered</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Risk Register</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>ID</th><th>Risk</th><th>Impact</th><th>Probability</th><th>Mitigation</th><th>Owner</th></tr>
+        <tr><td>R1</td><td>Data source access delays</td><td><span class="badge badge-risk-high">High</span></td><td><span class="badge badge-risk-med">Medium</span></td><td>Start access requests Day 1; escalate by Day 3 if not resolved</td><td>DE / PM</td></tr>
+        <tr><td>R2</td><td>Data quality issues in source systems</td><td><span class="badge badge-risk-high">High</span></td><td><span class="badge badge-risk-med">Medium</span></td><td>Profile data in Week 2; document workarounds; degrade gracefully</td><td>DE</td></tr>
+        <tr><td>R3</td><td>Compressed timeline (5 weeks vs original 8)</td><td><span class="badge badge-risk-high">High</span></td><td><span class="badge badge-risk-high">High</span></td><td>Parallel workstreams in Sprint 2; daily standups; strict scope control</td><td>PM</td></tr>
+        <tr><td>R4</td><td>UAT stakeholder availability</td><td><span class="badge badge-risk-med">Medium</span></td><td><span class="badge badge-risk-med">Medium</span></td><td>Schedule UAT sessions by Feb 21; identify backup reviewers</td><td>PM</td></tr>
+        <tr><td>R5</td><td>Performance issues at production data volume</td><td><span class="badge badge-risk-med">Medium</span></td><td><span class="badge badge-risk-low">Low</span></td><td>Test with full data by Feb 28; optimize before Sprint 3</td><td>PBI</td></tr>
+        <tr><td>R6</td><td>RLS configuration complexity with Azure AD</td><td><span class="badge badge-risk-med">Medium</span></td><td><span class="badge badge-risk-low">Low</span></td><td>Prototype RLS in Sprint 2 Week 3; validate with IT early</td><td>PBI</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sprint Backlog Traceability</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Sprint</th><th>Task</th><th>Related User Stories</th></tr>
+        <tr><td>Sprint 1</td><td>1.1 Kickoff &amp; Requirements</td><td>US-001, US-006, US-007</td></tr>
+        <tr><td>Sprint 1</td><td>1.2 Data Source Identification</td><td>US-002, US-004</td></tr>
+        <tr><td>Sprint 1</td><td>1.3 Data Profiling</td><td>US-003</td></tr>
+        <tr><td>Sprint 1</td><td>1.4 Prototype Review</td><td>US-005</td></tr>
+        <tr><td>Sprint 1</td><td>1.5 Star Schema &amp; Dimensions</td><td>US-008, US-009</td></tr>
+        <tr><td>Sprint 2</td><td>2.1 ETL Pipeline</td><td>US-010, US-011, US-012</td></tr>
+        <tr><td>Sprint 2</td><td>2.2 DAX Measures</td><td>US-013, US-014, US-015, US-016</td></tr>
+        <tr><td>Sprint 2</td><td>2.3 Row-Level Security</td><td>US-017</td></tr>
+        <tr><td>Sprint 2</td><td>2.4 View 1 Executive Summary</td><td>US-018, US-019</td></tr>
+        <tr><td>Sprint 2</td><td>2.5 View 2 BU Deep-Dive</td><td>US-020</td></tr>
+        <tr><td>Sprint 2</td><td>2.6 Global Filters</td><td>US-022</td></tr>
+        <tr><td>Sprint 3</td><td>3.1 View 3 Use Case Analysis</td><td>US-021</td></tr>
+        <tr><td>Sprint 3</td><td>3.2 Export &amp; Performance</td><td>US-023, US-028</td></tr>
+        <tr><td>Sprint 3</td><td>3.3 QA Testing</td><td>US-026, US-027, US-029, US-030</td></tr>
+        <tr><td>Sprint 3</td><td>3.4 UAT &amp; Sign-off</td><td>US-031, US-032, US-034</td></tr>
+        <tr><td>Sprint 3</td><td>3.5 Defect Resolution</td><td>US-033</td></tr>
+        <tr><td>Sprint 3</td><td>3.6 Production Deployment</td><td>US-035, US-036, US-037</td></tr>
+        <tr><td>Sprint 3</td><td>3.7 Docs, Training &amp; Handoff</td><td>US-038, US-039, US-040, US-041</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Approval</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Role</th><th>Name</th><th>Signature</th><th>Date</th></tr>
+        <tr><td>Project Sponsor (CTO)</td><td></td><td></td><td></td></tr>
+        <tr><td>AI Governance Lead</td><td></td><td></td><td></td></tr>
+        <tr><td>Project Manager</td><td></td><td></td><td></td></tr>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+</main>
+
+<!-- FOOTER -->
+<footer style="background:var(--dark-blue);color:var(--white);padding:24px 0;margin-top:40px;text-align:center;font-size:13px;">
+  <div class="container">
+    <p>D11 Detailed Sprint Plan &mdash; Enterprise AI Adoption Dashboard</p>
+    <p style="opacity:0.6;margin-top:4px;">Acme Corporation &bull; Document Created: February 3, 2026 &bull; Last Updated: February 12, 2026 &bull; Delivery Target: March 10, 2026</p>
+  </div>
+</footer>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  var btns = document.querySelectorAll('.tab-btn');
+  for (var i = 0; i < btns.length; i++) {
+    if (btns[i].getAttribute('onclick').indexOf(id) !== -1) {
+      btns[i].classList.add('active');
+    }
+  }
+  window.scrollTo(0, 0);
+}
+
+function toggle(el) {
+  el.classList.toggle('open');
+  var body = el.nextElementSibling;
+  if (body && body.classList.contains('collapse-body')) {
+    body.classList.toggle('open');
+  }
+}
+</script>
+</body>
+</html>
